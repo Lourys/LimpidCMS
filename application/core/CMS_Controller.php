@@ -97,7 +97,7 @@ class CMS_Controller extends CI_Controller
     else
       $config['cache'] = APPPATH . 'cache/twig';
 
-    $this->load->helper('Route_helper');
+    $this->load->helper('route_helper');
     $this->load->library('Auth_Manager', null, 'authManager');
     $this->load->library('Themes_Manager', null, 'themesManager');
     $this->load->library('twig', $config);
@@ -159,7 +159,7 @@ class Plugins_Manager
     $this->updatePluginList();
 
     if (empty($this->available_plugins))
-      $this->available_plugins = json_decode(file_get_contents('http://localhost/codeigniter/public/availablePlugins.json'));
+      $this->available_plugins = null;//json_decode(file_get_contents('http://localhost/codeigniter/public/availablePlugins.json'));
   }
 
   /**
