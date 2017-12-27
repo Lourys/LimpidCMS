@@ -3,394 +3,388 @@
 {% import 'macros/form.twig' as form %}
 
 {% block content %}
-    <section class="content-header">
-        <h1>{{ lang('MENU_MANAGEMENT') }}</h1>
-        <ol class="breadcrumb">
-            <li><a href="{{ route('admin/admin_index') }}"><i class="fa fa-dashboard"></i> {{ lang('HOME') }}</a></li>
-            <li class="active">{{ lang('MENU') }}</li>
-        </ol>
-    </section>
+  <section class="content-header">
+    <h1>{{ lang('MENU_MANAGEMENT') }}</h1>
+    <ol class="breadcrumb">
+      <li><a href="{{ route('admin/admin_index') }}"><i class="fa fa-dashboard"></i> {{ lang('HOME') }}</a></li>
+      <li class="active">{{ lang('MENU') }}</li>
+    </ol>
+  </section>
 
-    <section class="content">
+  <section class="content">
+    <div class="box">
+      <div class="box-header with-border">
+        <h3 class="box-title">{{ lang('LINKS_CREATION') }}</h3>
+      </div>
+      <div class="box-body">
+        <ul class="nav nav-tabs">
+          <li class="active">
+            <a data-toggle="tab" href="#createLink">{{ lang('CREATE_LINK') }}</a>
+          </li>
+          <li>
+            <a data-toggle="tab" href="#createSublink">{{ lang('CREATE_SUBLINK') }}</a>
+          </li>
+        </ul>
+        <br>
+        <div class="tab-content">
+          <div id="createLink" class="tab-pane fade in active">
+            {{ form_open() }}
+            <div class="col-md-12">
+              {{ form.input('title', lang('LINK_TITLE'), this.input.post('title'), {placeholder: lang('TITLE_EXAMPLE'), required: true}) }}
+            </div>
+            <div class="col-md-12">
+              {{ form.input('url', lang('LINK_ADDRESS'), this.input.post('url'), {placeholder: lang('LINK_EXAMPLE'), required: true}) }}
+            </div>
+            <div class="col-md-12">
+              {{ lang('DROPDOWN_MENU') }} ?
+              <div class="form-group">
+                <label class="switch">
+                  <input id="is_dropdown_link" type="checkbox" name="dropdown" value="true"
+                         {% if this.input.post('dropdown') %}checked{% endif %}>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+            </div>
+            <div class="col-md-12">
+              {{ form.submit(lang('CREATE'), 'createLink', {btnType: 'success'}) }}
+            </div>
+            {{ form_close() }}
+          </div>
+          <div id="createSublink" class="tab-pane fade">
+            {{ form_open() }}
+            <div class="col-md-7">
+              {{ form.input('title', lang('LINK_TITLE'), this.input.post('title'), {placeholder: lang('TITLE_EXAMPLE'), required: true}) }}
+            </div>
+            <div class="col-md-5">
+              <div class="form-group">
+                <label for="parent">{{ lang('PARENT_LINK') }} :</label>
+                <select class="form-control" name="parent" id="parent" required>
+                  <option value="" style="font-weight: bold">/!\ {{ lang('PLEASE_CHOOSE_OPTION') }} /!\
+                  </option>
+                  {% for link in links %}
+                    {% if link.is_dropdown %}
+                      <option value="{{ link.id }}">{{ link.title }}</option>
+                    {% endif %}
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="col-md-12">
+              {{ form.input('url', lang('LINK_ADDRESS'), this.input.post('url'), {placeholder: lang('LINK_EXAMPLE'), required: true}) }}
+            </div>
+            <div class="col-md-12">
+              {{ lang('LINK_DIVIDER') }} ?
+              <div class="form-group">
+                <label class="switch">
+                  <input id="is_divider_link" type="checkbox" name="divider" value="true"
+                         {% if this.input.post('divider') %}checked{% endif %}>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+            </div>
+            <div class="col-md-12">
+              {{ form.submit(lang('CREATE'), 'createSublink', {btnType: 'success'}) }}
+            </div>
+            {{ form_close() }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-4">
         <div class="box">
-            <div class="box-header with-border">
-                <h3 class="box-title">{{ lang('LINKS_CREATION') }}</h3>
-            </div>
-            <div class="box-body">
-                <ul class="nav nav-tabs">
-                    <li class="active">
-                        <a data-toggle="tab" href="#createLink">{{ lang('CREATE_LINK') }}</a>
-                    </li>
-                    <li>
-                        <a data-toggle="tab" href="#createSublink">{{ lang('CREATE_SUBLINK') }}</a>
-                    </li>
-                </ul>
-                <br>
-                <div class="tab-content">
-                    <div id="createLink" class="tab-pane fade in active">
-                        {{ form_open() }}
-                        <div class="col-md-12">
-                            {{ form.input('title', lang('LINK_TITLE'), this.input.post('title'), {placeholder: lang('TITLE_EXAMPLE'), required: true}) }}
-                        </div>
-                        <div class="col-md-12">
-                            {{ form.input('url', lang('LINK_ADDRESS'), this.input.post('url'), {placeholder: lang('LINK_EXAMPLE'), required: true}) }}
-                        </div>
-                        <div class="col-md-12">
-                            {{ lang('DROPDOWN_MENU') }} ?
-                            <div class="form-group">
-                                <label class="switch">
-                                    <input id="is_dropdown_link" type="checkbox" name="dropdown" value="true" {% if this.input.post('dropdown') %}checked{% endif %}>
-                                    <span class="slider round"></span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            {{ form.submit(lang('CREATE'), 'createLink', {btnType: 'success'}) }}
-                        </div>
-                        {{ form_close() }}
-                    </div>
-                    <div id="createSublink" class="tab-pane fade">
-                        {{ form_open() }}
-                        <div class="col-md-7">
-                            {{ form.input('title', lang('LINK_TITLE'), this.input.post('title'), {placeholder: lang('TITLE_EXAMPLE'), required: true}) }}
-                        </div>
-                        <div class="col-md-5">
-                            <div class="form-group">
-                                <label for="parent">{{ lang('PARENT_LINK') }} :</label>
-                                <select class="form-control" name="parent" id="parent" required>
-                                    <option value="" style="font-weight: bold">/!\ {{ lang('PLEASE_CHOOSE_OPTION') }} /!\
-                                    </option>
-                                    {% for link in links %}
-                                        {% if link.is_dropdown %}
-                                            <option value="{{ link.id }}">{{ link.title }}</option>
-                                        {% endif %}
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            {{ form.input('url', lang('LINK_ADDRESS'), this.input.post('url'), {placeholder: lang('LINK_EXAMPLE'), required: true}) }}
-                        </div>
-                        <div class="col-md-12">
-                            {{ lang('LINK_DIVIDER') }} ?
-                            <div class="form-group">
-                                <label class="switch">
-                                    <input id="is_divider_link" type="checkbox" name="divider" value="true" {% if this.input.post('divider') %}checked{% endif %}>
-                                    <span class="slider round"></span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            {{ form.submit(lang('CREATE'), 'createSublink', {btnType: 'success'}) }}
-                        </div>
-                        {{ form_close() }}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-lg-4">
-                <div class="box">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">{{ lang('LINKS_MANAGEMENT') }}</h3>
-                    </div>
-                    <div class="box-body no-padding">
-                        <table class="table">
-                            <tbody>
+          <div class="box-header with-border">
+            <h3 class="box-title">{{ lang('LINKS_MANAGEMENT') }}</h3>
+          </div>
+          <div class="box-body no-padding">
+            <table class="table">
+              <tbody>
+              <tr>
+                <th>{{ lang('TITLE') }}</th>
+                <th>{{ lang('LINK') }}</th>
+                <th style="width: 66px">{{ lang('ACTIONS') }}</th>
+              </tr>
+              {% for link in links %}
+                <tr>
+                  <td>
+                    {% if link.is_dropdown %}
+                      <a data-toggle="collapse" href="#link_{{ link.id }}" aria-expanded="false">
+                        {{ link.title }} <span class="caret"></span>
+                      </a>
+                    {% else %}
+                      {{ link.title }}
+                    {% endif %}
+                  </td>
+                  <td>
+                    <a href="{{ link.url }}">{{ link.url | truncate(40, false, '...') }}</a>
+                  </td>
+                  <td>
+                    <a href="#editLink{{ link.id }}" class="btn btn-primary btn-xs" title="{{ lang('EDIT') }}"
+                       data-toggle="modal" data-target="#editLink{{ link.id }}">
+                      <i class="fa fa-pencil"></i>
+                    </a>&nbsp;
+                    <a href="#deleteLink{{ link.id }}" class="btn btn-danger btn-xs"
+                       title="{{ lang('DELETE') }}" data-toggle="modal" data-target="#deleteLink{{ link.id }}">
+                      <i class="fa fa-times"></i>
+                    </a>
+                  </td>
+                </tr>
+                {% if link.is_dropdown %}
+                  <tr id="link_{{ link.id }}" class="collapse" aria-expanded="false">
+                    <td colspan="100%">
+                      <table class="table" style="margin-bottom: 0">
+                        <tbody>
+                        {% for sublink in sublinks %}
+                          {% if sublink.parent_id == link.id %}
                             <tr>
-                                <th>{{ lang('TITLE') }}</th>
-                                <th>{{ lang('LINK') }}</th>
-                                <th style="width: 66px">{{ lang('ACTIONS') }}</th>
-                            </tr>
-                            {% for link in links %}
-                                <tr>
-                                    <td>
-                                        {% if link.is_dropdown %}
-                                            <a data-toggle="collapse" href="#link_{{ link.id }}" aria-expanded="false">
-                                                {{ link.title }} <span class="caret"></span>
-                                            </a>
-                                        {% else %}
-                                            {{ link.title }}
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <a href="{{ link.url }}">{{ link.url | truncate(40, false, '...') }}</a>
-                                    </td>
-                                    <td>
-                                        <a href="#editLink{{ link.id }}" class="btn btn-primary btn-xs" title="{{ lang('EDIT') }}"
-                                           data-toggle="modal" data-target="#editLink{{ link.id }}">
-                                            <i class="fa fa-pencil"></i>
-                                        </a>&nbsp;
-                                        <a href="#deleteLink{{ link.id }}" class="btn btn-danger btn-xs"
-                                           title="{{ lang('DELETE') }}" data-toggle="modal" data-target="#deleteLink{{ link.id }}">
-                                            <i class="fa fa-times"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                {% if link.is_dropdown %}
-                                    <tr id="link_{{ link.id }}" class="collapse" aria-expanded="false">
-                                        <td colspan="100%">
-                                            <table class="table" style="margin-bottom: 0">
-                                                <tbody>
-                                                {% for sublink in sublinks %}
-                                                    {% if sublink.parent_id == link.id %}
-                                                        <tr>
-                                                            <td style="padding-left: 30px">
-                                                                {% if sublink.is_divider %}
-                                                                    --------------------------
-                                                                {% else %}
-                                                                    {{ sublink.title }}
-                                                                {% endif %}
-                                                            </td>
-                                                            <td>
-                                                                <a href="{{ sublink.url }}">{{ sublink.url | truncate(40, false, '...') }}</a>
-                                                            </td>
-                                                            <td style="text-align: right;width: 66px">
-                                                                {% if sublink.is_divider != true %}
-                                                                    <a href="#editLink{{ sublink.id }}"
-                                                                       class="btn btn-primary btn-xs" title="Editer"
-                                                                       data-toggle="modal"
-                                                                       data-target="#editLink{{ sublink.id }}">
-                                                                        <i class="fa fa-pencil"></i>
-                                                                    </a>&nbsp;
-                                                                {% endif %}
-                                                                <a href="#deleteLink{{ sublink.id }}"
-                                                                   class="btn btn-danger btn-xs" title="Supprimer"
-                                                                   data-toggle="modal"
-                                                                   data-target="#deleteLink{{ sublink.id }}">
-                                                                    <i class="fa fa-times"></i>
-                                                                </a>
-                                                            </td>
-                                                        </tr>
-                                                    {% endif %}
-                                                {% endfor %}
-                                                </tbody>
-                                            </table>
-                                        </td>
-                                    </tr>
+                              <td style="padding-left: 30px">
+                                {% if sublink.is_divider %}
+                                  --------------------------
+                                {% else %}
+                                  {{ sublink.title }}
                                 {% endif %}
+                              </td>
+                              <td>
+                                <a href="{{ sublink.url }}">{{ sublink.url | truncate(40, false, '...') }}</a>
+                              </td>
+                              <td style="text-align: right;width: 66px">
+                                {% if sublink.is_divider != true %}
+                                  <a href="#editLink{{ sublink.id }}"
+                                     class="btn btn-primary btn-xs" title="Editer"
+                                     data-toggle="modal"
+                                     data-target="#editLink{{ sublink.id }}">
+                                    <i class="fa fa-pencil"></i>
+                                  </a>&nbsp;
+                                {% endif %}
+                                <a href="#deleteLink{{ sublink.id }}"
+                                   class="btn btn-danger btn-xs" title="Supprimer"
+                                   data-toggle="modal"
+                                   data-target="#deleteLink{{ sublink.id }}">
+                                  <i class="fa fa-times"></i>
+                                </a>
+                              </td>
+                            </tr>
+                          {% endif %}
+                        {% endfor %}
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                {% endif %}
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-8">
+        <div class="box">
+          <div class="box-header with-border">
+            <h3 class="box-title">{{ lang('LINKS_POSITIONING') }}</h3>
+          </div>
+          <div class="box-body">
+            <nav class="navbar navbar-default">
+              <div class="container-fluid">
+                <div class="navbar-header">
+                  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                          data-target="#navbar" aria-expanded="false">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>
+                </div>
+                <div class="collapse navbar-collapse" id="navbar">
+                  <ul id="nav_links" class="nav navbar-nav">
+                    {% for link in links %}
+                      {% if link.is_dropdown %}
+                        <li class="dropdown" data-id="{{ link.id }}">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                             role="button" aria-haspopup="true"
+                             aria-expanded="false">{{ link.title }} <span
+                                    class="caret"></span></a>
+                          <ul id="nav_{{ link.id }}" class="dropdown-menu">
+                            {% for sublink in sublinks %}
+                              {% if sublink.parent_id == link.id and sublink.is_divider %}
+                                <li role="separator" class="divider"
+                                    data-id="{{ sublink.id }}"></li>
+                              {% elseif sublink.parent_id == link.id %}
+                                <li data-id="{{ sublink.id }}"><a
+                                          href="{{ include(template_from_string(sublink.url)) }}">{{ sublink.title }}</a>
+                                </li>
+                              {% endif %}
                             {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                          </ul>
+                        </li>
+                      {% else %}
+                        <li data-id="{{ link.id }}"><a
+                                  href="{{ include(template_from_string(link.url)) }}">{{ link.title }}</a>
+                        </li>
+                      {% endif %}
+                    {% endfor %}
+                  </ul>
                 </div>
-            </div>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-            <div class="col-lg-8">
-                <div class="box">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">{{ lang('LINKS_POSITIONING') }}</h3>
-                    </div>
-                    <div class="box-body">
-                        <nav class="navbar navbar-default">
-                            <div class="container-fluid">
-                                <div class="navbar-header">
-                                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                                            data-target="#navbar" aria-expanded="false">
-                                        <span class="icon-bar"></span>
-                                        <span class="icon-bar"></span>
-                                        <span class="icon-bar"></span>
-                                    </button>
-                                </div>
-                                <div class="collapse navbar-collapse" id="navbar">
-                                    <ul id="nav_links" class="nav navbar-nav">
-                                        {% for link in links %}
-                                            {% if link.is_dropdown %}
-                                                <li class="dropdown" data-id="{{ link.id }}">
-                                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"
-                                                       role="button" aria-haspopup="true"
-                                                       aria-expanded="false">{{ link.title }} <span
-                                                                class="caret"></span></a>
-                                                    <ul id="nav_{{ link.id }}" class="dropdown-menu">
-                                                        {% for sublink in sublinks %}
-                                                            {% if sublink.parent_id == link.id and sublink.is_divider %}
-                                                                <li role="separator" class="divider"
-                                                                    data-id="{{ sublink.id }}"></li>
-                                                            {% elseif sublink.parent_id == link.id %}
-                                                                <li data-id="{{ sublink.id }}"><a
-                                                                            href="{{ include(template_from_string(sublink.url)) }}">{{ sublink.title }}</a>
-                                                                </li>
-                                                            {% endif %}
-                                                        {% endfor %}
-                                                    </ul>
-                                                </li>
-                                            {% else %}
-                                                <li data-id="{{ link.id }}"><a
-                                                            href="{{ include(template_from_string(link.url)) }}">{{ link.title }}</a>
-                                                </li>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            </div>
-                        </nav>
-                    </div>
-                </div>
-            </div>
+  {% for link in links %}
+    <div id="editLink{{ link.id }}" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          {{ form_open() }}
+          {{ form.simpleInput('id', link.id, {type: 'hidden'}) }}
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">{{ lang('LINK_EDITING') }} ({{ link.title }})</h4>
+          </div>
+          <div class="modal-body">
+            {{ form.input('title', lang('LINK_TITLE'), link.title, {placeholder: lang('TITLE_EXAMPLE'), required: true}) }}
+            {% if link.is_dropdown != true %}
+              {{ form.input('url', lang('LINK_ADDRESS'), link.url, {placeholder: lang('LINK_EXAMPLE'), required: true}) }}
+            {% else %}
+              {{ form.simpleInput('dropdown', 'true', {type: 'hidden'}) }}
+            {% endif %}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang('CANCEL') }}</button>
+            {{ form.submit(lang('EDIT'), 'editLink', {btnType: 'success'}) }}
+          </div>
+          {{ form_close() }}
         </div>
-    </section>
-
-    {% for link in links %}
-        <div id="editLink{{ link.id }}" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    {{ form_open() }}
-                    {{ form.simpleInput('id', link.id, {type: 'hidden'}) }}
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">{{ lang('LINK_EDITING') }} ({{ link.title }})</h4>
-                    </div>
-                    <div class="modal-body">
-                        {{ form.input('title', lang('LINK_TITLE'), link.title, {placeholder: lang('TITLE_EXAMPLE'), required: true}) }}
-                        {% if link.is_dropdown != true %}
-                            {{ form.input('url', lang('LINK_ADDRESS'), link.url, {placeholder: lang('LINK_EXAMPLE'), required: true}) }}
-                        {% else %}
-                            {{ form.simpleInput('dropdown', 'true', {type: 'hidden'}) }}
-                        {% endif %}
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang('CANCEL') }}</button>
-                        {{ form.submit(lang('EDIT'), 'editLink', {btnType: 'success'}) }}
-                    </div>
-                    {{ form_close() }}
-                </div>
-            </div>
+      </div>
+    </div>
+    <div id="deleteLink{{ link.id }}" class="modal modal-danger fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          {{ form_open() }}
+          {{ form.simpleInput('id', link.id, {type: 'hidden'}) }}
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">{{ lang('LINK_REMOVAL') }} ({{ link.title }})</h4>
+          </div>
+          <div class="modal-body">
+            {{ lang('REMOVAL_CONFIRMATION') }}
+            {% if link.is_dropdown %}
+              <br>
+              <br>
+              <b>{{ lang('REMOVAL_WARNING') }}</b>
+            {% endif %}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang('CANCEL') }}</button>
+            {{ form.submit(lang('REMOVAL_CONFIRM'), 'deleteLink', {btnType: 'danger'}) }}
+          </div>
+          {{ form_close() }}
         </div>
-        <div id="deleteLink{{ link.id }}" class="modal modal-danger fade" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    {{ form_open() }}
-                    {{ form.simpleInput('id', link.id, {type: 'hidden'}) }}
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">{{ lang('LINK_REMOVAL') }} ({{ link.title }})</h4>
-                    </div>
-                    <div class="modal-body">
-                        {{ lang('REMOVAL_CONFIRMATION') }}
-                        {% if link.is_dropdown %}
-                            <br>
-                            <br>
-                            <b>{{ lang('REMOVAL_WARNING') }}</b>
-                        {% endif %}
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang('CANCEL') }}</button>
-                        {{ form.submit(lang('REMOVAL_CONFIRM'), 'deleteLink', {btnType: 'danger'}) }}
-                    </div>
-                    {{ form_close() }}
-                </div>
-            </div>
+      </div>
+    </div>
+  {% endfor %}
+  {% for sublink in sublinks %}
+    <div id="editLink{{ sublink.id }}" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          {{ form_open() }}
+          {{ form.simpleInput('id', sublink.id, {type: 'hidden'}) }}
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">{{ lang('LINK_EDITING') }} ({{ sublink.title }})</h4>
+          </div>
+          <div class="modal-body">
+            {{ form.input('title', lang('LINK_TITLE'), sublink.title, {placeholder: lang('TITLE_EXAMPLE'), required: true}) }}
+            {% if sublink.is_dropdown != true %}
+              {{ form.input('url', lang('LINK_ADDRESS'), sublink.url, {placeholder: lang('LINK_EXAMPLE'), required: true}) }}
+            {% else %}
+              {{ form.simpleInput('dropdown', 'true', {type: 'hidden'}) }}
+            {% endif %}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang('CANCEL') }}</button>
+            {{ form.submit(lang('EDIT'), 'editLink', {btnType: 'success'}) }}
+          </div>
+          {{ form_close() }}
         </div>
-    {% endfor %}
-    {% for sublink in sublinks %}
-        <div id="editLink{{ sublink.id }}" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    {{ form_open() }}
-                    {{ form.simpleInput('id', sublink.id, {type: 'hidden'}) }}
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">{{ lang('LINK_EDITING') }} ({{ sublink.title }})</h4>
-                    </div>
-                    <div class="modal-body">
-                        {{ form.input('title', lang('LINK_TITLE'), sublink.title, {placeholder: lang('TITLE_EXAMPLE'), required: true}) }}
-                        {% if sublink.is_dropdown != true %}
-                            {{ form.input('url', lang('LINK_ADDRESS'), sublink.url, {placeholder: lang('LINK_EXAMPLE'), required: true}) }}
-                        {% else %}
-                            {{ form.simpleInput('dropdown', 'true', {type: 'hidden'}) }}
-                        {% endif %}
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang('CANCEL') }}</button>
-                        {{ form.submit(lang('EDIT'), 'editLink', {btnType: 'success'}) }}
-                    </div>
-                    {{ form_close() }}
-                </div>
-            </div>
+      </div>
+    </div>
+    <div id="deleteLink{{ sublink.id }}" class="modal modal-danger fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          {{ form_open() }}
+          {{ form.simpleInput('id', sublink.id, {type: 'hidden'}) }}
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">{{ lang('LINK_REMOVAL') }} ({{ sublink.title }})</h4>
+          </div>
+          <div class="modal-body">
+            {{ lang('REMOVAL_CONFIRMATION') }}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang('CANCEL') }}</button>
+            {{ form.submit(lang('REMOVAL_CONFIRM'), 'deleteLink', {btnType: 'danger'}) }}
+          </div>
+          {{ form_close() }}
         </div>
-        <div id="deleteLink{{ sublink.id }}" class="modal modal-danger fade" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    {{ form_open() }}
-                    {{ form.simpleInput('id', sublink.id, {type: 'hidden'}) }}
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">{{ lang('LINK_REMOVAL') }} ({{ sublink.title }})</h4>
-                    </div>
-                    <div class="modal-body">
-                        {{ lang('REMOVAL_CONFIRMATION') }}
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang('CANCEL') }}</button>
-                        {{ form.submit(lang('REMOVAL_CONFIRM'), 'deleteLink', {btnType: 'danger'}) }}
-                    </div>
-                    {{ form_close() }}
-                </div>
-            </div>
-        </div>
-    {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
 {% endblock %}
 
 {% block javascript %}
-    {{ parent() }}
-    <script src="{{ js('admin/Sortable') }}" defer></script>
-    <script async>
-        $(document).ready(function () {
-            $('#is_divider_link').change(function () {
-                $('#createSublink').find('input[name="title"]').attr('disabled', this.checked);
-                $('#createSublink').find('input[name="url"]').attr('disabled', this.checked);
-            });
-            $('#is_dropdown_link').change(function () {
-                $('#createLink').find('input[name="url"]').attr('disabled', this.checked);
-            });
+  {{ parent() }}
+  <script src="{{ js('admin/Sortable') }}" defer></script>
+  <script async>
+    $(document).ready(function () {
+      $('#is_divider_link').change(function () {
+        $('#createSublink').find('input[name="title"]').attr('disabled', this.checked);
+        $('#createSublink').find('input[name="url"]').attr('disabled', this.checked);
+      });
+      $('#is_dropdown_link').change(function () {
+        $('#createLink').find('input[name="url"]').attr('disabled', this.checked);
+      });
 
-            function editLinksOrder(data) {
-                var token_name = '{{ this.security.get_csrf_token_name() }}';
-                var token = '{{ this.security.get_csrf_hash() }}';
-                var dataObject = {};
-                dataObject[token_name] = token;
-                dataObject['position'] = JSON.stringify(data);
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('menu/ajax_edit_links_position') }}",
-                    data: dataObject,
-                    dataType: "json"
-                });
-            }
-
-            new Sortable(nav_links, {
-                onSort: function (e) {
-                    var items = e.to.children;
-                    var result = [];
-                    for (var i = 0; i < items.length; i++) {
-                        result.push($(items[i]).data('id'));
-                    }
-                    editLinksOrder(result);
-                }
-            });
-            {% for link in links %}
-            {% if link.is_dropdown %}
-            new Sortable(nav_{{ link.id }}, {
-                onSort: function (e) {
-                    var items = e.to.children;
-                    var result = [];
-                    for (var i = 0; i < items.length; i++) {
-                        result.push($(items[i]).data('id'));
-                    }
-                    editLinksOrder(result);
-                }
-            });
-            {% endif %}
-            {% endfor %}
-
-            {% if validation_errors() %}
-            humane.log("{{ rtrim(validation_errors('', '<br>\\'), '<br>\\') | raw }}", {
-                timeout: 8000,
-                clickToClose: true,
-                addnCls: 'humane-flatty-error'
-            });
-            {% endif %}
+      function editLinksOrder(data) {
+        var token_name = '{{ this.security.get_csrf_token_name() }}';
+        var token = '{{ this.security.get_csrf_hash() }}';
+        var dataObject = {};
+        dataObject[token_name] = token;
+        dataObject['position'] = JSON.stringify(data);
+        $.ajax({
+          type: "POST",
+          url: "{{ route('menu/ajax_edit_links_position') }}",
+          data: dataObject,
+          dataType: "json"
         });
-    </script>
+      }
+
+      new Sortable(nav_links, {
+        onSort: function (e) {
+          var items = e.to.children;
+          var result = [];
+          for (var i = 0; i < items.length; i++) {
+            result.push($(items[i]).data('id'));
+          }
+          editLinksOrder(result);
+        }
+      });
+      {% for link in links %}
+      {% if link.is_dropdown %}
+      new Sortable(nav_{{ link.id }}, {
+        onSort: function (e) {
+          var items = e.to.children;
+          var result = [];
+          for (var i = 0; i < items.length; i++) {
+            result.push($(items[i]).data('id'));
+          }
+          editLinksOrder(result);
+        }
+      });
+      {% endif %}
+      {% endfor %}
+    });
+  </script>
 {% endblock %}

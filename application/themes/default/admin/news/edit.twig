@@ -3,62 +3,53 @@
 {% import 'macros/form.twig' as form %}
 
 {% block content %}
-    <section class="content-header">
-        <h1>{{ lang('NEWS_EDITION') }}</h1>
-        <ol class="breadcrumb">
-            <li><a href="{{ route('admin/admin_index') }}"><i class="fa fa-dashboard"></i> {{ lang('HOME') }}</a></li>
-            <li>{{ lang('NEWS') }}</li>
-            <li><a href="{{ route('news/admin_manage') }}">{{ lang('NEWS_MANAGEMENT') }}</a></li>
-            <li class="active">{{ lang('NEWS_EDITION') }}</li>
-        </ol>
-    </section>
-    <section class="content">
-        <div class="box">
-            <div class="box-header with-border">
-                <h3 class="box-title">{{ lang('EDIT_NEWS') }}</h3>
-            </div>
-            <div class="box-body">
-                {{ form_open() }}
-                <div class="col-md-12">
-                    {{ form.input('title', lang('NEWS_TITLE'), news.title, {placeholder: lang('TITLE_EXAMPLE'), required: true}) }}
-                </div>
-                <div class="col-md-12">
-                    {{ form.input('slug', lang('SLUG'), news.slug, {placeholder: lang('SLUG_EXAMPLE'), addon_before: route('news/view/ '), required: true}) }}
-                </div>
-                <div class="col-md-12">
-                    {{ form.textarea('content', lang('CONTENT'), news.content) }}
-                </div>
-                <div class="col-md-12">
-                    {{ lang('ACTIVE') }} ?
-                    <div class="form-group">
-                        <label class="switch">
-                            <input type="checkbox" name="active" value="true" {% if news.active %}checked{% endif %}>
-                            <span class="slider round"></span>
-                        </label>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    {{ form.submit(lang('EDIT'), null, {btnType: 'success'}) }}
-                </div>
-                {{ form_close() }}
-            </div>
+  <section class="content-header">
+    <h1>{{ lang('NEWS_EDITION') }}</h1>
+    <ol class="breadcrumb">
+      <li><a href="{{ route('admin/admin_index') }}"><i class="fa fa-dashboard"></i> {{ lang('HOME') }}</a></li>
+      <li>{{ lang('NEWS') }}</li>
+      <li><a href="{{ route('news/admin_manage') }}">{{ lang('NEWS_MANAGEMENT') }}</a></li>
+      <li class="active">{{ lang('NEWS_EDITION') }}</li>
+    </ol>
+  </section>
+  <section class="content">
+    <div class="box">
+      <div class="box-header with-border">
+        <h3 class="box-title">{{ lang('EDIT_NEWS') }}</h3>
+      </div>
+      <div class="box-body">
+        {{ form_open() }}
+        <div class="col-md-12">
+          {{ form.input('title', lang('NEWS_TITLE'), news.title, {placeholder: lang('TITLE_EXAMPLE'), required: true}) }}
         </div>
-    </section>
+        <div class="col-md-12">
+          {{ form.input('slug', lang('SLUG'), news.slug, {placeholder: lang('SLUG_EXAMPLE'), addon_before: route('news/view/ '), required: true}) }}
+        </div>
+        <div class="col-md-12">
+          {{ form.textarea('content', lang('CONTENT'), news.content) }}
+        </div>
+        <div class="col-md-12">
+          {{ lang('ACTIVE') }} ?
+          <div class="form-group">
+            <label class="switch">
+              <input type="checkbox" name="active" value="true" {% if news.active %}checked{% endif %}>
+              <span class="slider round"></span>
+            </label>
+          </div>
+        </div>
+        <div class="col-md-12">
+          {{ form.submit(lang('EDIT'), null, {btnType: 'success'}) }}
+        </div>
+        {{ form_close() }}
+      </div>
+    </div>
+  </section>
 {% endblock %}
 
 {% block javascript %}
-    {{ parent() }}
-    <script src="{{ js('admin/tinymce/tinymce.min') }}" defer></script>
-    <script async>
-        $(document).ready(function () {
-            {{ form.tinymceInit() }}
-            {% if validation_errors() %}
-            humane.log("{{ rtrim(validation_errors('', '<br>\\'), '<br>\\') | raw }}", {
-                timeout: 8000,
-                clickToClose: true,
-                addnCls: 'humane-flatty-error'
-            });
-            {% endif %}
-        });
-    </script>
+  {{ parent() }}
+  <script src="{{ js('admin/tinymce/tinymce.min') }}" defer></script>
+  <script async>
+    {{ form.tinymceInit() }}
+  </script>
 {% endblock %}

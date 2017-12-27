@@ -45,19 +45,3 @@
         </div>
     </section>
 {% endblock %}
-
-{% block javascript %}
-    {{ parent() }}
-    <script async>
-        $(document).ready(function () {
-            {{ form.tinymceInit() }}
-            {% if validation_errors() %}
-            humane.log("{{ rtrim(validation_errors('', '<br>\\'), '<br>\\') | raw }}", {
-                timeout: 8000,
-                clickToClose: true,
-                addnCls: 'humane-flatty-error'
-            });
-            {% endif %}
-        });
-    </script>
-{% endblock %}
