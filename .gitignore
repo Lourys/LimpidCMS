@@ -11,6 +11,10 @@ application/config/config.php
 application/config/database.php
 
 public/uploads/*
+public/availablePlugins.json
+public/availableThemes.json
+public/default2.zip
+public/Example.zip
 .idea/*
 
 composer.lock
