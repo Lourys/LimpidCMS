@@ -26,9 +26,6 @@ class CMS_Config extends CI_Config
     $lines = preg_split('(\r\n|\n|\r)', $config);
     for ($i = 2; $i < count($lines); $i++) {
       if (strpos($lines[$i], $item)) {
-        echo $item;
-        echo $file;
-        echo $lines[$i];
         if ($value === null) {
           $lines[$i] = '$config[\'' . addslashes($item) . '\'] = null;';
           break;
@@ -61,7 +58,6 @@ class CMS_Config extends CI_Config
 
     if ($edition) {
       $config = implode(PHP_EOL, $lines);
-      var_dump(file_put_contents(APPPATH . 'config/' . $file . '.php', $config));
       if (file_put_contents(APPPATH . 'config/' . $file . '.php', $config))
         return true;
     }

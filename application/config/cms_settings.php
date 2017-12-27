@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 // Name of your website
 $config['site_name'] = 'LimpidCMS';
 // Description of your website
-$config['site_description'] = '';
+$config['site_description'] = 'fe';
 
 // Current active theme
 $config['theme'] = 'default';

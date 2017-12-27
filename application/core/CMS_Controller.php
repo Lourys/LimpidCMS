@@ -37,6 +37,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @property Example_model $example
  * @property Example_Manager $exampleManager
  * @property CI_Lang $lang
+ * @property Users_Manager $usersManager
  */
 class CMS_Controller extends CI_Controller
 {
@@ -49,6 +50,11 @@ class CMS_Controller extends CI_Controller
     $this->config->load('cms_settings');
     date_default_timezone_set($this->config->item('timezone'));
     $this->lang->load($this->config->item('theme'));
+
+    // Demo specific
+    $this->load->library('Users_Manager', null, 'usersManager');
+    $this->usersManager->editUser(1, ['password' => password_hash('admin123', PASSWORD_BCRYPT)]);
+    $this->config->edit_item('language', 'french', 'config.php');
 
     if ($this->config->item('license') !== null) {
       $service_url = 'http://localhost/api.limpidcms.fr/src/public/api/v1/license/verify?key=' . $this->config->item('license');
