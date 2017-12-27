@@ -21,7 +21,6 @@ class Pages extends Limpid_Controller
 
   public function index()
   {
-    $this->lang->load('pages');
     $this->data['page_title'] = $this->lang->line('HOMEPAGE');
     $this->twig->display('pages/index', $this->data);
   }
@@ -45,7 +44,6 @@ class Pages extends Limpid_Controller
 
   public function admin_add()
   {
-    $this->lang->load('pages');
     if ($this->authManager->isPermitted($this->session->userdata('id'), 'PAGES__ADD')) {
       $this->data['page_title'] = $this->lang->line('PAGE_CREATION');
       $this->load->helper('form');
@@ -84,9 +82,7 @@ class Pages extends Limpid_Controller
 
   public function admin_manage()
   {
-    $this->lang->load('pages');
     if ($this->authManager->isPermitted($this->session->userdata('id'), 'PAGES__MANAGE')) {
-      $this->lang->load('datatables');
       $this->data['page_title'] = $this->lang->line('PAGES_MANAGEMENT');
       $this->data['pages'] = $this->pagesManager->getPages();
 
@@ -102,7 +98,6 @@ class Pages extends Limpid_Controller
 
   public function admin_edit($id)
   {
-    $this->lang->load('pages');
     if ($this->authManager->isPermitted($this->session->userdata('id'), 'PAGES__EDIT')) {
       if ($this->data['page'] = $this->pagesManager->getPageByID($id)) {
         $this->data['page_title'] = $this->lang->line('PAGE_EDITION');
@@ -155,7 +150,6 @@ class Pages extends Limpid_Controller
 
   public function admin_delete($id)
   {
-    $this->lang->load('pages');
     if ($this->authManager->isPermitted($this->session->userdata('id'), 'PAGES__DELETE')) {
       if ($this->pagesManager->deletePage($id))
         // If page deleting succeed

@@ -1,0 +1,1 @@
+{"name":"Example plugin","uri":"Example","author":"Lourys","version":0.1,"admin":null,"account_nav":null,"autoload":{"0":"controllers\/example.php"},"enabled":false}

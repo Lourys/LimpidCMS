@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 class Test extends CMS_Plugin {
     

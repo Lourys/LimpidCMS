@@ -36,6 +36,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @property Themes_Manager $themesManager
  * @property Example_model $example
  * @property Example_Manager $exampleManager
+ * @property CI_Lang $lang
  */
 class CMS_Controller extends CI_Controller
 {
@@ -46,7 +47,27 @@ class CMS_Controller extends CI_Controller
     parent::__construct();
     self::$instance || self::$instance =& $this;
     $this->config->load('cms_settings');
-    date_default_timezone_set('Europe/Paris');
+    date_default_timezone_set($this->config->item('timezone'));
+    $this->lang->load($this->config->item('theme'));
+
+    if ($this->config->item('license') !== null) {
+      $service_url = 'http://localhost/api.limpidcms.fr/src/public/api/v1/license/verify?key=' . $this->config->item('license');
+      $curl = curl_init($service_url);
+      curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+      $curl_response = curl_exec($curl);
+      if ($curl_response === false) {
+        curl_close($curl);
+        show_error('HTTP request failed.');
+      } elseif (json_decode($curl_response, true)['type'] === 'error') {
+        show_error('An error occurred while license check! (' . json_decode($curl_response, true)['msg'] . ')', json_decode($curl_response, true)['code'], 'License error');
+        die();
+      }
+      curl_close($curl);
+    } else {
+      show_error('Missing license!', 500, 'License error');
+      die();
+    }
+
 
     $this->emitter = new Evenement\EventEmitter();
     $this->pluginsManager = new Plugins_Manager();

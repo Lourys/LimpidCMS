@@ -12,7 +12,6 @@ class Themes extends Limpid_Controller
   public function __construct()
   {
     parent::__construct();
-    $this->lang->load('themes');
     if (!$this->authManager->isPermitted($this->session->userdata('id'), 'THEMES__MANAGEMENT')) {
       // If user doesn't have required permission
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
@@ -24,7 +23,6 @@ class Themes extends Limpid_Controller
 
   public function admin_available()
   {
-    $this->lang->load('datatables');
     $this->data['page_title'] = $this->lang->line('THEMES_INSTALLATION');
 
     $this->data['themes'] = $this->themesManager->getAvailableThemes();
@@ -35,7 +33,6 @@ class Themes extends Limpid_Controller
 
   public function admin_manage()
   {
-    $this->lang->load('datatables');
     $this->data['page_title'] = $this->lang->line('THEMES_MANAGEMENT');
     $this->data['themes'] = $this->themesManager->getThemes();
 
@@ -85,6 +82,7 @@ class Themes extends Limpid_Controller
   public function admin_config()
   {
     if ($theme = $this->themesManager->getEnabledTheme()) {
+      $this->load->helper('form');
       $this->data['config'] = json_decode(file_get_contents(APPPATH . 'themes/' . $theme->uri . '/config.json'), true);
       if ($this->input->method() == 'post') {
         if (file_put_contents(APPPATH . 'themes/' . $theme->uri . '/config.json', json_encode($this->input->post()))) {

@@ -16,7 +16,6 @@ class Permissions extends Limpid_Controller
   public function __construct()
   {
     parent::__construct();
-    $this->lang->load('permissions');
     $this->load->library('Permissions_Manager', null, 'permissionsManager');
     $this->load->library('Groups_Manager', null, 'groupsManager');
   }

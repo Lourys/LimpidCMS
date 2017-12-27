@@ -29,7 +29,7 @@ class Twig
      * @var array Functions to add to Twig
      */
     private $functions_asis = [
-        'base_url', 'site_url', 'route', 'current_url', 'rtrim', 'addslashes', 'redirect', 'in_array', 'urlencode'
+        'base_url', 'site_url', 'route', 'current_url', 'rtrim', 'addslashes', 'redirect', 'in_array', 'urlencode', 'class_exists'
     ];
 
     /**

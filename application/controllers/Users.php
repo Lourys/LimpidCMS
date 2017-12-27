@@ -16,7 +16,6 @@ class Users extends Limpid_Controller
   public function __construct()
   {
     parent::__construct();
-    $this->lang->load('users');
     $this->load->library('Users_Manager', null, 'usersManager');
   }
 
@@ -112,10 +111,10 @@ class Users extends Limpid_Controller
         }
 
         redirect(route('users/account'));
+      } else {
+        // Render the view
+        $this->twig->display('users/account', $this->data);
       }
-
-      // Render the view
-      $this->twig->display('users/account', $this->data);
     } else {
       // If user isn't logged
       $this->session->set_flashdata('error', $this->lang->line('LOGIN_NEEDED'));
@@ -124,8 +123,7 @@ class Users extends Limpid_Controller
   }
 
 
-  public
-  function admin_add()
+  public function admin_add()
   {
     if ($this->authManager->isPermitted($this->session->userdata('id'), 'USERS__ADD')) {
       $this->data['page_title'] = $this->lang->line('USER_CREATION');
@@ -159,10 +157,10 @@ class Users extends Limpid_Controller
           $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
           redirect(current_url());
         }
-      } else {
-        // Render the view
-        $this->twig->display('admin/users/add', $this->data);
       }
+
+      // Render the view
+      $this->twig->display('admin/users/add', $this->data);
     } else {
       // If user doesn't have required permission
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
@@ -176,7 +174,6 @@ class Users extends Limpid_Controller
   function admin_manage()
   {
     if ($this->authManager->isPermitted($this->session->userdata('id'), 'USERS__MANAGE')) {
-      $this->lang->load('datatables');
       $this->data['page_title'] = $this->lang->line('USERS_MANAGEMENT');
       $this->data['users'] = $this->usersManager->getUsers();
 

@@ -186,7 +186,8 @@ class Themes_Manager
         $this->limpid->load->helper('file');
         delete_files(APPPATH . 'tmp', true);
 
-        rename(APPPATH . 'themes/' . $uri . '/assets', './assets/' . $uri);
+        rename(APPPATH . 'themes/' . $uri . '/_assets', './assets/' . $uri);
+        rename(APPPATH . 'themes/' . $uri . '/_langs', APPPATH . 'language/');
 
         $this->updateThemeList();
 

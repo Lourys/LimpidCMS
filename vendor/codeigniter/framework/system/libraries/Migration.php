@@ -140,8 +140,8 @@ class CI_Migration {
 		// Add trailing slash if not set
 		$this->_migration_path = rtrim($this->_migration_path, '/').'/';
 
-		// Load migration language
-		$this->lang->load('migration');
+    // Load migration language
+    $this->lang->load('migration');
 
 		// They'll probably be using dbforge
 		$this->load->dbforge();

@@ -1,47 +1,79 @@
 {% extends 'layouts/default.twig' %}
 
-{% block content %}
-    <section id="home">
-        <div class="container">
-            <h1>LimpidCMS</h1>
-            <h2>Le système de gestion de contenu adapté aux serveurs de jeu</h2>
-            <img src="{{ img('home.png') }}" class="img-fluid" alt="Captures d'écran de LimpidCMS">
-            <a href="#" class="btn btn-primary btn-lg">Télécharger (Bientôt)</a>
+{% block full_width_content %}
+    <section class="col-12">
+        <div id="carousel" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner" role="listbox">
+                <div class="carousel-item active">
+                    <div class="d-block img-carousel" style="background-image: url({{ img('header.jpg') }});"></div>
+                    <div class="carousel-caption d-none d-md-block">
+                        <h3>....</h3>
+                        <p>...</p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="d-block img-carousel" style="background-image: url({{ img('header.jpg') }});"></div>
+                    <div class="carousel-caption d-none d-md-block">
+                        <h3>......</h3>
+                        <p>.....</p>
+                    </div>
+                </div>
+            </div>
+            <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Précédent</span>
+            </a>
+            <a class="carousel-control-next" href="#carousel" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Suivant</span>
+            </a>
         </div>
     </section>
-    <section id="features">
-        <div class="container">
-            <div class="row">
-                <div class="col-md">
-                    <i class="fa fa-cogs fa-4x"></i>
-                    <h5>Modulable et personnalisable</h5>
-                    <p>LimpidCMS est un CMS fonctionnant avec des plugins et des thèmes, c'est ce qui lui permet de
-                        s'adapter à tout type de serveur, et ce peu importe le jeu !</p>
+
+    <section class="col-12 home-circles">
+        <div class="row">
+            <h2 class="text-center category-title col-12">Nos engagements</h2>
+
+            <div class="col-md item">
+                <div class="rounded-circle">
+                    <i class="fa fa-cogs fa-2x" aria-hidden="true"></i>
                 </div>
-                <div class="col-md">
-                    <i class="fa fa-free-code-camp fa-4x"></i>
-                    <h5>Construit sur un framework performant</h5>
-                    <p>LimpidCMS est basé sur un framework nommé CodeIgniter qui privilégie vitesse et légèreté, ce qui
-                        permet un site rapide et fiable !</p>
+                <div class="desc">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam aspernatur beatae deserunt dolores et
+                    ex excepturi expedita fugiat, fugit libero natus nemo numquam porro praesentium quam ratione voluptate
+                    voluptatem voluptatum.
                 </div>
-                <div class="col-md">
-                    <i class="fa fa-magic fa-4x"></i>
-                    <h5>Simple et fonctionnel</h5>
-                    <p>LimpidCMS a pour but d'aider les gérants de serveurs de jeu en proposant un site simple et efficace
-                        grâce à un panel très complet et simple d'utilisation !</p>
+            </div>
+            <div class="col-md item">
+                <div class="rounded-circle">
+                    <i class="fa fa-heartbeat fa-2x" aria-hidden="true"></i>
+                </div>
+                <div class="desc">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam aspernatur beatae deserunt dolores et
+                    ex excepturi expedita fugiat, fugit libero natus nemo numquam porro praesentium quam ratione voluptate
+                    voluptatem voluptatum.
+                </div>
+            </div>
+            <div class="col-md item">
+                <div class="rounded-circle">
+                    <i class="fa fa-pencil fa-2x" aria-hidden="true"></i>
+                </div>
+                <div class="desc">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam aspernatur beatae deserunt dolores et
+                    ex excepturi expedita fugiat, fugit libero natus nemo numquam porro praesentium quam ratione voluptate
+                    voluptatem voluptatum.
                 </div>
             </div>
         </div>
     </section>
-    <section id="discord">
-        <div class="container">
-            <h3>N'hésitez pas à nous rejoindre sur <a href="https://discord.gg/GvUDCs2" target="_blank">Discord</a> pour
-                discuter et suivre l'avancement du projet !</h3>
-            <p>Avancement :</p>
-            <div class="progress">
-                <div class="progress-bar" role="progressbar" style="width: 80%;" aria-valuenow="80" aria-valuemin="0"
-                     aria-valuemax="100">80%
-                </div>
+
+    <section class="col-12 join-us">
+        <div class="row">
+            <div class="col-sm">
+                <h2>Vous souhaitez nous rejoindre ?</h2>
+            </div>
+            <div class="col-sm">
+                <a href="#" class="btn btn-lg btn-custom">Télécharger le launcher</a>
             </div>
         </div>
     </section>

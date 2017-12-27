@@ -16,11 +16,9 @@ class Logs extends Limpid_Controller
 
   public function admin_index()
   {
-    $this->lang->load('logs');
     $this->load->helper('form');
 
     if ($this->authManager->isPermitted($this->session->userdata('id'), 'LOGS_VIEW')) {
-      $this->lang->load('datatables');
       $this->data['page_title'] = $this->lang->line('LOGS');
 
 
@@ -57,7 +55,6 @@ class Logs extends Limpid_Controller
 
   public function admin_set_threshold()
   {
-    $this->lang->load('logs');
     $this->load->library('form_validation');
 
     $this->form_validation->set_rules('threshold', $this->lang->line('LOG_THRESHOLD'), 'required|greater_than_equal_to[0]|less_than_equal_to[4]');
@@ -95,7 +92,6 @@ class Logs extends Limpid_Controller
 
   public function admin_delete($file)
   {
-    $this->lang->load('logs');
     $file = APPPATH . 'logs/' . $file;
 
     if (file_exists($file)) {

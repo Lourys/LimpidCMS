@@ -22,11 +22,20 @@
       <div class="tab-content">
         <div class="tab-pane active" id="general">
           <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-5">
               {{ form.input('site_name', lang('WEBSITE_NAME'), this.input.post('site_name') ? this.input.post('site_name') : settings.site_name, {placeholder: lang('WEBSITE_NAME_EXAMPLE'), required: true}) }}
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
+              {{ form.select('timezone', lang('TIMEZONE'), timezones, {0: this.config.item('timezone')}, {required: true}) }}
+            </div>
+            <div class="col-md-3 col-md-offset-1">
               {{ form.select('language', lang('WEBSITE_LANG'), languages, {0: this.config.item('language')}, {required: true}) }}
+            </div>
+            <div class="col-md-12">
+              {{ form.input('site_description', lang('WEBSITE_DESCRIPTION'), this.input.post('site_description') ? this.input.post('site_description') : settings.site_description, {placeholder: lang('WEBSITE_DESCRIPTION_EXAMPLE'), required: true}) }}
+            </div>
+            <div class="col-md-12">
+              <hr>
             </div>
           </div>
         </div>

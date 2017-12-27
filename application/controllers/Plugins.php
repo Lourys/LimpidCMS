@@ -12,7 +12,6 @@ class Plugins extends Limpid_Controller
   public function __construct()
   {
     parent::__construct();
-    $this->lang->load('plugins');
     if (!$this->authManager->isPermitted($this->session->userdata('id'), 'PLUGINS__MANAGEMENT')) {
       // If user doesn't have required permission
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
@@ -23,7 +22,6 @@ class Plugins extends Limpid_Controller
 
   public function admin_available()
   {
-    $this->lang->load('datatables');
     $this->data['page_title'] = $this->lang->line('PLUGINS_INSTALLATION');
 
     $this->data['plugins'] = $this->pluginsManager->getAvailablePlugins();
@@ -34,7 +32,6 @@ class Plugins extends Limpid_Controller
 
   public function admin_manage()
   {
-    $this->lang->load('datatables');
     $this->data['page_title'] = $this->lang->line('PLUGINS_MANAGEMENT');
     $this->data['plugins'] = $this->pluginsManager->getPlugins();
 

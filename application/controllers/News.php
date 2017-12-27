@@ -42,7 +42,6 @@ class News extends Limpid_Controller
     require(APPPATH . 'third_party/Twig_Extensions/Text_Extension.php');
     $this->twig->getTwig()->addExtension(new Text_Extension());
 
-    $this->lang->load('news');
     if ($this->data['news'] = $this->newsManager->getNewsLimited(12 * (intval($page) - 1), 12)) {
       $this->data['page_title'] = $this->lang->line('NEWS');
 
@@ -78,7 +77,6 @@ class News extends Limpid_Controller
 
   public function admin_add()
   {
-    $this->lang->load('news');
     if ($this->authManager->isPermitted($this->session->userdata('id'), 'NEWS__ADD')) {
       $this->data['page_title'] = $this->lang->line('NEWS_CREATION');
       $this->load->helper('form');
@@ -116,9 +114,7 @@ class News extends Limpid_Controller
 
   public function admin_manage()
   {
-    $this->lang->load('news');
     if ($this->authManager->isPermitted($this->session->userdata('id'), 'NEWS__MANAGE')) {
-      $this->lang->load('datatables');
       $this->data['page_title'] = $this->lang->line('NEWS_MANAGEMENT');
       $this->data['news'] = $this->newsManager->getAllNews();
 
@@ -133,7 +129,6 @@ class News extends Limpid_Controller
 
   public function admin_edit($id)
   {
-    $this->lang->load('news');
     if ($this->authManager->isPermitted($this->session->userdata('id'), 'NEWS__EDIT')) {
       if ($this->data['news'] = $this->newsManager->getNewsByID($id)) {
         $this->data['page_title'] = $this->lang->line('NEWS_EDITION');
@@ -183,7 +178,6 @@ class News extends Limpid_Controller
 
   public function admin_delete($id)
   {
-    $this->lang->load('pages');
     if ($this->authManager->isPermitted($this->session->userdata('id'), 'NEWS__DELETE')) {
       if ($this->newsManager->deleteNews($id))
         // If news deleting succeed

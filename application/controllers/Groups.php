@@ -17,7 +17,6 @@ class Groups extends Limpid_Controller
   public function __construct()
   {
     parent::__construct();
-    $this->lang->load('groups');
     $this->load->library('Groups_Manager', null, 'groupsManager');
   }
 
@@ -72,7 +71,6 @@ class Groups extends Limpid_Controller
   public function admin_manage()
   {
     if ($this->authManager->isPermitted($this->session->userdata('id'), 'GROUPS__MANAGE')) {
-      $this->lang->load('datatables');
       $this->data['page_title'] = $this->lang->line('GROUPS_MANAGEMENT');
       $this->data['groups'] = $this->groupsManager->getGroups();
 

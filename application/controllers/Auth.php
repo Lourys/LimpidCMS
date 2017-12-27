@@ -15,7 +15,6 @@ class Auth extends Limpid_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->lang->load('auth');
     }
 
     public function login()

@@ -1,0 +1,55 @@
+<nav class="navbar navbar-midnight navbar-expand-lg">
+    <div class="container">
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+                data-target="#containerNavbar" aria-controls="containerNavbar" aria-expanded="false"
+                aria-label="Naviguer">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="containerNavbar">
+            <ul class="navbar-nav mr-auto">
+                {% for link in links %}
+                    {% if link.is_dropdown %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="dropdown{{ loop.index }}" data-toggle="dropdown" aria-expanded="false">
+                                {{ link.title }}
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="dropdown">
+                                {% for sublink in sublinks %}
+                                    {% if sublink.parent_id == link.id and sublink.is_divider %}
+                                        <div class="dropdown-divider"></div>
+                                    {% elseif sublink.parent_id == link.id %}
+                                        <a class="dropdown-item {% if include(template_from_string(sublink.url)) == current_url() %}active{% endif %}"
+                                           href="{{ include(template_from_string(sublink.url)) }}">
+                                          {{ sublink.title }}
+                                        </a>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </li>
+                    {% else %}
+                        <li class="nav-item {% if include(template_from_string(link.url)) == current_url() %}active{% endif %}">
+                            <a class="nav-link" href="{{ include(template_from_string(link.url)) }}">{{ link.title }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+            <ul class="navbar-nav justify-content-end">
+                {% if this.authManager.isLogged() %}
+                    <li class="nav-item {% if this.router.class == 'users' %}active{% endif %}">
+                        <a class="nav-link" href="{{ route('users/account') }}"><i class="fa fa-user"></i>&nbsp;&nbsp;Espace membre</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item dropdown {% if this.router.class == 'auth' or this.router.class == 'users' %}active{% endif %}">
+                        <a class="nav-link dropdown-toggle" href="#" id="dropdownAuth" data-toggle="dropdown" aria-expanded="false">
+                            <i class="fa fa-unlock-alt"></i>&nbsp;&nbsp;Authentification
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdown">
+                            <a class="dropdown-item" href="{{ route('auth/login') }}"><i class="fa fa-lock"></i>&nbsp;&nbsp;Connexion</a>
+                            <a class="dropdown-item" href="{{ route('users/register') }}"><i class="fa fa-plus"></i>&nbsp;&nbsp;Inscription</a>
+                        </div>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

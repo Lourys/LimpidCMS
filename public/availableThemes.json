@@ -1,0 +1,16 @@
+{
+  "default": {
+    "name": "Default Theme",
+    "uri": "default",
+    "author": "Lourys",
+    "version": 0.1,
+    "enabled": false
+  },
+  "default2": {
+    "name": "Default Theme 2",
+    "uri": "default2",
+    "author": "Lourys",
+    "version": 0.1,
+    "enabled": false
+  }
+}

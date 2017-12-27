@@ -21,7 +21,9 @@
       <option value="" style="font-weight: bold">/!\ {% if this.config.item('language') == 'french' %}Veuillez choisir une option{% elseif this.config.item('language') == 'english' %}Please select an item{% endif %} /!\</option>
       {% for item in list %}
         <option value="{{ item.value }}"
-                {% if selected %}{% if in_array(item.value, selected) %}selected{% endif %}{% endif %}>{{ item.name }}</option>
+                {% if selected %}{% if in_array(item.value, selected) %}selected{% endif %}{% endif %}
+                {% if item.disabled %}disabled{% endif %}
+                {% if item.style != '' %}style="{{ item.style }}"{% endif %}>{{ item.name }}</option>
       {% endfor %}
     </select>
   </div>
