@@ -1,0 +1,20 @@
+{% extends 'layouts/default.twig' %}
+
+{% block content %}
+    <article class="card card-custom">
+        <div class="card-header">
+            <div class="row">
+                <div class="col"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ news.title | raw }}</div>
+            </div>
+        </div>
+        <div class="card-block">
+            {{ news.content | raw }}
+            <br>
+            {% if news.edited_at %}
+                <p class="text-right">Dernière édition le {{ news.edited_at | date('d/m/Y \à H\\hi') }}</p>
+            {% else %}
+                <p class="text-right">Le {{ news.created_at | date('d/m/Y \à H\\hi') }}</p>
+            {% endif %}
+        </div>
+    </article>
+{% endblock %}

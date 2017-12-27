@@ -1,0 +1,30 @@
+{% extends 'layouts/default.twig' %}
+
+{% import 'macros/form.twig' as form %}
+
+{% block content %}
+  <section id="auth">
+    <div class="container">
+      <div class="row">
+        <div class="col-md login">
+          <h2 class="title">Connexion</h2>
+          {{ form_open(route('auth/login')) }}
+          {{ form.input('account', lang('USERNAME_OR_EMAIL'), this.input.post('account'), {placeholder: lang('EMAIL_EXAMPLE'), required: true}) }}
+          {{ form.input('password', lang('PASSWORD'), null, {type: 'password', placeholder: lang('PASSWORD_EXAMPLE'), required: true}) }}
+          {{ form.submit('Connexion', null, {btnType: 'primary'}) }}
+          {{ form_close() }}
+        </div>
+        <div class="col-md register">
+          <h2 class="title">Inscription</h2>
+          {{ form_open(route('users/register')) }}
+          {{ form.input('username', lang('USERNAME'), this.input.post('username'), {placeholder: lang('USERNAME_EXAMPLE'), required: true}) }}
+          {{ form.input('email', lang('EMAIL'), this.input.post('email'), {type: 'email', placeholder: lang('EMAIL_EXAMPLE'), required: true}) }}
+          {{ form.input('password', lang('PASSWORD'), null, {type: 'password', placeholder: lang('PASSWORD_EXAMPLE'), required: true}) }}
+          {{ form.input('password_confirm', lang('PASSWORD_CONFIRMATION'), null, {type: 'password', placeholder: lang('PASSWORD_EXAMPLE'), required: true}) }}
+          {{ form.submit('Inscription', null, {btnType: 'primary', id: 'captchaProtected'}) }}
+          {{ form_close() }}
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

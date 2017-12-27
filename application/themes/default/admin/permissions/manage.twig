@@ -1,0 +1,106 @@
+{% extends 'layouts/admin.twig' %}
+
+{% import 'macros/form.twig' as form %}
+
+{% block content %}
+    <section class="content-header">
+        <h1>{{ lang('PERMISSIONS_MANAGEMENT') }}</h1>
+        <ol class="breadcrumb">
+            <li><a href="{{ route('admin/admin_index') }}"><i class="fa fa-dashboard"></i> {{ lang('HOME') }}</a>
+            </li>
+            <li>{{ lang('PERMISSIONS') }}</li>
+            <li class="active">{{ lang('PERMISSIONS_MANAGEMENT') }}</li>
+        </ol>
+    </section>
+    <section class="content">
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">{{ lang('MANAGE_PERMISSIONS') }} (<b>{{ group.name }}</b>)</h3>
+            </div>
+            <div class="box-body">
+                <b class="pull-right">
+                    {{ lang('CHECK_ALL') }}
+                    <label class="switch">
+                        <input id="checkAll" type="checkbox" onclick="toggle(this)">
+                        <span class="slider round"></span>
+                    </label>
+                </b>
+                {{ form_open() }}
+                    <table id="table" class="table">
+                        <thead>
+                            <tr>
+                                <th>{{ lang('PERMISSION') }}</th>
+                                <th>{{ lang('ALLOW?') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for permission in permissions %}
+                            <tr>
+                                <td>{{ permission.description }}</td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="permissions[]" value="{{ permission.name }}" onclick="check()" {% if (in_array(permission.name, group.permissions)) %}checked{% endif %}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {{ form.submit(lang('UPDATE'), null, {btnType: 'success'}) }}
+                {{ form_close() }}
+            </div>
+        </div>
+    </section>
+
+    {% for user in users %}
+        <div id="deleteUser{{ user.id }}" class="modal modal-danger fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">{{ lang('USER_REMOVAL') }} ({{ user.username }})</h4>
+                    </div>
+                    <div class="modal-body">
+                        {{ lang('REMOVAL_CONFIRMATION') }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang('CANCEL') }}</button>
+                        <a href="{{ route('users/admin_delete/' ~ user.id) }}" class="btn btn-danger">{{ lang('REMOVAL_CONFIRM') }}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script async>
+        var checkboxes = document.getElementsByName('permissions[]');
+        function toggle(source) {
+            for (var i = 0, n = checkboxes.length; i < n; i++) {
+                checkboxes[i].checked = source.checked;
+            }
+        }
+
+        function check() {
+            var z = 0;
+            for (var i = 0, n = checkboxes.length; i < n; i++) {
+                if (checkboxes[i].checked) z++;
+            }
+            if (i != z) document.getElementById('checkAll').checked = false;
+            else document.getElementById('checkAll').checked = true;
+        }
+        $(document).ready(function () {
+            check();
+            {% if validation_errors() %}
+            humane.log("{{ rtrim(validation_errors('', '<br>\\'), '<br>\\') | raw }}", {
+                timeout: 8000,
+                clickToClose: true,
+                addnCls: 'humane-flatty-error'
+            });
+            {% endif %}
+        });
+    </script>
+{% endblock %}

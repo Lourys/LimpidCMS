@@ -1,0 +1,59 @@
+{% extends 'layouts/admin.twig' %}
+
+{% block content %}
+    <section class="content-header">
+        <h1>Tableau de bord</h1>
+        <ol class="breadcrumb">
+            <li><a href="{{ route('admin/admin_index') }}"><i class="fa fa-dashboard"></i> Accueil</a></li>
+            <li class="active">Tableau de bord</li>
+        </ol>
+    </section>
+
+    <section class="content">
+        <div class="row">
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="info-box bg-aqua">
+                    <span class="info-box-icon"><i class="fa fa-eye"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Visites</span>
+                        <span class="info-box-number">5,200</span>
+                        <div class="progress" style="opacity: 0.10"></div>
+                        <span class="progress-description"><b>+</b> 1 856 aujourd'hui</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="info-box bg-red">
+                    <span class="info-box-icon"><i class="fa fa-user"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Utilisateurs</span>
+                        <span class="info-box-number">1,300</span>
+                        <div class="progress" style="opacity: 0.10"></div>
+                        <span class="progress-description"><b>+</b> 152 aujourd'hui</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="info-box bg-green">
+                    <span class="info-box-icon"><i class="fa fa-newspaper-o"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Actualités</span>
+                        <span class="info-box-number">254</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="info-box bg-yellow">
+                    <span class="info-box-icon"></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text"></span>
+                        <span class="info-box-number"></span>
+                        <div class="progress" style="opacity: 0.10"></div>
+                        <span class="progress-description"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

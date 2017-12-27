@@ -1,0 +1,49 @@
+{% extends 'layouts/default.twig' %}
+
+{% block full_width_content %}
+    <h2 class="text-center category-title col-md-12 col-xl-9">Actualités</h2>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        {% for news in news %}
+            <div class="col-md">
+                <div class="card card-custom card-news">
+                    <a href="{{ route('news/view/' ~ news.slug) }}" class="img" style="background-image: url({{ img('header.jpg') }})"></a>
+                    <div class="card-block">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="row no-gutters">
+                                    <img src="https://crafatar.com/avatars/MedusePinceau32?size=50" class="user-picture rounded col-3" alt="Img">
+                                    <div class="title-publication col-9">
+                                        <h5 class="card-title">
+                                            <a href="{{ route('news/view/' ~ news.slug) }}">{{ news.title }}</a>
+                                        </h5>
+                                        <span><a href="#">Lourys</a> -
+                                            {% if news.edited_at %}
+                                                Le {{ news.edited_at | date('d/m/Y') }}
+                                            {% else %}
+                                                Le {{ news.created_at | date('d/m/Y') }}
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <p class="card-text">
+                                    {{ news.content | striptags | truncate(110, true, '...') | raw }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if loop.index == 1 %}
+                <div class="w-100"></div>
+            {% endif %}
+            {% if loop.index % 2 != 0 %}
+                <div class="w-100"></div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock %}

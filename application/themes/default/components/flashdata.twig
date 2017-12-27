@@ -1,0 +1,26 @@
+{% if this.session.flashdata.error or this.session.flashdata.success or validation_errors() %}
+  <script src="{{ js('humane.min') }}"></script>
+  <script async>
+    {% if this.session.flashdata.error %}
+      humane.log("{{ addslashes(this.session.flashdata.error) | raw }}", {
+        timeout: 4000,
+        clickToClose: true,
+        addnCls: 'humane-flatty-error'
+      });
+    {% endif %}
+    {% if this.session.flashdata.success %}
+      humane.log("{{ addslashes(this.session.flashdata.success) | raw }}", {
+        timeout: 3000,
+        clickToClose: true,
+        addnCls: 'humane-flatty-success'
+      });
+    {% endif %}
+    {% if validation_errors() %}
+      humane.log("{{ rtrim(validation_errors('', '<br>\\'), '<br>\\') | raw }}", {
+        timeout: 8000,
+        clickToClose: true,
+        addnCls: 'humane-flatty-error'
+      });
+    {% endif %}
+  </script>
+{% endif %}

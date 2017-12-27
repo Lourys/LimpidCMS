@@ -1,0 +1,83 @@
+{% extends 'layouts/admin.twig' %}
+
+{% import 'macros/form.twig' as form %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdn.datatables.net/v/bs/dt-1.10.15/r-2.1.1/datatables.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <section class="content-header">
+        <h1>{{ lang('PLUGINS_INSTALLATION') }}</h1>
+        <ol class="breadcrumb">
+            <li><a href="{{ route('admin/admin_index') }}"><i class="fa fa-dashboard"></i> {{ lang('HOME') }}</a>
+            </li>
+            <li>{{ lang('PLUGINS') }}</li>
+            <li class="active">{{ lang('PLUGINS_INSTALLATION') }}</li>
+        </ol>
+    </section>
+    <section class="content">
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">{{ lang('INSTALL_PLUGIN') }}</h3>
+            </div>
+            <div class="box-body">
+                <table id="table" class="table">
+                    <thead>
+                    <tr>
+                        <th>{{ lang('PLUGIN_NAME') }}</th>
+                        <th>{{ lang('AUTHOR') }}</th>
+                        <th>{{ lang('VERSION') }}</th>
+                        <th>{{ lang('ACTIONS') }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for plugin in plugins %}
+                        {% if this.pluginsManager.getPlugin(plugin.uri) != true %}
+                            <tr>
+                                <td>{{ plugin.name }}</td>
+                                <td>{{ plugin.author }}</td>
+                                <td>v{{ plugin.version }}</td>
+                                <td>
+                                    <a href="{{ route('plugins/admin_install/' ~ plugin.uri) }}" class="btn btn-success btn-sm">
+                                        <i class="fa fa-plus"></i> {{ lang('INSTALL') }}
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    {% for plugin in plugins %}
+        {% if plugin.enabled != true %}
+            <div id="uninstallPlugin{{ plugin.uri }}" class="modal modal-danger fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">{{ lang('PLUGIN_UNINSTALL') }} ({{ plugin.name }})</h4>
+                        </div>
+                        <div class="modal-body">
+                            {{ lang('UNINSTALL_CONFIRMATION') }}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang('CANCEL') }}</button>
+                            <a href="{{ route('plugins/admin_uninstall/' ~ plugin.uri) }}" class="btn btn-danger">{{ lang('UNINSTALL_CONFIRM') }}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script src="https://cdn.datatables.net/v/bs/dt-1.10.15/r-2.1.1/datatables.min.js"></script>
+    <script async>$(document).ready(function(){$("#table").DataTable({language:{emptyTable:"{{ lang('emptyTable') }}",info:"{{ lang('info') }}",infoEmpty:"{{ lang('infoEmpty') }}",infoFiltered:"{{ lang('infoFiltered') }}",thousands:"{{ lang('thousands') }}",lengthMenu:"{{ lang('lengthMenu') }}",loadingRecords:"{{ lang('loadingRecords') }}",processing:"{{ lang('processing') }}",search:"{{ lang('search') }}",zeroRecords:"{{ lang('zeroRecords') }}",paginate:{first:"{{ lang('first') }}",last:"{{ lang('last') }}",next:"{{ lang('next') }}",previous:"{{ lang('previous') }}"},aria:{sortAscending:"{{ lang('sortAscending') }}",sortDescending:"{{ lang('sortDescending') }}"}}})});</script>
+{% endblock %}

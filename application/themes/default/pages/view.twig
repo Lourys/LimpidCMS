@@ -1,0 +1,14 @@
+{% extends 'layouts/default.twig' %}
+
+{% block content %}
+    <article class="card card-custom">
+        <div class="card-header">
+            <div class="row">
+                <div class="col"><i class="fa fa-chevron-right" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ page.title | raw }}</div>
+            </div>
+        </div>
+        <div class="card-block">
+            {{ page.content | raw }}
+        </div>
+    </article>
+{% endblock %}

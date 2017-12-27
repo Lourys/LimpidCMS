@@ -1,0 +1,59 @@
+{% extends 'layouts/admin.twig' %}
+
+{% import 'macros/form.twig' as form %}
+
+{% block content %}
+    <section class="content-header">
+        <h1>{{ lang('USER_CREATION') }}</h1>
+        <ol class="breadcrumb">
+            <li><a href="{{ route('admin/admin_index') }}"><i class="fa fa-dashboard"></i> {{ lang('HOME') }}</a></li>
+            <li>{{ lang('USERS') }}</li>
+            <li class="active">{{ lang('USER_CREATION') }}</li>
+        </ol>
+    </section>
+    <section class="content">
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">{{ lang('CREATE_USER') }}</h3>
+            </div>
+            <div class="box-body">
+                {{ form_open() }}
+                <div class="col-md-12">
+                    {{ form.input('username', lang('USERNAME'), this.input.post('username'), {placeholder: lang('USERNAME_EXAMPLE'), required: true}) }}
+                </div>
+                <div class="col-md-12">
+                    {{ form.input('email', lang('EMAIL'), this.input.post('email'), {type: 'email', placeholder: lang('EMAIL_EXAMPLE'), required: true}) }}
+                </div>
+                <div class="col-md-12">
+                    {{ form.input('password', lang('PASSWORD'), null, {type: 'password', placeholder: lang('PASSWORD_EXAMPLE'), required: true}) }}
+                </div>
+                <div class="col-md-12">
+                    {{ form.input('password_confirm', lang('PASSWORD_CONFIRMATION'), null, {type: 'password', placeholder: lang('PASSWORD_EXAMPLE'), required: true}) }}
+                </div>
+                <div class="col-md-12">
+                    {{ form.select('group', lang('GROUP'), groups, this.input.post('group')) }}
+                </div>
+
+                <div class="col-md-12">
+                    {{ form.submit(lang('CREATE'), null, {btnType: 'success'}) }}
+                </div>
+                {{ form_close() }}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script async>
+        $(document).ready(function () {
+            {% if validation_errors() %}
+            humane.log("{{ rtrim(validation_errors('', '<br>\\'), '<br>\\') | raw }}", {
+                timeout: 8000,
+                clickToClose: true,
+                addnCls: 'humane-flatty-error'
+            });
+            {% endif %}
+        });
+    </script>
+{% endblock %}
