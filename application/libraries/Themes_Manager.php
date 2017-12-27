@@ -26,7 +26,7 @@ class Themes_Manager
 
     $this->updateThemeList();
     if (empty($this->available_themes))
-      $this->available_themes = json_decode(file_get_contents('http://localhost/codeigniter/public/availableThemes.json'));
+      $this->available_themes = [];//json_decode(file_get_contents('http://localhost/codeigniter/public/availableThemes.json'));
   }
 
   /**
