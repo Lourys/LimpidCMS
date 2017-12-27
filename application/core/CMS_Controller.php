@@ -159,7 +159,7 @@ class Plugins_Manager
     $this->updatePluginList();
 
     if (empty($this->available_plugins))
-      $this->available_plugins = null;//json_decode(file_get_contents('http://localhost/codeigniter/public/availablePlugins.json'));
+      $this->available_plugins = json_decode(@file_get_contents('http://localhost/codeigniter/public/availablePlugins.json'));
   }
 
   /**
