@@ -17,10 +17,10 @@ class Logs extends Limpid_Controller
   public function admin_index()
   {
     $this->load->helper('form');
+    $this->load->library('form_validation');
 
     if ($this->authManager->isPermitted($this->session->userdata('id'), 'LOGS_VIEW')) {
       $this->data['page_title'] = $this->lang->line('LOGS');
-
 
       $this->data['thresholds'] = [
         ['name'  => $this->lang->line('DISABLE_LOGGING'), 'value' => 0],
@@ -46,27 +46,21 @@ class Logs extends Limpid_Controller
         ];
       }
 
+      $this->form_validation->set_rules('threshold', $this->lang->line('LOG_THRESHOLD'), 'required|greater_than_equal_to[0]|less_than_equal_to[4]');
+      if ($this->form_validation->run()) {
+        if ($this->config->edit_item('log_threshold', (int) $this->input->post('threshold'), 'config')) {
+          $this->session->set_flashdata('success', $this->lang->line('LOG_THRESHOLD_SUCCESSFULLY_EDITED'));
+        } else {
+          $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
+        }
+
+        redirect(current_url());
+      }
+
       $this->twig->display('admin/logs/index', $this->data);
     } else {
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
       redirect(site_url());
-    }
-  }
-
-  public function admin_set_threshold()
-  {
-    $this->load->library('form_validation');
-
-    $this->form_validation->set_rules('threshold', $this->lang->line('LOG_THRESHOLD'), 'required|greater_than_equal_to[0]|less_than_equal_to[4]');
-
-    if ($this->form_validation->run()) {
-      if ($this->config->edit_item('log_threshold', (int) $this->input->post('threshold'), 'config')) {
-        $this->session->set_flashdata('success', $this->lang->line('LOG_THRESHOLD_SUCCESSFULLY_EDITED'));
-      } else {
-        $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
-      }
-
-      redirect(route('logs/admin_index'));
     }
   }
 

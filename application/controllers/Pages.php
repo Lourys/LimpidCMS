@@ -61,7 +61,7 @@ class Pages extends Limpid_Controller
       if ($this->form_validation->run()) {
         if ($this->pagesManager->addPage($this->input->post('title'), $this->input->post('slug'), $this->input->post('content'), $this->input->post('reachable') ? true : false)) {
           // If news adding succeed
-          $this->session->set_flashdata('success', $this->lang->line('ADD_SUCCEEDED'));
+          $this->session->set_flashdata('success', $this->lang->line('PAGES_ADD_SUCCEEDED'));
           redirect(route('pages/admin_manage'));
         } else {
           // If news adding failed
@@ -127,7 +127,7 @@ class Pages extends Limpid_Controller
           );
           if ($this->pagesManager->editPage($id, $data))
             // If page editing succeed
-            $this->session->set_flashdata('success', $this->lang->line('EDIT_SUCCEEDED'));
+            $this->session->set_flashdata('success', $this->lang->line('PAGES_EDIT_SUCCEEDED'));
           else
             // If page editing failed
             $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
@@ -153,7 +153,7 @@ class Pages extends Limpid_Controller
     if ($this->authManager->isPermitted($this->session->userdata('id'), 'PAGES__DELETE')) {
       if ($this->pagesManager->deletePage($id))
         // If page deleting succeed
-        $this->session->set_flashdata('success', $this->lang->line('DELETE_SUCCEEDED'));
+        $this->session->set_flashdata('success', $this->lang->line('PAGES_DELETE_SUCCEEDED'));
       else
         // If page deleting failed
         $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));

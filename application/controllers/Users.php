@@ -36,12 +36,16 @@ class Users extends Limpid_Controller
       $this->form_validation->set_rules('password_confirm', $this->lang->line('PASSWORD_CONFIRMATION'), 'required|min_length[6]');
       if ($this->config->item('recaptchaEnabled'))
         $this->form_validation->set_rules('g-recaptcha-response', $this->lang->line('RECAPTCHA'), 'required');
+      if ($this->config->item('limpidCaptchaEnabled') && function_exists('gd_info'))
+        $this->form_validation->set_rules('captcha_answer', $this->lang->line('CAPTCHA'), 'required|regex_match[/' . $this->session->userdata('captchaCode') . '/]', [
+          'regex_match' => $this->lang->line('INCORRECT_CAPTCHA')
+        ]);
 
       // If check passed
       if ($this->form_validation->run()) {
 
         // reCAPTCHA validation
-        if ($this->config->item('recaptchaEnabled') === true) {
+        if ($this->config->item('recaptchaEnabled') == true) {
           $recaptcha = new \ReCaptcha\ReCaptcha($this->config->item('recaptchaSettings')['secret_key']);
           $response = $recaptcha->verify($this->input->post('g-recaptcha-response'), $_SERVER['REMOTE_ADDR']);
           // If check failed
@@ -51,6 +55,7 @@ class Users extends Limpid_Controller
             die();
           }
         }
+
         if ($this->usersManager->registerUser($this->input->post('username'), $this->input->post('email'), password_hash($this->input->post('password'), PASSWORD_BCRYPT, ['cost' => 14]), $this->groupsManager->getDefaultGroup()[0]->id, $_SERVER['REMOTE_ADDR'])) {
           // If registration succeed
           $this->session->set_flashdata('success', $this->lang->line('REGISTER_SUCCEEDED'));
@@ -92,15 +97,17 @@ class Users extends Limpid_Controller
         $this->form_validation->set_rules('password', $this->lang->line('PASSWORD'), 'required|min_length[6]|matches[password_confirm]');
         $this->form_validation->set_rules('password_confirm', $this->lang->line('PASSWORD_CONFIRMATION'), 'required|min_length[6]');
       }
+      $this->form_validation->set_rules('biography', $this->lang->line('BIOGRAPHY'), 'max_length[150]');
 
       // If check passed
       if ($this->form_validation->run()) {
         $data = [
-          'username' => $this->input->post('username'),
-          'email' => $this->input->post('email'),
-          'password' => $this->input->post('password') != ''
+          'username'  => $this->input->post('username'),
+          'email'     => $this->input->post('email'),
+          'password'  => $this->input->post('password') != ''
             ? password_hash($this->input->post('password'), PASSWORD_BCRYPT, ['cost' => 14])
-            : $this->data['user']->password
+            : $this->data['user']->password,
+          'biography' => $this->input->post('biography')
         ];
         if ($this->usersManager->editUser($this->session->userdata('id'), $data)) {
           // If user edit succeed
@@ -150,7 +157,7 @@ class Users extends Limpid_Controller
       if ($this->form_validation->run()) {
         if ($this->usersManager->registerUser($this->input->post('username'), $this->input->post('email'), password_hash($this->input->post('password'), PASSWORD_BCRYPT, ['cost' => 14]), $this->input->post('group'))) {
           // If user adding succeed
-          $this->session->set_flashdata('success', $this->lang->line('ADD_SUCCEEDED'));
+          $this->session->set_flashdata('success', $this->lang->line('USERS_ADD_SUCCEEDED'));
           redirect(route('users/admin_manage'));
         } else {
           // If user adding failed
@@ -170,8 +177,7 @@ class Users extends Limpid_Controller
   }
 
 
-  public
-  function admin_manage()
+  public function admin_manage()
   {
     if ($this->authManager->isPermitted($this->session->userdata('id'), 'USERS__MANAGE')) {
       $this->data['page_title'] = $this->lang->line('USERS_MANAGEMENT');
@@ -188,8 +194,7 @@ class Users extends Limpid_Controller
   }
 
 
-  public
-  function admin_edit($id)
+  public function admin_edit($id)
   {
     if ($this->authManager->isPermitted($this->session->userdata('id'), 'USERS__EDIT')) {
       if ($this->data['user'] = $this->usersManager->getUser($id)) {
@@ -231,7 +236,7 @@ class Users extends Limpid_Controller
 
           if ($this->usersManager->editUser($id, $data))
             // If user editing succeed
-            $this->session->set_flashdata('success', $this->lang->line('EDIT_SUCCEEDED'));
+            $this->session->set_flashdata('success', $this->lang->line('USERS_EDIT_SUCCEEDED'));
           else
             // If user editing failed
             $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
@@ -253,13 +258,12 @@ class Users extends Limpid_Controller
   }
 
 
-  public
-  function admin_delete($id)
+  public function admin_delete($id)
   {
     if ($this->authManager->isPermitted($this->session->userdata('id'), 'USERS__DELETE')) {
       if ($this->usersManager->deleteUser($id))
         // If user deleting succeed
-        $this->session->set_flashdata('success', $this->lang->line('DELETE_SUCCEEDED'));
+        $this->session->set_flashdata('success', $this->lang->line('USERS_DELETE_SUCCEEDED'));
       else
         // If user deleting failed
         $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
@@ -274,8 +278,7 @@ class Users extends Limpid_Controller
   }
 
 
-  public
-  function admin_take_control($id)
+  public function admin_take_control($id)
   {
     // If already logged as and want log back
     if ($this->session->userdata('real_id') == $id) {

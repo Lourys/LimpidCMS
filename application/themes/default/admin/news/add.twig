@@ -47,8 +47,5 @@
 
 {% block javascript %}
   {{ parent() }}
-  <script src="{{ js('admin/tinymce/tinymce.min') }}" defer></script>
-  <script async>
-    {{ form.tinymceInit() }}
-  </script>
+  {{ form.tinymceInit() }}
 {% endblock %}

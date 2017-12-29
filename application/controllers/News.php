@@ -24,7 +24,12 @@ class News extends Limpid_Controller
   {
     if ($this->data['news'] = $this->newsManager->getNewsBySlug($slug)) {
       if ($this->data['news']->active || $this->authManager->isPermitted($this->session->userdata('id'), 'NEWS__VIEW_DEACTIVATED')) {
+        $this->load->library('Users_Manager', null, 'usersManager');
+        $this->load->library('Groups_Manager', null, 'groupsManager');
+        $this->data['author'] = $this->usersManager->getUser($this->data['news']->author_id);
+        $this->data['author']->group = $this->groupsManager->getGroup($this->data['author']->group_id);
         $this->data['page_title'] = $this->data['news']->title;
+
         // Render the view
         $this->twig->display('news/view', $this->data);
       } else {
@@ -94,7 +99,7 @@ class News extends Limpid_Controller
       if ($this->form_validation->run()) {
         if ($this->newsManager->addNews($this->input->post('title'), $this->input->post('slug'), $this->input->post('content'), $this->session->userdata('id'), $this->input->post('active') ? true : false)) {
           // If news adding succeed
-          $this->session->set_flashdata('success', $this->lang->line('ADD_SUCCEEDED'));
+          $this->session->set_flashdata('success', $this->lang->line('NEWS_ADD_SUCCEEDED'));
           redirect(route('news/admin_manage'));
         } else {
           // If news adding failed
@@ -154,7 +159,7 @@ class News extends Limpid_Controller
           );
           if ($this->newsManager->editNews($id, $data))
             // If news editing succeed
-            $this->session->set_flashdata('success', $this->lang->line('EDIT_SUCCEEDED'));
+            $this->session->set_flashdata('success', $this->lang->line('NEWS_EDIT_SUCCEEDED'));
           else
             // If news editing failed
             $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
@@ -181,7 +186,7 @@ class News extends Limpid_Controller
     if ($this->authManager->isPermitted($this->session->userdata('id'), 'NEWS__DELETE')) {
       if ($this->newsManager->deleteNews($id))
         // If news deleting succeed
-        $this->session->set_flashdata('success', $this->lang->line('DELETE_SUCCEEDED'));
+        $this->session->set_flashdata('success', $this->lang->line('NEWS_DELETE_SUCCEEDED'));
       else
         // If news deleting failed
         $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));

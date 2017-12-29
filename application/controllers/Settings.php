@@ -43,16 +43,20 @@ class Settings extends Limpid_Controller
           elseif ($value === 'false')
             $value = 0;
 
-          if (!$this->config->edit_item($index, $value, 'cms_settings')) {
-            $this->config->edit_item($index, $value, 'config');
+          if ($this->config->item($index) != $value) {
+            if (!$this->config->edit_item($index, $value, 'config')) {
+              $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
+              redirect(current_url());
+            }
           }
         }
 
         $this->session->set_flashdata('success', $this->lang->line('SETTINGS_SUCCESSFULLY_EDITED'));
-        redirect(current_url());
       }
 
       $this->twig->display('admin/settings/general', $this->data);
+      $this->session->unmark_flash('success');
+      $this->session->unmark_flash('error');
     } else {
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
       redirect(site_url());

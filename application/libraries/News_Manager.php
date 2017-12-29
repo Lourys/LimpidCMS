@@ -7,6 +7,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class News_Manager
 {
+  private $limpid;
+
   /**
    * News_Manager constructor.
    */
@@ -41,7 +43,7 @@ class News_Manager
       return null;
     }
 
-    if ($page = $this->limpid->news->getAllLimitedOrdered($limit, $offset, 'edited_at, created_at', 'DESC'))
+    if ($page = $this->limpid->news->rawQuery("SELECT n.*, u.username, u.avatar FROM news n, users u WHERE n.author_id = u.id ORDER BY n.edited_at, n.created_at DESC LIMIT $limit, $offset"))
       return $page;
 
     return null;

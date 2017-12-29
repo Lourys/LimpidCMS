@@ -98,7 +98,7 @@
             <h3 class="box-title">{{ lang('LINKS_MANAGEMENT') }}</h3>
           </div>
           <div class="box-body no-padding">
-            <table class="table">
+            <table class="table table-responsive">
               <tbody>
               <tr>
                 <th>{{ lang('TITLE') }}</th>
@@ -133,7 +133,7 @@
                 {% if link.is_dropdown %}
                   <tr id="link_{{ link.id }}" class="collapse" aria-expanded="false">
                     <td colspan="100%">
-                      <table class="table" style="margin-bottom: 0">
+                      <table class="table table-responsive" style="margin-bottom: 0">
                         <tbody>
                         {% for sublink in sublinks %}
                           {% if sublink.parent_id == link.id %}

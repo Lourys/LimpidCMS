@@ -18,7 +18,10 @@
   <div class="form-group {{ options.class }}">
     <label for="{{ name }}">{{ label }} :</label>
     <select name="{{ name }}" class="form-control" id="{{ name }}" {{ options.required == true ? 'required' : '' }}>
-      <option value="" style="font-weight: bold">/!\ {% if this.config.item('language') == 'french' %}Veuillez choisir une option{% elseif this.config.item('language') == 'english' %}Please select an item{% endif %} /!\</option>
+      <option value="" style="font-weight: bold">
+        /!\ {% if this.config.item('language') == 'french' %}Veuillez choisir une option{% elseif this.config.item('language') == 'english' %}Please select an item{% endif %}
+        /!\
+      </option>
       {% for item in list %}
         <option value="{{ item.value }}"
                 {% if selected %}{% if in_array(item.value, selected) %}selected{% endif %}{% endif %}
@@ -34,7 +37,10 @@
     <label for="{{ name }}">{{ label }} :</label>
     <select multiple name="{{ name }}[]" class="form-control"
             id="{{ name }}" {{ options.required == true ? 'required' : '' }} style="height: {{ options.height }}px">
-      <option value="" style="font-weight: bold">/!\ {% if this.config.item('language') == 'french' %}Veuillez choisir une option{% elseif this.config.item('language') == 'english' %}Please select an item{% endif %} /!\</option>
+      <option value="" style="font-weight: bold">
+        /!\ {% if this.config.item('language') == 'french' %}Veuillez choisir une option{% elseif this.config.item('language') == 'english' %}Please select an item{% endif %}
+        /!\
+      </option>
       {% for item in list %}
         <option value="{{ item.value }}"
                 {% if selected %}{% if in_array(item.value, selected) %}selected{% endif %}{% endif %}>{{ item.name }}</option>
@@ -47,7 +53,7 @@
   <div class="form-group {{ options.class }}">
     <label for="{{ name }}">{{ label }} :</label>
     <textarea name="{{ name }}" id="{{ name }}" class="form-control"
-              placeholder="{{ options.placeholder }}" {{ options.required == true ? 'required' : '' }}>{{ value }}</textarea>
+              placeholder="{{ options.placeholder }}" {{ options.required == true ? 'required' : '' }} rows="{{ options.rows }}">{{ value }}</textarea>
   </div>
 {% endmacro %}
 
@@ -62,25 +68,28 @@
 {% endmacro %}
 
 {% macro tinymceInit() %}
-  tinymce.init({
-  selector: 'textarea',
-  {% if this.config.item('language') == 'french' %}
-    language: 'fr_FR',
-  {% elseif this.config.item('language') == 'english' %}
-    language: 'en_US',
-  {% endif %}
-  relative_urls: false,
-  remove_script_host: false,
-  height: 500,
-  theme: 'modern',
-  plugins: [
-  'advlist autolink lists link image charmap print preview hr anchor pagebreak',
-  'searchreplace wordcount visualblocks visualchars code fullscreen',
-  'insertdatetime media nonbreaking save table contextmenu directionality',
-  'emoticons template paste textcolor colorpicker textpattern imagetools codesample toc help'
-  ],
-  toolbar1: 'undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
-  toolbar2: 'print preview media | forecolor backcolor emoticons | codesample help',
-  image_advtab: true
-  });
+  <script src="{{ js('admin/tinymce/tinymce.min') }}"></script>
+  <script async>
+    tinymce.init({
+      selector: 'textarea',
+      {% if this.config.item('language') == 'french' %}
+      language: 'fr_FR',
+      {% elseif this.config.item('language') == 'english' %}
+      language: 'en_US',
+      {% endif %}
+      relative_urls: false,
+      remove_script_host: false,
+      height: 500,
+      theme: 'modern',
+      plugins: [
+        'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+        'searchreplace wordcount visualblocks visualchars code fullscreen',
+        'insertdatetime media nonbreaking save table contextmenu directionality',
+        'emoticons template paste textcolor colorpicker textpattern imagetools codesample toc help'
+      ],
+      toolbar1: 'undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+      toolbar2: 'print preview media | forecolor backcolor emoticons | codesample help',
+      image_advtab: true
+    });
+  </script>
 {% endmacro %}

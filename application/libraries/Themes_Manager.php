@@ -154,8 +154,7 @@ class Themes_Manager
         // Enable requested theme
         $theme->enabled = true;
         if (unlink(APPPATH . 'cache/themes.json') && file_put_contents(APPPATH . 'themes/' . $theme->uri . '/settings.json', json_encode($theme))) {
-          $this->limpid->config->load('cms_settings');
-          $this->limpid->config->edit_item('theme', $uri, 'cms_settings');
+          $this->limpid->config->edit_item('theme', $uri, 'config');
           $this->updateThemeList();
           return true;
         }

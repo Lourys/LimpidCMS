@@ -111,7 +111,7 @@ class Menu extends Limpid_Controller
       if ($this->input->post('deleteLink') !== null) {
         if ($this->menuManager->deleteLink($this->input->post('id')))
           // If link deleting succeed
-          $this->session->set_flashdata('success', $this->lang->line('LINK_SUCCESSFULLY_EDITED'));
+          $this->session->set_flashdata('success', $this->lang->line('LINK_SUCCESSFULLY_DELETED'));
         else
           // If link deleting failed
           $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));

@@ -13,6 +13,7 @@ if (!function_exists('displayCaptcha')) {
   {
     $Config =& load_class('Config');
 
+    // reCAPTCHA generation
     if ($Config->item('recaptchaEnabled') == true && is_array($Config->item('recaptchaSettings'))) {
       $script = '<script type="text/javascript" async>
                     var submitButton = document.getElementById("captchaProtected");
@@ -39,6 +40,17 @@ if (!function_exists('displayCaptcha')) {
       return $script;
     }
 
+    // LimpidCMS CAPTCHA generation
+    if ($Config->item('limpidCaptchaEnabled') == true && function_exists('gd_info')) {
+      $CI =& CMS_Controller::$instance;
+      $CI->load->library('Captcha');
+      $script = '<script type="text/javascript" async>
+                   $("<img src=\'' . $CI->captcha->generateCaptcha() . ' \' alt=\'captcha\'><div class=\'form-group\'><label for=\'captchaAnswer\'>Captcha :</label><input name=\'captcha_answer\' type=\'text\' class=\'form-control\' id=\'captchaAnswer\'></input></div>").insertBefore( "#captchaProtected" );
+                 </script>';
+
+      return $script;
+    }
+
     return false;
   }
 }
@@ -49,4 +61,3 @@ if (!function_exists('validation_errors')) {
     return null;
   }
 }
-

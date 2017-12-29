@@ -36,7 +36,7 @@ class Groups extends Limpid_Controller
       for ($i = 0; $i < count($this->data['permissions']); $i++) {
         $permissions .= $this->data['permissions'][$i]->name . ',';
         $this->data['permissions'][$i]->value = $this->data['permissions'][$i]->name;
-        $this->data['permissions'][$i]->name = json_decode($this->data['permissions'][$i]->description, TRUE)[$this->config->item('language')];
+        $this->data['permissions'][$i]->name = $this->lang->line($this->data['permissions'][$i]->name);
       }
 
       // Form rules check
@@ -48,7 +48,7 @@ class Groups extends Limpid_Controller
       if ($this->form_validation->run()) {
         if ($this->groupsManager->createGroup($this->input->post('name'), $this->input->post('color'), $this->input->post('permissions'))) {
           // If group creation succeed
-          $this->session->set_flashdata('success', $this->lang->line('ADD_SUCCEEDED'));
+          $this->session->set_flashdata('success', $this->lang->line('GROUPS_ADD_SUCCEEDED'));
           redirect(route('groups/manage'));
         } else {
           // If group creation failed
@@ -107,7 +107,7 @@ class Groups extends Limpid_Controller
 
           if ($this->groupsManager->editGroup($id, $data)) {
             // If group edition succeed
-            $this->session->set_flashdata('success', $this->lang->line('EDIT_SUCCEEDED'));
+            $this->session->set_flashdata('success', $this->lang->line('GROUPS_EDIT_SUCCEEDED'));
             redirect(route('groups/admin_manage'));
           } else {
             // If group edition failed
@@ -163,7 +163,7 @@ class Groups extends Limpid_Controller
 
       if ($this->groupsManager->deleteGroup($id))
         // If group deleting succeed
-        $this->session->set_flashdata('success', $this->lang->line('DELETE_SUCCEEDED'));
+        $this->session->set_flashdata('success', $this->lang->line('GROUPS_DELETE_SUCCEEDED'));
       else
         // If group deleting failed
         $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));

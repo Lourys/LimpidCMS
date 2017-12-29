@@ -23,7 +23,7 @@
         <div class="tab-pane active" id="general">
           <div class="row">
             <div class="col-md-5">
-              {{ form.input('site_name', lang('WEBSITE_NAME'), this.input.post('site_name') ? this.input.post('site_name') : settings.site_name, {placeholder: lang('WEBSITE_NAME_EXAMPLE'), required: true}) }}
+              {{ form.input('site_name', lang('WEBSITE_NAME'), this.input.post('site_name') ? this.input.post('site_name') : theme_config.site_name, {placeholder: lang('WEBSITE_NAME_EXAMPLE'), required: true}) }}
             </div>
 
             <div class="col-md-12">
@@ -37,13 +37,13 @@
         <div class="tab-pane" id="security">
           <b>{{ lang('SETTINGS') }} reCAPTCHA :</b>
           <p>{{ lang('RECAPTCHA_DESCRIPTION') }}</p>
-          {{ form.input('recaptchaSettings[site_key]', lang('RECAPTCHA_SITE_KEY'), this.input.post('recaptchaSettings[site_key]') ? this.input.post('recaptchaSettings[site_key]') : settings.recaptchaSettings.site_key, {placeholder: lang('RECAPTCHA_SITE_KEY_EXAMPLE'), required: true}) }}
+          {{ form.input('recaptchaSettings[site_key]', lang('RECAPTCHA_SITE_KEY'), this.input.post('recaptchaSettings[site_key]') ? this.input.post('recaptchaSettings[site_key]') : theme_config.recaptchaSettings.site_key, {placeholder: lang('RECAPTCHA_SITE_KEY_EXAMPLE'), required: true}) }}
           {{ form.input('recaptchaSettings[secret_key]', lang('RECAPTCHA_SECRET_KEY'), this.input.post('recaptchaSettings[secret_key]') ? this.input.post('recaptchaSettings[secret_key]') : theme_config.recaptchaSettings.secret_key, {placeholder: lang('RECAPTCHA_SECRET_KEY_EXAMPLE'), required: true}) }}
           {{ lang('ACTIVATE_RECAPTCHA') }} ?
           <input type="hidden" name="recaptchaEnabled" value="false">
           <div class="form-group">
             <label class="switch">
-              <input type="checkbox" name="recaptchaEnabled" value="true" {% if (this.input.post('recaptchaEnabled') == true) or (settings.recaptchaEnabled == true) %}checked{% endif %}>
+              <input type="checkbox" name="recaptchaEnabled" value="true" {% if (this.input.post('recaptchaEnabled') == true) or (theme_config.recaptchaEnabled == true) %}checked{% endif %}>
               <span class="slider round"></span>
             </label>
           </div>

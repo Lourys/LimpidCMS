@@ -3,18 +3,18 @@
 {% import 'macros/form.twig' as form %}
 
 {% block content %}
-    <article class="card card-custom">
-        <div class="card-header">
-            <div class="row">
-                <div class="col"><i class="fa fa-lock"></i>&nbsp;&nbsp;&nbsp;{{ lang('LOGIN') }}</div>
-            </div>
-        </div>
-        <div class="card-body">
-            {{ form_open() }}
-                {{ form.input('account', lang('USERNAME_OR_EMAIL'), this.input.post('account'), {placeholder: lang('EMAIL_EXAMPLE'), required: true}) }}
-                {{ form.input('password', lang('PASSWORD'), null, {type: 'password', placeholder: lang('PASSWORD_EXAMPLE'), required: true}) }}
-                {{ form.submit(lang('LOGIN'), null, {btnType: 'success'}) }}
-            {{ form_close() }}
-        </div>
-    </article>
+  <div class="card card-custom">
+    <div class="card-header">
+      <div class="row">
+        <div class="col"><i class="fa fa-lock"></i>&nbsp;&nbsp;&nbsp;{{ lang('LOGIN') }}</div>
+      </div>
+    </div>
+    <div class="card-body">
+      {{ form_open() }}
+      {{ form.input('account', lang('USERNAME_OR_EMAIL'), this.input.post('account'), {placeholder: lang('EMAIL_EXAMPLE'), required: true}) }}
+      {{ form.input('password', lang('PASSWORD'), null, {type: 'password', placeholder: lang('PASSWORD_EXAMPLE'), required: true}) }}
+      {{ form.submit(lang('LOGIN'), null, {btnType: 'success'}) }}
+      {{ form_close() }}
+    </div>
+  </div>
 {% endblock %}

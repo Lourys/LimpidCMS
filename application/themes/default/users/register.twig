@@ -3,7 +3,7 @@
 {% import 'macros/form.twig' as form %}
 
 {% block content %}
-  <article class="card card-custom">
+  <div class="card card-custom">
     <div class="card-header">
       <div class="row">
         <div class="col"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ lang('REGISTER') }}</div>
@@ -18,19 +18,5 @@
       {{ form.submit(lang('REGISTER'), null, {btnType: 'success', id: 'captchaProtected'}) }}
       {{ form_close() }}
     </div>
-  </article>
-{% endblock %}
-
-
-{% block javascript %}
-  {{ parent() }}
-  {% if validation_errors() %}
-    <script async>
-      humane.log("{{ rtrim(validation_errors('', '<br>\\'), '<br>\\') | raw }}", {
-        timeout: 8000,
-        clickToClose: true,
-        addnCls: 'humane-flatty-error'
-      });
-    </script>
-  {% endif %}
+  </div>
 {% endblock %}

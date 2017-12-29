@@ -29,15 +29,15 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @property Menu_model $menu
  * @property Users_model $users
  * @property Groups_model $groups
+ * @property Groups_Manager $groupsManager
  * @property Permissions_model $permissions
  * @property CI_DB_forge $dbforge
  * @property \Evenement\EventEmitter $emitter
  * @property CI_Output $output
  * @property Themes_Manager $themesManager
- * @property Example_model $example
- * @property Example_Manager $exampleManager
  * @property CI_Lang $lang
  * @property Users_Manager $usersManager
+ * @property Captcha $captcha
  */
 class CMS_Controller extends CI_Controller
 {
@@ -47,16 +47,20 @@ class CMS_Controller extends CI_Controller
   {
     parent::__construct();
     self::$instance || self::$instance =& $this;
-    $this->config->load('cms_settings');
+    $this->config->load('config');
     date_default_timezone_set($this->config->item('timezone'));
     $this->lang->load($this->config->item('theme'));
 
     // Demo specific
     $this->load->library('Users_Manager', null, 'usersManager');
-    $this->usersManager->editUser(1, ['password' => password_hash('admin123', PASSWORD_BCRYPT)]);
+    $this->usersManager->editUser(1, [
+      'username' => 'admin',
+      'email'    => 'admin@admin.fr',
+      'password' => password_hash('admin123', PASSWORD_BCRYPT)
+    ]);
     $this->config->edit_item('language', 'french', 'config.php');
 
-    if ($this->config->item('license') !== null) {
+    /*if ($this->config->item('license') !== null) {
       $service_url = 'http://localhost/api.limpidcms.fr/src/public/api/v1/license/verify?key=' . $this->config->item('license');
       $curl = curl_init($service_url);
       curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -72,7 +76,7 @@ class CMS_Controller extends CI_Controller
     } else {
       show_error('Missing license!', 500, 'License error');
       die();
-    }
+    }*/
 
 
     $this->emitter = new Evenement\EventEmitter();

@@ -1,20 +1,37 @@
 {% extends 'layouts/default.twig' %}
 
 {% block content %}
-    <article class="card card-custom">
-        <div class="card-header">
-            <div class="row">
-                <div class="col"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ news.title | raw }}</div>
-            </div>
+  <article class="card card-custom">
+    <div class="card-header">
+      <div class="row">
+        <div class="col"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ news.title | raw }}</div>
+      </div>
+    </div>
+    <div class="card-body">
+      {{ news.content | raw }}
+      <br>
+      {% if news.edited_at %}
+        <p class="text-right font-italic font-weight-light">Dernière édition le {{ news.edited_at | date('d/m/Y \à H\\hi') }}</p>
+      {% else %}
+        <p class="text-right font-italic font-weight-light">Le {{ news.created_at | date('d/m/Y \à H\\hi') }}</p>
+      {% endif %}
+    </div>
+  </article>
+
+  <div class="card card-custom">
+    <div class="card-body">
+      <div class="row no-gutters">
+        <div class="col-sm-12 col-md-4 col-xl-3">
+          <img src="{{ site_url('uploads/avatars/' ~ author.avatar) }}" class="img-fluid rounded d-inline-block" alt="{{ author.username }}">
+          <div class="d-inline-block pl-2">
+            <a class="font-weight-bold" href="#">{{ author.username }}</a><br>
+            <span style="color: {{ author.group.color }};font-size: .8em">{{ author.group.name }}</span>
+          </div>
         </div>
-        <div class="card-body">
-            {{ news.content | raw }}
-            <br>
-            {% if news.edited_at %}
-                <p class="text-right">Dernière édition le {{ news.edited_at | date('d/m/Y \à H\\hi') }}</p>
-            {% else %}
-                <p class="text-right">Le {{ news.created_at | date('d/m/Y \à H\\hi') }}</p>
-            {% endif %}
+        <div class="col p-2 p-md-1">
+          <p>{{ author.biography }}</p>
         </div>
-    </article>
+      </div>
+    </div>
+  </div>
 {% endblock %}

@@ -32,6 +32,7 @@
                     {{ form.input('email', lang('EMAIL'), user.email, {type: 'email', placeholder: lang('EMAIL_EXAMPLE'), required: true}) }}
                     {{ form.input('password', lang('PASSWORD'), null, {type: 'password', placeholder: lang('PASSWORD_EXAMPLE')}) }}
                     {{ form.input('password_confirm', lang('PASSWORD_CONFIRMATION'), null, {type: 'password', placeholder: lang('PASSWORD_EXAMPLE')}) }}
+                    {{ form.textarea('biography', lang('BIOGRAPHY'), user.biography, {placeholder: lang('BIOGRAPHY_EXAMPLE'), rows: 3}) }}
                     {{ form.submit(lang('SAVE_CHANGES'), null, {btnType: 'secondary'}) }}
                     {{ form_close() }}
                 </div>

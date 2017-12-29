@@ -14,12 +14,12 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="row no-gutters">
-                                    <img src="https://crafatar.com/avatars/MedusePinceau32?size=50" class="user-picture rounded col-3" alt="Img">
+                                    <img src="{{ site_url('uploads/avatars/' ~ news.avatar) }}" class="user-picture rounded col-3" alt="{{ news.username }}">
                                     <div class="title-publication col-9">
                                         <h5 class="card-title">
                                             <a href="{{ route('news/view/' ~ news.slug) }}">{{ news.title }}</a>
                                         </h5>
-                                        <span><a href="#">Lourys</a> -
+                                        <span><a href="#">{{ news.username }}</a> -
                                             {% if news.edited_at %}
                                                 Le {{ news.edited_at | date('d/m/Y') }}
                                             {% else %}

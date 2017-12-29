@@ -22,7 +22,7 @@
         <h3 class="box-title">{{ lang('LOGS_OVERVIEW') }}</h3>
       </div>
       <div class="box-body">
-        {{ form_open(route('logs/admin_set_threshold')) }}
+        {{ form_open() }}
           <div class="row">
             <div class="col-md-3">
               {{ form.select('threshold', lang('LOG_THRESHOLD'), thresholds, {0: this.config.item('log_threshold')}, {required: true}) }}
@@ -31,7 +31,7 @@
           </div>
         {{ form_close() }}
         <hr>
-        <table id="table" class="table">
+        <table id="table" class="table table-responsive">
           <thead>
           <tr>
             <th>{{ lang('NAME') }}</th>

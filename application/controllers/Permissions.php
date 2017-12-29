@@ -31,12 +31,12 @@ class Permissions extends Limpid_Controller
 
         $this->load->helper('form');
         $this->load->library('form_validation');
-        $this->data['permissions'] = $this->permissionsManager->getPermissions();
+        $detailedPermissions = $this->permissionsManager->getPermissions();
 
         $permissions = '';
-        for ($i = 0; $i < count($this->data['permissions']); $i++) {
-          $permissions .= $this->data['permissions'][$i]->name . ',';
-          $this->data['permissions'][$i]->description = json_decode($this->data['permissions'][$i]->description, TRUE)[$this->config->item('language')];
+        for ($i = 0; $i < count($detailedPermissions); $i++) {
+          $permissions .= $detailedPermissions[$i]->name . ',';
+          $this->data['permissions'][explode('_', $detailedPermissions[$i]->name)[0]][]['name'] = $detailedPermissions[$i]->name;
         }
 
         // Form rules check
@@ -50,7 +50,7 @@ class Permissions extends Limpid_Controller
 
           if ($this->groupsManager->editGroup($group_id, $data)) {
             // If permission edition succeed
-            $this->session->set_flashdata('success', $this->lang->line('EDIT_SUCCEEDED'));
+            $this->session->set_flashdata('success', $this->lang->line('PERMISSIONS_EDIT_SUCCEEDED'));
             redirect(route('permissions/admin_manage/' . $group_id));
           } else {
             // If permission edition failed
