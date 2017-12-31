@@ -4,52 +4,95 @@
 
 {% block content %}
   <section class="content-header">
-    <h1>{{ lang('SETTINGS_EDITION') }}</h1>
+    <h1>{{ lang('THEME_CONFIGURATION') }}</h1>
     <ol class="breadcrumb">
-      <li><a href="{{ route('admin/admin_index') }}"><i class="fa fa-dashboard"></i> {{ lang('HOME') }}</a></li>
-      <li>{{ lang('SETTINGS') }}</li>
-      <li class="active">{{ lang('SETTINGS_EDITION') }}</li>
+      <li><a href="{{ route('admin/admin_index') }}"><i class="fa fa-dashboard"></i> {{ lang('HOME') }}</a>
+      </li>
+      <li>{{ lang('THEMES') }}</li>
+      <li class="active"><a href="{{ route('themes/admin_manage') }}">{{ lang('THEMES_MANAGEMENT') }}</a></li>
+      <li class="active">{{ lang('THEME_CONFIGURATION') }}</li>
     </ol>
   </section>
   <section class="content">
     {{ form_open() }}
     <div class="nav-tabs-custom">
       <ul class="nav nav-tabs pull-right">
-        <li class="active"><a href="#general" data-toggle="tab">{{ lang('GENERAL_SETTINGS') }}</a></li>
-        <li><a href="#security" data-toggle="tab">{{ lang('SECURITY_SETTINGS') }}</a></li>
+        <li class="active"><a href="#general" data-toggle="tab">{{ lang('THEME_CONFIG__HOME_PAGE') }}</a></li>
         <li class="pull-left header"><i class="fa fa-th"></i> {{ lang('EDIT_SETTINGS') }}</li>
       </ul>
       <div class="tab-content">
         <div class="tab-pane active" id="general">
           <div class="row">
-            <div class="col-md-5">
-              {{ form.input('site_name', lang('WEBSITE_NAME'), this.input.post('site_name') ? this.input.post('site_name') : theme_config.site_name, {placeholder: lang('WEBSITE_NAME_EXAMPLE'), required: true}) }}
+            <div class="col-md-12">
+              <br>
+              <div class="box box-solid">
+                <div class="box-header with-border">
+                  <i class="fa fa-arrow-right"></i>
+                  <h3 class="box-title">{{ lang('THEME_CONFIG__CAROUSEL_SECTION') }}</h3>
+                </div>
+                <div class="box-body">
+
+                </div>
+              </div>
             </div>
 
             <div class="col-md-12">
-              {{ form.input('site_description', lang('WEBSITE_DESCRIPTION'), this.input.post('site_description') ? this.input.post('site_description') : theme_config.site_description, {placeholder: lang('WEBSITE_DESCRIPTION_EXAMPLE'), required: true}) }}
+              <br>
+              <div class="box box-solid">
+                <div class="box-header with-border">
+                  <i class="fa fa-arrow-right"></i>
+                  <h3 class="box-title">{{ lang('THEME_CONFIG__BUBBLES_SECTION') }}</h3>
+                </div>
+                <div class="box-body">
+                  <div class="col-md-12">
+                    {{ form.input('home_title', lang('TITLE'), this.input.post('home_title') ? this.input.post('home_title') : theme_config.home_title, {placeholder: lang('THEME_CONFIG__HOME_TITLE_EXAMPLE'), required: true}) }}
+                  </div>
+                  <div class="col-md-4">
+                    {{ form.input('home_bubble[icon][0]', lang('THEME_CONFIG__FIRST_BUBBLE_ICON'), this.input.post('home_bubble[icon][0]') ? this.input.post('home_bubble[icon][0]') : theme_config.home_bubble.icon.0, {placeholder: lang('THEME_CONFIG__BUBBLE_ICON_EXAMPLE'), required: true}) }}
+                    {{ form.input('home_bubble[text][0]', lang('THEME_CONFIG__FIRST_BUBBLE_TEXT'), this.input.post('home_bubble[text][0]') ? this.input.post('home_bubble[text][0]') : theme_config.home_bubble.text.0, {placeholder: lang('THEME_CONFIG__BUBBLE_TEXT_EXAMPLE'), required: true}) }}
+                  </div>
+                  <div class="col-md-4">
+                    {{ form.input('home_bubble[icon][1]', lang('THEME_CONFIG__SECOND_BUBBLE_ICON'), this.input.post('home_bubble[icon][1]') ? this.input.post('home_bubble[icon][1]') : theme_config.home_bubble.icon.1, {placeholder: lang('THEME_CONFIG__BUBBLE_ICON_EXAMPLE'), required: true}) }}
+                    {{ form.input('home_bubble[text][1]', lang('THEME_CONFIG__SECOND_BUBBLE_TEXT'), this.input.post('home_bubble[text][1]') ? this.input.post('home_bubble[text][1]') : theme_config.home_bubble.text.1, {placeholder: lang('THEME_CONFIG__BUBBLE_TEXT_EXAMPLE'), required: true}) }}
+                  </div>
+                  <div class="col-md-4">
+                    {{ form.input('home_bubble[icon][2]', lang('THEME_CONFIG__THIRD_BUBBLE_ICON'), this.input.post('home_bubble[icon][2]') ? this.input.post('home_bubble[icon][2]') : theme_config.home_bubble.icon.2, {placeholder: lang('THEME_CONFIG__BUBBLE_ICON_EXAMPLE'), required: true}) }}
+                    {{ form.input('home_bubble[text][2]', lang('THEME_CONFIG__THIRD_BUBBLE_TEXT'), this.input.post('home_bubble[text][2]') ? this.input.post('home_bubble[text][2]') : theme_config.home_bubble.text.2, {placeholder: lang('THEME_CONFIG__BUBBLE_TEXT_EXAMPLE'), required: true}) }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-12">
+              <br>
+              <div class="box box-solid">
+                <div class="box-header with-border">
+                  <i class="fa fa-arrow-right"></i>
+                  <h3 class="box-title">{{ lang('THEME_CONFIG__JOIN_US_SECTION') }}</h3>
+                </div>
+                <div class="box-body">
+                  <div class="col-md-6">
+                    {{ form.input('join_us_text', lang('THEME_CONFIG__JOIN_US_TEXT'), this.input.post('join_us_text') ? this.input.post('join_us_text') : theme_config.join_us_text, {placeholder: lang('THEME_CONFIG__JOIN_US_TEXT_EXAMPLE'), required: true}) }}
+                  </div>
+                  <div class="col-md-6">
+                    {% set button_actions = {
+                      0: {name: lang('THEME_CONFIG__COPY_BUTTON_ADDRESS'), value: "copy"},
+                      1: {name: lang('THEME_CONFIG__OPEN_ADDRESS'), value: "open"},
+                      2: {name: lang('THEME_CONFIG__OPEN_ADDRESS_NEW_TAB'), value: "open_new_tab"}}
+                    %}
+                    {{ form.select('join_us_button[action]', lang('THEME_CONFIG__JOIN_US_BUTTON_ACTION'), button_actions, {0: theme_config.join_us_button.action}, {required: true}) }}
+                    {{ form.input('join_us_button[text]', lang('THEME_CONFIG__JOIN_US_BUTTON_TEXT'), this.input.post('join_us_button[text]') ? this.input.post('join_us_button[text]') : theme_config.join_us_button.text, {placeholder: lang('THEME_CONFIG__JOIN_US_BUTTON_TEXT_EXAMPLE'), required: true}) }}
+                    {{ form.input('join_us_button[href]', lang('THEME_CONFIG__JOIN_US_BUTTON_ADRESS'), this.input.post('join_us_button[href]') ? this.input.post('join_us_button[href]') : theme_config.join_us_button.href, {placeholder: lang('THEME_CONFIG__JOIN_US_BUTTON_ADRESS_EXAMPLE'), required: true}) }}
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="col-md-12">
               <hr>
             </div>
           </div>
         </div>
-        <div class="tab-pane" id="security">
-          <b>{{ lang('SETTINGS') }} reCAPTCHA :</b>
-          <p>{{ lang('RECAPTCHA_DESCRIPTION') }}</p>
-          {{ form.input('recaptchaSettings[site_key]', lang('RECAPTCHA_SITE_KEY'), this.input.post('recaptchaSettings[site_key]') ? this.input.post('recaptchaSettings[site_key]') : theme_config.recaptchaSettings.site_key, {placeholder: lang('RECAPTCHA_SITE_KEY_EXAMPLE'), required: true}) }}
-          {{ form.input('recaptchaSettings[secret_key]', lang('RECAPTCHA_SECRET_KEY'), this.input.post('recaptchaSettings[secret_key]') ? this.input.post('recaptchaSettings[secret_key]') : theme_config.recaptchaSettings.secret_key, {placeholder: lang('RECAPTCHA_SECRET_KEY_EXAMPLE'), required: true}) }}
-          {{ lang('ACTIVATE_RECAPTCHA') }} ?
-          <input type="hidden" name="recaptchaEnabled" value="false">
-          <div class="form-group">
-            <label class="switch">
-              <input type="checkbox" name="recaptchaEnabled" value="true" {% if (this.input.post('recaptchaEnabled') == true) or (theme_config.recaptchaEnabled == true) %}checked{% endif %}>
-              <span class="slider round"></span>
-            </label>
-          </div>
-        </div>
-        {{ form.simpleInput('send', true, {type: 'hidden'}) }}
-        {{ form.submit(lang('EDIT'), null, {btnType: 'success'}) }}
+        {{ form.submit(lang('UPDATE'), null, {btnType: 'success'}) }}
       </div>
     </div>
     {{ form_close() }}

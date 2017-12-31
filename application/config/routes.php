@@ -111,7 +111,7 @@ if ($this->config->item('language') === 'french') {
     $route['panel/utilisateurs/gestion'] = 'users/admin_manage';
     $route['panel/utilisateurs/editer/(:num)'] = 'users/admin_edit/$1';
     $route['panel/utilisateurs/supprimer/(:num)'] = 'users/admin_delete/$1';
-    $route['panel/utilisateurs/controler/(:num)'] = 'users/admin_take_control/$1';
+    $route['panel/utilisateurs/controler/(:num)'] = 'users/take_control/$1';
 
     /* Groupes & Permissions */
     $route['panel/groupes/creer'] = 'groups/admin_add';

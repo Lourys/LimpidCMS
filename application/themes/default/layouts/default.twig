@@ -10,7 +10,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <title>{{ page_title }} | {{ site_name }}</title>
-  <meta name="description" content="">
+  <meta name="description" content="{{ settings.site_description }}">
   <meta name="author" content="">
   <link rel="icon" sizes="32x32" type="image/png" href="{{ site_url('favicon.png') }}">
 
@@ -26,11 +26,16 @@
 </head>
 
 <body>
+<noscript>
+  <div class="fixed-warning text-center">
+    <span>{{ lang('PLEASE_ACTIVATE_JAVASCRIPT') }}</span><br>
+    <a href="{{ lang('HOW_TO_ACTIVATE_JAVASCRIPT_URL') }}" target="_blank" rel="noopener nofollow">{{ lang('HOW_TO_ACTIVATE_JAVASCRIPT') }}</a>
+  </div>
+</noscript>
 {% if this.session.userdata('real_id') %}
   <div class="fixed-warning text-center">
-    <span>Connecté en tant qu'utilisateur N°{{ this.session.userdata('id') }}</span><br>
-    <a href="{{ route('users/admin_take_control/' ~ this.session.userdata('real_id')) }}">Quitter la prise de
-      contrôle</a>
+    <span>{{ lang('LOGGED_AS_USER_NO') }}{{ this.session.userdata('id') }}</span><br>
+    <a href="{{ route('users/take_control/' ~ this.session.userdata('real_id')) }}">{{ lang('LEAVE_TAKE_CONTROL') }}</a>
   </div>
 {% endif %}
 <header>
@@ -45,7 +50,7 @@
               </a>&nbsp;&nbsp;-&nbsp;
           {% endif %}
           {% if this.authManager.isLogged() %}
-            <a href="{{ route('auth/logout') }}"><i class="fa fa-sign-out"></i>&nbsp;Déconnexion</a>
+            <a href="{{ route('auth/logout') }}"><i class="fa fa-sign-out"></i>&nbsp;{{ lang('LOGOUT') }}</a>
           {% endif %}
         </span>
       </div>

@@ -14,7 +14,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="row no-gutters">
-                                    <img src="{{ site_url('uploads/avatars/' ~ news.avatar) }}" class="user-picture rounded col-3" alt="{{ news.username }}">
+                                    <img src="{{ base_url('uploads/avatars/' ~ news.avatar) }}" class="user-picture rounded col-3" alt="{{ news.username }}">
                                     <div class="title-publication col-9">
                                         <h5 class="card-title">
                                             <a href="{{ route('news/view/' ~ news.slug) }}">{{ news.title }}</a>

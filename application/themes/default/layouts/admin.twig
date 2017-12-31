@@ -1,218 +1,224 @@
-{% if this.authManager.isPermitted(this.session.userdata('id'), 'ADMIN__ACCESS') %}
-  <!DOCTYPE html>
-  <html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
-    <title>{{ page_title }} | {{ site_name }}</title>
-    <link rel="icon" sizes="32x32" type="image/png" href="{{ site_url('favicon.png') }}">
+  <title>{{ page_title }} | {{ site_name }}</title>
+  <link rel="icon" sizes="32x32" type="image/png" href="{{ site_url('favicon.png') }}">
 
-    {% block stylesheets %}
-      <!-- Bootstrap -->
-      <link rel="stylesheet" href="{{ css('admin/bootstrap.min') }}">
-      <!-- Font Awesome -->
-      <link rel="stylesheet" href="{{ css('admin/font-awesome.min') }}">
-      <!-- Custom styles -->
-      <link rel="stylesheet" href="{{ css('humane-flatty') }}">
-      <link rel="stylesheet" href="{{ css('admin/AdminLTE.min') }}">
-      <link rel="stylesheet" href="{{ css('admin/AdminLTE_all-skins.min') }}">
-      <link rel="stylesheet" href="{{ css('admin/style.dev') }}">
-      <!-- Google Font -->
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600">
-    {% endblock %}
+  {% block stylesheets %}
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="{{ css('admin/bootstrap.min') }}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{{ css('admin/font-awesome.min') }}">
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="{{ css('humane-flatty') }}">
+    <link rel="stylesheet" href="{{ css('admin/AdminLTE.min') }}">
+    <link rel="stylesheet" href="{{ css('admin/AdminLTE_all-skins.min') }}">
+    <link rel="stylesheet" href="{{ css('admin/style.dev') }}">
+    <!-- Google Font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600">
+  {% endblock %}
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
 
-  </head>
-  <body class="hold-transition skin-red sidebar-mini">
-  <div class="wrapper">
-    <header class="main-header">
-      <a href="{{ route('admin/admin_index') }}" class="logo">
-        <span class="logo-lg">{{ site_name }}</span>
-        <span class="logo-mini"><i class="fa fa-angle-down"></i></span>
-      </a>
-      <nav class="navbar navbar-static-top">
-        <a href="#" class="sidebar-toggle" data-toggle="push-menu"></a>
-        <div class="navbar-custom-menu">
-          <ul class="nav navbar-nav">
-            <li class="user user-menu">
-              <a href="{{ route('auth/logout') }}">
-                <i class="fa fa-sign-out"></i>
-                {{ lang('LOGOUT') }}
+</head>
+<body class="hold-transition skin-red sidebar-mini">
+<div class="wrapper">
+  <header class="main-header">
+    <a href="{{ route('admin/admin_index') }}" class="logo">
+      <span class="logo-lg">{{ site_name }}</span>
+      <span class="logo-mini"><i class="fa fa-angle-down"></i></span>
+    </a>
+    <nav class="navbar navbar-static-top">
+      <a href="#" class="sidebar-toggle" data-toggle="push-menu"></a>
+      <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+          <li class="user user-menu">
+            <a href="{{ route('auth/logout') }}">
+              <i class="fa fa-sign-out"></i>
+              {{ lang('LOGOUT') }}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <aside class="main-sidebar">
+    <section class="sidebar">
+      <ul class="sidebar-menu" data-widget="tree">
+        <li class="header" style="text-transform: uppercase">{{ lang('MAIN_NAVIGATION') }}</li>
+        <li {% if this.router.class == 'admin' %}class="active"{% endif %}>
+          <a href="{{ route('admin/admin_index') }}"><i class="fa fa-dashboard"></i>
+            <span>{{ lang('DASHBOARD') }}</span>
+          </a>
+        </li>
+        <li {% if this.router.class == 'menu' %}class="active"{% endif %}>
+          <a href="{{ route('menu/admin_manage') }}">
+            <i class="fa fa-bars"></i> <span>{{ lang('MENU') }}</span>
+          </a>
+        </li>
+        <li class="treeview {% if this.router.class == 'pages' %}active{% endif %}">
+          <a href="#">
+            <i class="fa fa-paper-plane"></i> <span>{{ lang('PAGES') }}</span>
+            <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+          </a>
+          <ul class="treeview-menu">
+            <li {% if current_url() == route('pages/admin_add') %}class="active"{% endif %}>
+              <a href="{{ route('pages/admin_add') }}"><i class="fa fa-circle-o"></i> {{ lang('CREATE_PAGE') }}</a>
+            </li>
+            <li {% if current_url() == route('pages/admin_manage') %}class="active"{% endif %}>
+              <a href="{{ route('pages/admin_manage') }}"><i class="fa fa-circle-o"></i> {{ lang('PAGES_MANAGEMENT') }}
               </a>
             </li>
           </ul>
-        </div>
-      </nav>
-    </header>
+        </li>
+        <li class="treeview {% if this.router.class == 'news' %}active{% endif %}">
+          <a href="#">
+            <i class="fa fa-newspaper-o"></i> <span>{{ lang('NEWS') }}</span>
+            <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+          </a>
+          <ul class="treeview-menu">
+            <li {% if current_url() == route('news/admin_add') %}class="active"{% endif %}>
+              <a href="{{ route('news/admin_add') }}"><i class="fa fa-circle-o"></i> {{ lang('CREATE_NEWS') }}</a>
+            </li>
+            <li {% if current_url() == route('news/admin_manage') %}class="active"{% endif %}>
+              <a href="{{ route('news/admin_manage') }}"><i class="fa fa-circle-o"></i> {{ lang('NEWS_MANAGEMENT') }}
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="treeview {% if this.router.class == 'users' %}active{% endif %}">
+          <a href="#">
+            <i class="fa fa-users"></i> <span>{{ lang('USERS') }}</span>
+            <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+          </a>
+          <ul class="treeview-menu">
+            <li {% if current_url() == route('users/admin_add') %}class="active"{% endif %}>
+              <a href="{{ route('users/admin_add') }}"><i class="fa fa-circle-o"></i> {{ lang('CREATE_USER') }}</a>
+            </li>
+            <li {% if current_url() == route('users/admin_manage') %}class="active"{% endif %}>
+              <a href="{{ route('users/admin_manage') }}"><i class="fa fa-circle-o"></i> {{ lang('USERS_MANAGEMENT') }}
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="treeview {% if this.router.class == 'groups' or this.router.class == 'permissions' %}active{% endif %}">
+          <a href="#">
+            <i class="fa fa-id-card-o"></i> <span>{{ lang('GROUPS') }} & {{ lang('PERMISSIONS') }}</span>
+            <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+          </a>
+          <ul class="treeview-menu">
+            <li {% if current_url() == route('groups/admin_add') %}class="active"{% endif %}>
+              <a href="{{ route('groups/admin_add') }}"><i class="fa fa-circle-o"></i> {{ lang('CREATE_GROUP') }}</a>
+            </li>
+            <li {% if current_url() == route('groups/admin_manage') %}class="active"{% endif %}>
+              <a href="{{ route('groups/admin_manage') }}"><i
+                        class="fa fa-circle-o"></i> {{ lang('GROUPS_MANAGEMENT') }}</a>
+            </li>
+          </ul>
+        </li>
+        <li class="treeview {% if this.router.class == 'plugins' %}active{% endif %}">
+          <a href="#">
+            <i class="fa fa-plug"></i> <span>{{ lang('PLUGINS') }}</span>
+            <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+          </a>
+          <ul class="treeview-menu">
+            <li {% if current_url() == route('plugins/admin_available') %}class="active"{% endif %}><a
+                      href="{{ route('plugins/admin_available') }}"><i
+                        class="fa fa-circle-o"></i> {{ lang('INSTALL_PLUGIN') }}</a>
+            </li>
+            <li {% if current_url() == route('plugins/admin_manage') %}class="active"{% endif %}><a
+                      href="{{ route('plugins/admin_manage') }}"><i
+                        class="fa fa-circle-o"></i> {{ lang('PLUGINS_MANAGEMENT') }}</a></li>
+          </ul>
+        </li>
+        <li class="treeview {% if this.router.class == 'themes' %}active{% endif %}">
+          <a href="#">
+            <i class="fa fa-paint-brush"></i> <span>{{ lang('THEMES') }}</span>
+            <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+          </a>
+          <ul class="treeview-menu">
+            <li {% if current_url() == route('themes/admin_available') %}class="active"{% endif %}><a
+                      href="{{ route('themes/admin_available') }}"><i
+                        class="fa fa-circle-o"></i> {{ lang('INSTALL_THEME') }}</a></li>
+            <li {% if current_url() == route('themes/admin_manage') %}class="active"{% endif %}><a
+                      href="{{ route('themes/admin_manage') }}"><i
+                        class="fa fa-circle-o"></i> {{ lang('THEMES_MANAGEMENT') }}</a>
+            </li>
+          </ul>
+        </li>
+        <li class="treeview {% if this.router.class == 'settings' %}active{% endif %}">
+          <a href="#">
+            <i class="fa fa-cog"></i> <span>{{ lang('CUSTOMIZATION') }}</span>
+            <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+          </a>
+          <ul class="treeview-menu">
+            <li {% if current_url() == route('settings/admin_general') %}class="active"{% endif %}><a
+                      href="{{ route('settings/admin_general') }}"><i class="fa fa-circle-o"></i> {{ lang('SETTINGS') }}
+              </a></li>
+          </ul>
+        </li>
+        <li class="treeview {% if this.router.class == 'logs' %}active{% endif %}">
+          <a href="#">
+            <i class="fa fa-wrench"></i> <span>{{ lang('TOOLS') }}</span>
+            <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+          </a>
+          <ul class="treeview-menu">
+            <li {% if current_url() == route('logs/admin_index') %}class="active"{% endif %}><a
+                      href="{{ route('logs/admin_index') }}"><i class="fa fa-circle-o"></i> {{ lang('LOGS') }}</a>
+            </li>
+          </ul>
+        </li>
 
-    <aside class="main-sidebar">
-      <section class="sidebar">
-        <ul class="sidebar-menu" data-widget="tree">
-          <li class="header" style="text-transform: uppercase">{{ lang('MAIN_NAVIGATION') }}</li>
-          <li {% if this.router.class == 'admin' %}class="active"{% endif %}>
-            <a href="{{ route('admin/admin_index') }}"><i class="fa fa-dashboard"></i>
-              <span>{{ lang('DASHBOARD') }}</span>
-            </a>
-          </li>
-          <li {% if this.router.class == 'menu' %}class="active"{% endif %}>
-            <a href="{{ route('menu/admin_manage') }}">
-              <i class="fa fa-bars"></i> <span>{{ lang('MENU') }}</span>
-            </a>
-          </li>
-          <li class="treeview {% if this.router.class == 'pages' %}active{% endif %}">
-            <a href="#">
-              <i class="fa fa-paper-plane"></i> <span>{{ lang('PAGES') }}</span>
-              <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
-            </a>
-            <ul class="treeview-menu">
-              <li {% if current_url() == route('pages/admin_add') %}class="active"{% endif %}>
-                <a href="{{ route('pages/admin_add') }}"><i class="fa fa-circle-o"></i> {{ lang('CREATE_PAGE') }}</a>
-              </li>
-              <li {% if current_url() == route('pages/admin_manage') %}class="active"{% endif %}>
-                <a href="{{ route('pages/admin_manage') }}"><i class="fa fa-circle-o"></i> {{ lang('PAGES_MANAGEMENT') }}</a>
-              </li>
-            </ul>
-          </li>
-          <li class="treeview {% if this.router.class == 'news' %}active{% endif %}">
-            <a href="#">
-              <i class="fa fa-newspaper-o"></i> <span>{{ lang('NEWS') }}</span>
-              <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
-            </a>
-            <ul class="treeview-menu">
-              <li {% if current_url() == route('news/admin_add') %}class="active"{% endif %}>
-                <a href="{{ route('news/admin_add') }}"><i class="fa fa-circle-o"></i> {{ lang('CREATE_NEWS') }}</a>
-              </li>
-              <li {% if current_url() == route('news/admin_manage') %}class="active"{% endif %}>
-                <a href="{{ route('news/admin_manage') }}"><i class="fa fa-circle-o"></i> {{ lang('NEWS_MANAGEMENT') }}</a>
-              </li>
-            </ul>
-          </li>
-          <li class="treeview {% if this.router.class == 'users' %}active{% endif %}">
-            <a href="#">
-              <i class="fa fa-users"></i> <span>{{ lang('USERS') }}</span>
-              <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
-            </a>
-            <ul class="treeview-menu">
-              <li {% if current_url() == route('users/admin_add') %}class="active"{% endif %}>
-                <a href="{{ route('users/admin_add') }}"><i class="fa fa-circle-o"></i> {{ lang('CREATE_USER') }}</a>
-              </li>
-              <li {% if current_url() == route('users/admin_manage') %}class="active"{% endif %}>
-                <a href="{{ route('users/admin_manage') }}"><i class="fa fa-circle-o"></i> {{ lang('USERS_MANAGEMENT') }}</a>
-              </li>
-            </ul>
-          </li>
-          <li class="treeview {% if this.router.class == 'groups' or this.router.class == 'permissions' %}active{% endif %}">
-            <a href="#">
-              <i class="fa fa-id-card-o"></i> <span>{{ lang('GROUPS') }} & {{ lang('PERMISSIONS') }}</span>
-              <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
-            </a>
-            <ul class="treeview-menu">
-              <li {% if current_url() == route('groups/admin_add') %}class="active"{% endif %}>
-                <a href="{{ route('groups/admin_add') }}"><i class="fa fa-circle-o"></i> {{ lang('CREATE_GROUP') }}</a>
-              </li>
-              <li {% if current_url() == route('groups/admin_manage') %}class="active"{% endif %}>
-                <a href="{{ route('groups/admin_manage') }}"><i class="fa fa-circle-o"></i> {{ lang('GROUPS_MANAGEMENT') }}</a>
-              </li>
-            </ul>
-          </li>
-          <li class="treeview {% if this.router.class == 'plugins' %}active{% endif %}">
-            <a href="#">
-              <i class="fa fa-plug"></i> <span>{{ lang('PLUGINS') }}</span>
-              <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
-            </a>
-            <ul class="treeview-menu">
-              <li {% if current_url() == route('plugins/admin_available') %}class="active"{% endif %}><a
-                        href="{{ route('plugins/admin_available') }}"><i class="fa fa-circle-o"></i> {{ lang('INSTALL_PLUGIN') }}</a>
-              </li>
-              <li {% if current_url() == route('plugins/admin_manage') %}class="active"{% endif %}><a
-                        href="{{ route('plugins/admin_manage') }}"><i class="fa fa-circle-o"></i> {{ lang('PLUGINS_MANAGEMENT') }}</a></li>
-            </ul>
-          </li>
-          <li class="treeview {% if this.router.class == 'themes' %}active{% endif %}">
-            <a href="#">
-              <i class="fa fa-paint-brush"></i> <span>{{ lang('THEMES') }}</span>
-              <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
-            </a>
-            <ul class="treeview-menu">
-              <li {% if current_url() == route('themes/admin_available') %}class="active"{% endif %}><a
-                        href="{{ route('themes/admin_available') }}"><i class="fa fa-circle-o"></i> {{ lang('INSTALL_THEME') }}</a></li>
-              <li {% if current_url() == route('themes/admin_manage') %}class="active"{% endif %}><a
-                        href="{{ route('themes/admin_manage') }}"><i class="fa fa-circle-o"></i> {{ lang('THEMES_MANAGEMENT') }}</a>
-              </li>
-            </ul>
-          </li>
-          <li class="treeview {% if this.router.class == 'settings' %}active{% endif %}">
-            <a href="#">
-              <i class="fa fa-cog"></i> <span>{{ lang('CUSTOMIZATION') }}</span>
-              <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
-            </a>
-            <ul class="treeview-menu">
-              <li {% if current_url() == route('settings/admin_general') %}class="active"{% endif %}><a
-                        href="{{ route('settings/admin_general') }}"><i class="fa fa-circle-o"></i> {{ lang('SETTINGS') }}</a></li>
-            </ul>
-          </li>
-          <li class="treeview {% if this.router.class == 'logs' %}active{% endif %}">
-            <a href="#">
-              <i class="fa fa-wrench"></i> <span>{{ lang('TOOLS') }}</span>
-              <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
-            </a>
-            <ul class="treeview-menu">
-              <li {% if current_url() == route('logs/admin_index') %}class="active"{% endif %}><a
-                        href="{{ route('logs/admin_index') }}"><i class="fa fa-circle-o"></i> {{ lang('LOGS') }}</a>
-              </li>
-            </ul>
-          </li>
+        {% if plugins_nav %}
+          <li class="header" style="text-transform: uppercase">{{ lang('PLUGINS') }}</li>
+          {% for name,route in plugins_nav %}
+            <li {% if current_url() == route(route) %}class="active"{% endif %}><a href="{{ route(route) }}"><i
+                        class="fa fa-circle-o text-red"></i> <span>{{ name }}</span></a></li>
+          {% endfor %}
+        {% endif %}
 
-          {% if plugins_nav %}
-            <li class="header" style="text-transform: uppercase">{{ lang('PLUGINS') }}</li>
-            {% for name,route in plugins_nav %}
-              <li {% if current_url() == route(route) %}class="active"{% endif %}><a href="{{ route(route) }}"><i
-                          class="fa fa-circle-o text-red"></i> <span>{{ name }}</span></a></li>
-            {% endfor %}
-          {% endif %}
+        <li><br></li>
+        <li><a href="{{ site_url() }}"><i class="fa fa-arrow-circle-o-right"></i>
+            <span>{{ lang('BACK_TO_WEBSITE') }}</span></a></li>
+      </ul>
+    </section>
+  </aside>
 
-          <li><br></li>
-          <li><a href="{{ site_url() }}"><i class="fa fa-arrow-circle-o-right"></i> <span>{{ lang('BACK_TO_WEBSITE') }}</span></a></li>
-        </ul>
-      </section>
-    </aside>
-
-    <div class="content-wrapper">
-      {% block content %}{% endblock %}
-    </div>
-
-    <footer class="main-footer">
-      <div class="pull-right hidden-xs">
-        <b>LimpidCMS</b> v{{ this.config.item('cms_version') }}
-      </div>
-      <strong>Copyright &copy; <a href="https://adminlte.io" target="_blank" rel="noopener nofollow">Almsaeed Studio</a>
-        & <a href="https://www.limpidcms.fr" target="_blank">LimpidCMS</a>.</strong>
-        {{ lang('ALL_RIGHTS_RESERVED') }}
-    </footer>
+  <div class="content-wrapper">
+    {% block content %}{% endblock %}
   </div>
 
-  {% block javascript %}
-    <!-- jQuery 3 -->
-    <script src="{{ js('admin/jquery.min') }}"></script>
-    <!-- Bootstrap -->
-    <script src="{{ js('admin/bootstrap.min') }}" defer></script>
-    <!-- Custom scripts -->
-    <script src="{{ js('admin/adminlte.min') }}" defer></script>
-    <script src="{{ js('humane.min') }}"></script>
+  <footer class="main-footer">
+    <div class="pull-right hidden-xs">
+      <b>LimpidCMS</b> v{{ settings.cms_version }}
+    </div>
+    <strong>Copyright &copy; <a href="https://adminlte.io" target="_blank" rel="noopener nofollow">Almsaeed Studio</a>
+      & <a href="https://www.limpidcms.fr" target="_blank">LimpidCMS</a>.</strong>
+    {{ lang('ALL_RIGHTS_RESERVED') }}
+  </footer>
+</div>
 
-    {% include 'components/flashdata.twig' %}
-  {% endblock %}
+{% block javascript %}
+  <!-- jQuery 3 -->
+  <script src="{{ js('admin/jquery.min') }}"></script>
+  <!-- Bootstrap -->
+  <script src="{{ js('admin/bootstrap.min') }}" defer></script>
+  <!-- Custom scripts -->
+  <script src="{{ js('admin/adminlte.min') }}" defer></script>
+  <script src="{{ js('humane.min') }}"></script>
 
-  </body>
-  </html>
-{% else %}
-  {{ redirect(site_url()) }}
-{% endif %}
+  {% include 'components/flashdata.twig' %}
+{% endblock %}
+
+</body>
+</html>

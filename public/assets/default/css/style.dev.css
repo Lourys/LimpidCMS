@@ -306,6 +306,26 @@ header {
   line-height: inherit;
 }
 
+.account img {
+  max-width: 70%;
+}
+
+.account .delete-img {
+  display: block;
+  margin-right: auto!important;
+  margin-left: auto!important;
+  width: 75%;
+}
+
+.account .avatarUpload label {
+  width: 100%;
+  text-align: center
+}
+
+.account .avatarUpload #avatarHelp {
+  text-align: center;
+}
+
 footer {
   padding: 1rem;
   margin-top: 30px;

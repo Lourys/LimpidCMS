@@ -31,7 +31,7 @@
                     {{ form.input('password_confirm', lang('PASSWORD_CONFIRMATION'), null, {type: 'password', placeholder: lang('PASSWORD_EXAMPLE'), required: true}) }}
                 </div>
                 <div class="col-md-12">
-                    {{ form.select('group', lang('GROUP'), groups, this.input.post('group')) }}
+                    {{ form.select('group', lang('GROUP'), groups, {0: this.input.post('group')}) }}
                 </div>
 
                 <div class="col-md-12">

@@ -23,7 +23,7 @@
           {{ form.input('title', lang('NEWS_TITLE'), news.title, {placeholder: lang('TITLE_EXAMPLE'), required: true}) }}
         </div>
         <div class="col-md-12">
-          {{ form.input('slug', lang('SLUG'), news.slug, {placeholder: lang('SLUG_EXAMPLE'), addon_before: route('news/view/ '), required: true}) }}
+          {{ form.input('slug', lang('SLUG'), news.slug, {placeholder: lang('SLUG_EXAMPLE'), prefix: route('news/view/ '), required: true}) }}
         </div>
         <div class="col-md-12">
           {{ form.textarea('content', lang('CONTENT'), news.content) }}

@@ -1,0 +1,79 @@
+{% extends 'layouts/admin.twig' %}
+
+{% import 'macros/form.twig' as form %}
+
+{% block content %}
+  <section class="content-header">
+    <h1>{{ lang('SETTINGS_EDITION') }}</h1>
+    <ol class="breadcrumb">
+      <li><a href="{{ route('admin/admin_index') }}"><i class="fa fa-dashboard"></i> {{ lang('HOME') }}</a></li>
+      <li>{{ lang('SETTINGS') }}</li>
+      <li class="active">{{ lang('SETTINGS_EDITION') }}</li>
+    </ol>
+  </section>
+  <section class="content">
+    {{ form_open() }}
+    <div class="nav-tabs-custom">
+      {% include 'admin/settings/nav.twig' %}
+      <div class="tab-content">
+        <div class="box box-solid">
+          <div class="box-header with-border">
+            <i class="fa fa-arrow-right"></i>
+            <h4 class="box-title">CAPTCHA</h4>
+          </div>
+          <div class="box-body">
+            <div class="row">
+              <div class="col-md-8">
+                <b>{{ lang('SETTINGS') }} reCAPTCHA :</b>
+                <p>{{ lang('RECAPTCHA_DESCRIPTION') }}</p>
+                {{ form.input('recaptchaSettings[site_key]', lang('RECAPTCHA_SITE_KEY'), this.input.post() ? this.input.post('recaptchaSettings[site_key]') : settings.recaptchaSettings.site_key, {placeholder: lang('RECAPTCHA_SITE_KEY_EXAMPLE')}) }}
+                {{ form.input('recaptchaSettings[secret_key]', lang('RECAPTCHA_SECRET_KEY'), this.input.post() ? this.input.post('recaptchaSettings[secret_key]') : settings.recaptchaSettings.secret_key, {placeholder: lang('RECAPTCHA_SECRET_KEY_EXAMPLE')}) }}
+                {{ lang('ACTIVATE_RECAPTCHA') }} ?
+                <input type="hidden" name="recaptchaEnabled" value="false">
+                <div class="form-group">
+                  <label class="switch">
+                    <input type="checkbox" name="recaptchaEnabled" value="true"
+                           {% if (this.input.post('recaptchaEnabled') == 'true') or (settings.recaptchaEnabled == true) %}checked{% endif %}>
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <b>LimpidCMS CAPTCHA :</b>
+                <p>{{ lang('CAPTCHA_DESCRIPTION') }}</p>
+                {{ lang('ACTIVATE_CAPTCHA') }} ?
+                <input type="hidden" name="limpidCaptchaEnabled" value="false">
+                <div class="form-group">
+                  <label class="switch">
+                    <input type="checkbox" name="limpidCaptchaEnabled" value="true"
+                           {% if (this.input.post('limpidCaptchaEnabled') == 'true') or (settings.limpidCaptchaEnabled == true) %}checked{% endif %}>
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="box box-solid">
+          <div class="box-header with-border">
+            <i class="fa fa-arrow-right"></i>
+            <h4 class="box-title">{{ lang('PASSWORDS') }}</h4>
+          </div>
+          <div class="box-body">
+            <div class="row">
+              <div class="col-md-3">
+                {{ form.input('password[min_length]', lang('PASSWORDS_MIN_LENGTH'), this.input.post() ? this.input.post('password[min_length]') : settings.password.min_length, {placeholder: 8, required: true, type: 'number'}) }}
+              </div>
+              <div class="col-md-3">
+                {{ form.input('password[max_length]', lang('PASSWORDS_MAX_LENGTH'), this.input.post() ? this.input.post('password[max_length]') : settings.password.max_length, {placeholder: 45, required: true, type: 'number'}) }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr>
+        {{ form.submit(lang('EDIT'), null, {btnType: 'success'}) }}
+      </div>
+    </div>
+    {{ form_close() }}
+  </section>
+{% endblock %}

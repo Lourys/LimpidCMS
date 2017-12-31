@@ -10,6 +10,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @property CI_Form_validation $form_validation
  * @property Users_Manager $usersManager
  * @property Groups_Manager $groupsManager
+ * @property CI_Upload $upload
+ * @property CI_User_agent $agent
  */
 class Users extends Limpid_Controller
 {
@@ -32,8 +34,8 @@ class Users extends Limpid_Controller
       // Form rules check
       $this->form_validation->set_rules('username', $this->lang->line('USERNAME'), 'required|min_length[3]|max_length[25]|is_unique[users.username]|alpha_dash');
       $this->form_validation->set_rules('email', $this->lang->line('EMAIL'), 'required|min_length[3]|max_length[105]|valid_email|is_unique[users.email]');
-      $this->form_validation->set_rules('password', $this->lang->line('PASSWORD'), 'required|min_length[6]|matches[password_confirm]');
-      $this->form_validation->set_rules('password_confirm', $this->lang->line('PASSWORD_CONFIRMATION'), 'required|min_length[6]');
+      $this->form_validation->set_rules('password', $this->lang->line('PASSWORD'), 'required|min_length[' . $this->config->item('password')['min_length'] . ']|max_length[' . $this->config->item('password')['max_length'] . ']');
+      $this->form_validation->set_rules('password_confirm', $this->lang->line('PASSWORD_CONFIRMATION'), 'required|matches[password_confirm]');
       if ($this->config->item('recaptchaEnabled'))
         $this->form_validation->set_rules('g-recaptcha-response', $this->lang->line('RECAPTCHA'), 'required');
       if ($this->config->item('limpidCaptchaEnabled') && function_exists('gd_info'))
@@ -56,8 +58,9 @@ class Users extends Limpid_Controller
           }
         }
 
-        if ($this->usersManager->registerUser($this->input->post('username'), $this->input->post('email'), password_hash($this->input->post('password'), PASSWORD_BCRYPT, ['cost' => 14]), $this->groupsManager->getDefaultGroup()[0]->id, $_SERVER['REMOTE_ADDR'])) {
+        if ($user_id = $this->usersManager->registerUser($this->input->post('username'), $this->input->post('email'), password_hash($this->input->post('password'), PASSWORD_BCRYPT, ['cost' => 14]), $this->groupsManager->getDefaultGroup()[0]->id, $_SERVER['REMOTE_ADDR'])) {
           // If registration succeed
+          $this->emitter->emit('users.creation', [$user_id]);
           $this->session->set_flashdata('success', $this->lang->line('REGISTER_SUCCEEDED'));
           redirect(route('auth/login'));
         } else {
@@ -94,17 +97,17 @@ class Users extends Limpid_Controller
       if ($this->input->post('email') != $this->data['user']->email)
         $this->form_validation->set_rules('email', $this->lang->line('EMAIL'), 'required|min_length[3]|max_length[105]|valid_email|is_unique[users.email]');
       if ($this->input->post('password') != '' || $this->input->post('password_confirm') != '') {
-        $this->form_validation->set_rules('password', $this->lang->line('PASSWORD'), 'required|min_length[6]|matches[password_confirm]');
-        $this->form_validation->set_rules('password_confirm', $this->lang->line('PASSWORD_CONFIRMATION'), 'required|min_length[6]');
+        $this->form_validation->set_rules('password', $this->lang->line('PASSWORD'), 'required|min_length[' . $this->config->item('password')['min_length'] . ']|max_length[' . $this->config->item('password')['max_length'] . ']');
+        $this->form_validation->set_rules('password_confirm', $this->lang->line('PASSWORD_CONFIRMATION'), 'required|matches[password_confirm]');
       }
       $this->form_validation->set_rules('biography', $this->lang->line('BIOGRAPHY'), 'max_length[150]');
 
       // If check passed
       if ($this->form_validation->run()) {
         $data = [
-          'username'  => $this->input->post('username'),
-          'email'     => $this->input->post('email'),
-          'password'  => $this->input->post('password') != ''
+          'username' => $this->input->post('username'),
+          'email' => $this->input->post('email'),
+          'password' => $this->input->post('password') != ''
             ? password_hash($this->input->post('password'), PASSWORD_BCRYPT, ['cost' => 14])
             : $this->data['user']->password,
           'biography' => $this->input->post('biography')
@@ -126,6 +129,103 @@ class Users extends Limpid_Controller
       // If user isn't logged
       $this->session->set_flashdata('error', $this->lang->line('LOGIN_NEEDED'));
       redirect(site_url());
+    }
+  }
+
+
+  public function edit_avatar()
+  {
+    if ($this->authManager->isLogged()) {
+      $this->load->library('user_agent', null, 'agent');
+      $redirect = $this->agent->referrer() ? $this->agent->referrer() : site_url();
+
+      if ($this->authManager->isPermitted($this->session->userdata('id'), 'MISCELLANEOUS__AVATAR_EDITION')) {
+        $this->load->library('form_validation');
+        $this->load->helper('form');
+
+        $this->form_validation->set_rules('user_id', 'ID', 'required');
+
+        if ($this->form_validation->run()) {
+          // Check if user is permitted to edit others avatars
+          if ($this->input->post('user_id') != $this->session->userdata('id') && !$this->authManager->isPermitted($this->session->userdata('id'), 'USERS__EDIT')) {
+            $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
+            redirect($redirect);
+          }
+
+          $extension = strtolower(pathinfo($_FILES['avatarUpload']['name'], PATHINFO_EXTENSION));
+          $fileName = uniqid();
+
+          $config['upload_path'] = './uploads/avatars/';
+          $config['allowed_types'] = 'jpg|png|gif';
+          $config['max_size'] = $this->config->item('avatar')['max_size'];
+          $config['max_width'] = $this->config->item('avatar')['max_width'];
+          $config['max_height'] = $this->config->item('avatar')['max_height'];
+          $config['overwrite'] = true;
+          $config['file_name'] = $fileName . '.' . $extension;
+
+          $this->load->library('upload', $config);
+
+          if ($this->upload->do_upload('avatarUpload')) {
+            $user = $this->usersManager->getUser($this->input->post('user_id'));
+            unlink('./uploads/avatars/' . $user->avatar);
+            $this->usersManager->editUser($this->input->post('user_id'), ['avatar' => $fileName . '.' . $extension]);
+            $this->session->set_flashdata('success', $this->lang->line('AVATAR_SUCCESSFULLY_UPLOADED'));
+          } else {
+            $this->session->set_flashdata('error', $this->upload->display_errors());
+          }
+
+          redirect($redirect);
+        }
+      } else {
+        $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
+        redirect($redirect);
+      }
+    } else {
+      // If user isn't logged
+      $this->session->set_flashdata('error', $this->lang->line('LOGIN_NEEDED'));
+      redirect(route('users/login'));
+    }
+  }
+
+
+  public function delete_avatar()
+  {
+    if ($this->authManager->isLogged()) {
+      $this->load->library('user_agent', null, 'agent');
+      $redirect = $this->agent->referrer() ? $this->agent->referrer() : site_url();
+
+      if ($this->authManager->isPermitted($this->session->userdata('id'), 'MISCELLANEOUS__AVATAR_EDITION')) {
+        $this->load->library('form_validation');
+        $this->load->helper('form');
+
+        $this->form_validation->set_rules('user_id', 'ID', 'required');
+
+        if ($this->form_validation->run()) {
+          // Check if user is permitted to edit others avatars
+          if ($this->input->post('user_id') != $this->session->userdata('id') && !$this->authManager->isPermitted($this->session->userdata('id'), 'USERS__EDIT')) {
+            $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
+            redirect($redirect);
+          }
+          $user = $this->usersManager->getUser($this->input->post('user_id'));
+
+          if ($user->avatar != null) {
+            if (unlink('./uploads/avatars/' . $user->avatar) && $this->usersManager->editUser($this->input->post('user_id'), ['avatar' => null])) {
+              $this->session->set_flashdata('success', $this->lang->line('AVATAR_SUCCESSFULLY_DELETED'));
+            } else {
+              $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
+            }
+          }
+
+          redirect($redirect);
+        }
+      } else {
+        $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
+        redirect($redirect);
+      }
+    } else {
+      // If user isn't logged
+      $this->session->set_flashdata('error', $this->lang->line('LOGIN_NEEDED'));
+      redirect(route('users/login'));
     }
   }
 
@@ -155,8 +255,9 @@ class Users extends Limpid_Controller
 
       // If check passed
       if ($this->form_validation->run()) {
-        if ($this->usersManager->registerUser($this->input->post('username'), $this->input->post('email'), password_hash($this->input->post('password'), PASSWORD_BCRYPT, ['cost' => 14]), $this->input->post('group'))) {
+        if ($user_id = $this->usersManager->registerUser($this->input->post('username'), $this->input->post('email'), password_hash($this->input->post('password'), PASSWORD_BCRYPT, ['cost' => 14]), $this->input->post('group'))) {
           // If user adding succeed
+          $this->emitter->emit('users.creation', [$user_id]);
           $this->session->set_flashdata('success', $this->lang->line('USERS_ADD_SUCCEEDED'));
           redirect(route('users/admin_manage'));
         } else {
@@ -278,7 +379,7 @@ class Users extends Limpid_Controller
   }
 
 
-  public function admin_take_control($id)
+  public function take_control($id)
   {
     // If already logged as and want log back
     if ($this->session->userdata('real_id') == $id) {

@@ -1,14 +1,19 @@
 {% macro input(name, label, value = null, options = []) %}
   <div class="form-group {{ options.class }}">
     <label for="{{ name }}">{{ label }} :</label>
-    {% if options.addon_before %}
-    <div class="input-group">
-      <span class="input-group-addon" id="addon-before">{{ options.addon_before }}</span>
+    {% if options.prefix or options.suffix %}
+      <div class="input-group">
+    {% endif %}
+      {% if options.prefix %}
+        <span class="input-group-addon" id="addon-before">{{ options.prefix }}</span>
       {% endif %}
       <input name="{{ name }}" type="{{ options.type }}" class="form-control" id="{{ name }}"
              placeholder="{{ options.placeholder }}"
              value="{{ value }}" {{ options.required == true ? 'required' : '' }}>
-      {% if options.addon_before %}
+      {% if options.suffix %}
+        <span class="input-group-addon" id="addon-after">{{ options.suffix }}</span>
+      {% endif %}
+      {% if options.prefix or options.suffix %}
     </div>
     {% endif %}
   </div>
@@ -53,7 +58,8 @@
   <div class="form-group {{ options.class }}">
     <label for="{{ name }}">{{ label }} :</label>
     <textarea name="{{ name }}" id="{{ name }}" class="form-control"
-              placeholder="{{ options.placeholder }}" {{ options.required == true ? 'required' : '' }} rows="{{ options.rows }}">{{ value }}</textarea>
+              placeholder="{{ options.placeholder }}" {{ options.required == true ? 'required' : '' }}
+              rows="{{ options.rows }}">{{ value }}</textarea>
   </div>
 {% endmacro %}
 
@@ -63,8 +69,8 @@
 {% endmacro %}
 
 {% macro submit(value, name, options = []) %}
-  <input type="submit" class="btn{% if options.btnType %} btn-{{ options.btnType }}{% endif %}" name="{{ name }}"
-         value="{{ value }}"{% if options.id %} id="{{ options.id }}"{% endif %}>
+  <input type="submit" class="btn{% if options.btnType %} btn-{{ options.btnType }}{% endif %} {{ options.class }}" name="{{ name }}"
+         value="{{ value }}"{% if options.id %} id="{{ options.id }}"{% endif %}{% if options.style %} style="{{ options.style }}"{% endif %}>
 {% endmacro %}
 
 {% macro tinymceInit() %}

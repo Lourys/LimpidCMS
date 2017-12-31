@@ -47,6 +47,7 @@ class CMS_Controller extends CI_Controller
   {
     parent::__construct();
     self::$instance || self::$instance =& $this;
+
     $this->config->load('config');
     date_default_timezone_set($this->config->item('timezone'));
     $this->lang->load($this->config->item('theme'));
@@ -80,6 +81,8 @@ class CMS_Controller extends CI_Controller
 
 
     $this->emitter = new Evenement\EventEmitter();
+    require_once (APPPATH . 'Limpid_Events.php');
+    new Limpid_Events();
     $this->pluginsManager = new Plugins_Manager();
     $this->pluginsManager->loadEventHandlers();
     $this->emitter->emit('limpid.initialization');
@@ -115,6 +118,7 @@ class CMS_Controller extends CI_Controller
     $this->twig->getTwig()->addExtension(new Lang_Extension());
     $this->twig->getTwig()->addExtension(new Twig_Extension_StringLoader());
     $this->twig->addGlobal('site_name', $this->config->item('site_name'));
+    $this->twig->addGlobal('settings', $this->config->config);
     $this->twig->addGlobal('theme_config', $this->themesManager->getThemeConfig());
     $this->twig->addGlobal('this', $this);
 
@@ -130,7 +134,13 @@ class Limpid_Controller extends CMS_Controller
 
     // If is an admin method
     if (strpos($this->router->method, 'admin_') !== false) {
-      $this->data['plugins_nav'] = $this->pluginsManager->getAdminNav();
+      if ($this->authManager->isPermitted($this->session->userdata('id'), 'ADMIN__ACCESS')) {
+        $this->data['plugins_nav'] = $this->pluginsManager->getAdminNav();
+      } else {
+        $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
+        redirect(site_url());
+        exit();
+      }
     } else {
       $this->load->library('Menu_Manager', null, 'menuManager');
     }
@@ -155,6 +165,8 @@ class Plugins_Manager
   private $admin_nav;
 
   private $account_nav;
+
+  private $limpid;
 
   /**
    * Plugins_Manager constructor.
@@ -200,10 +212,13 @@ class Plugins_Manager
   {
     if ($this->plugins != null) {
       foreach ($this->plugins as $plugin) {
-        if ($plugin->enabled && file_exists(APPPATH . 'plugins/' . $plugin->uri . '/' . $plugin->uri . '_Events.php')) {
-          $eventFileName = $plugin->uri . '_Events';
-          require_once(APPPATH . 'plugins/' . $plugin->uri . '/' . $eventFileName . '.php');
-          new $eventFileName();
+        if ($plugin->enabled) {
+          $this->limpid->load->add_module($plugin->uri);
+          if (file_exists(APPPATH . 'plugins/' . $plugin->uri . '/' . $plugin->uri . '_Events.php')) {
+            $eventFileName = $plugin->uri . '_Events';
+            require_once(APPPATH . 'plugins/' . $plugin->uri . '/' . $eventFileName . '.php');
+            new $eventFileName();
+          }
         }
       }
     }

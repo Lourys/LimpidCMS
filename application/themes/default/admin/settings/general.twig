@@ -14,65 +14,25 @@
   <section class="content">
     {{ form_open() }}
     <div class="nav-tabs-custom">
-      <ul class="nav nav-tabs pull-right">
-        <li class="active"><a href="#general" data-toggle="tab">{{ lang('GENERAL_SETTINGS') }}</a></li>
-        <li><a href="#security" data-toggle="tab">{{ lang('SECURITY_SETTINGS') }}</a></li>
-        <li class="pull-left header"><i class="fa fa-th"></i> {{ lang('EDIT_SETTINGS') }}</li>
-      </ul>
+      {% include 'admin/settings/nav.twig' %}
       <div class="tab-content">
-        <div class="tab-pane active" id="general">
-          <div class="row">
-            <div class="col-md-5">
-              {{ form.input('site_name', lang('WEBSITE_NAME'), this.input.post('site_name') ? this.input.post('site_name') : settings.site_name, {placeholder: lang('WEBSITE_NAME_EXAMPLE'), required: true}) }}
-            </div>
-            <div class="col-md-3">
-              {{ form.select('timezone', lang('TIMEZONE'), timezones, {0: this.config.item('timezone')}, {required: true}) }}
-            </div>
-            <div class="col-md-3 col-md-offset-1">
-              {{ form.select('language', lang('WEBSITE_LANG'), languages, {0: this.config.item('language')}, {required: true}) }}
-            </div>
-            <div class="col-md-12">
-              {{ form.input('site_description', lang('WEBSITE_DESCRIPTION'), this.input.post('site_description') ? this.input.post('site_description') : settings.site_description, {placeholder: lang('WEBSITE_DESCRIPTION_EXAMPLE'), required: true}) }}
-            </div>
-            <div class="col-md-12">
-              <hr>
-            </div>
+        <div class="row">
+          <div class="col-md-5">
+            {{ form.input('site_name', lang('WEBSITE_NAME'), this.input.post() ? this.input.post('site_name') : settings.site_name, {placeholder: lang('WEBSITE_NAME_EXAMPLE'), required: true}) }}
+          </div>
+          <div class="col-md-3">
+            {{ form.select('timezone', lang('TIMEZONE'), timezones, {0: this.input.post() ? this.input.post('timezone') : settings.timezone}, {required: true}) }}
+          </div>
+          <div class="col-md-3 col-md-offset-1">
+            {{ form.select('language', lang('WEBSITE_LANG'), languages, {0: this.input.post() ? this.input.post('language') : settings.language}, {required: true}) }}
+          </div>
+          <div class="col-md-12">
+            {{ form.input('site_description', lang('WEBSITE_DESCRIPTION'), this.input.post() ? this.input.post('site_description') : settings.site_description, {placeholder: lang('WEBSITE_DESCRIPTION_EXAMPLE'), required: true}) }}
+          </div>
+          <div class="col-md-12">
+            <hr>
           </div>
         </div>
-        <div class="tab-pane" id="security">
-          <div class="row">
-            <div class="col-md-8">
-              <b>{{ lang('SETTINGS') }} reCAPTCHA :</b>
-              <p>{{ lang('RECAPTCHA_DESCRIPTION') }}</p>
-              {{ form.input('recaptchaSettings[site_key]', lang('RECAPTCHA_SITE_KEY'), this.input.post('recaptchaSettings[site_key]') ? this.input.post('recaptchaSettings[site_key]') : settings.recaptchaSettings.site_key, {placeholder: lang('RECAPTCHA_SITE_KEY_EXAMPLE'), required: true}) }}
-              {{ form.input('recaptchaSettings[secret_key]', lang('RECAPTCHA_SECRET_KEY'), this.input.post('recaptchaSettings[secret_key]') ? this.input.post('recaptchaSettings[secret_key]') : settings.recaptchaSettings.secret_key, {placeholder: lang('RECAPTCHA_SECRET_KEY_EXAMPLE'), required: true}) }}
-              {{ lang('ACTIVATE_RECAPTCHA') }} ?
-              <input type="hidden" name="recaptchaEnabled" value="false">
-              <div class="form-group">
-                <label class="switch">
-                  <input type="checkbox" name="recaptchaEnabled" value="true" {% if (this.input.post('recaptchaEnabled') == true) or (settings.recaptchaEnabled == true) %}checked{% endif %}>
-                  <span class="slider round"></span>
-                </label>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <b>LimpidCMS CAPTCHA :</b>
-              <p>{{ lang('CAPTCHA_DESCRIPTION') }}</p>
-              {{ lang('ACTIVATE_CAPTCHA') }} ?
-              <input type="hidden" name="limpidCaptchaEnabled" value="false">
-              <div class="form-group">
-                <label class="switch">
-                  <input type="checkbox" name="limpidCaptchaEnabled" value="true" {% if (this.input.post('limpidCaptchaEnabled') == true) or (settings.limpidCaptchaEnabled == true) %}checked{% endif %}>
-                  <span class="slider round"></span>
-                </label>
-              </div>
-            </div>
-            <div class="col-md-12">
-              <hr>
-            </div>
-          </div>
-        </div>
-        {{ form.simpleInput('send', true, {type: 'hidden'}) }}
         {{ form.submit(lang('EDIT'), null, {btnType: 'success'}) }}
       </div>
     </div>

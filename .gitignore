@@ -9,7 +9,8 @@ application/logs/*
 
 application/config/database.php
 
-public/uploads/*
+public/uploads/avatars/*
+!public/uploads/avatars/.gitkeep
 public/availablePlugins.json
 public/availableThemes.json
 public/default2.zip

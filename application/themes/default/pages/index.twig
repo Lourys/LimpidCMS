@@ -1,80 +1,106 @@
 {% extends 'layouts/default.twig' %}
 
 {% block full_width_content %}
-    <section class="col-12">
-        <div id="carousel" class="carousel slide" data-ride="carousel">
-            <div class="carousel-inner" role="listbox">
-                <div class="carousel-item active">
-                    <div class="d-block img-carousel" style="background-image: url({{ img('header.jpg') }});"></div>
-                    <div class="carousel-caption d-none d-md-block">
-                        <h3>....</h3>
-                        <p>...</p>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <div class="d-block img-carousel" style="background-image: url({{ img('header.jpg') }});"></div>
-                    <div class="carousel-caption d-none d-md-block">
-                        <h3>......</h3>
-                        <p>.....</p>
-                    </div>
-                </div>
-            </div>
-            <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="sr-only">Précédent</span>
-            </a>
-            <a class="carousel-control-next" href="#carousel" role="button" data-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="sr-only">Suivant</span>
-            </a>
+  <section class="col-12">
+    <div id="carousel" class="carousel slide" data-ride="carousel">
+      <div class="carousel-inner" role="listbox">
+        <div class="carousel-item active">
+          <div class="d-block img-carousel" style="background-image: url({{ img('header.jpg') }});"></div>
+          <div class="carousel-caption d-none d-md-block">
+            <h3>....</h3>
+            <p>...</p>
+          </div>
         </div>
-    </section>
-
-    <section class="col-12 home-circles">
-        <div class="row">
-            <h2 class="text-center category-title col-12">Nos engagements</h2>
-
-            <div class="col-md item">
-                <div class="rounded-circle">
-                    <i class="fa fa-cogs fa-2x" aria-hidden="true"></i>
-                </div>
-                <div class="desc">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam aspernatur beatae deserunt dolores et
-                    ex excepturi expedita fugiat, fugit libero natus nemo numquam porro praesentium quam ratione voluptate
-                    voluptatem voluptatum.
-                </div>
-            </div>
-            <div class="col-md item">
-                <div class="rounded-circle">
-                    <i class="fa fa-heartbeat fa-2x" aria-hidden="true"></i>
-                </div>
-                <div class="desc">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam aspernatur beatae deserunt dolores et
-                    ex excepturi expedita fugiat, fugit libero natus nemo numquam porro praesentium quam ratione voluptate
-                    voluptatem voluptatum.
-                </div>
-            </div>
-            <div class="col-md item">
-                <div class="rounded-circle">
-                    <i class="fa fa-pencil fa-2x" aria-hidden="true"></i>
-                </div>
-                <div class="desc">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam aspernatur beatae deserunt dolores et
-                    ex excepturi expedita fugiat, fugit libero natus nemo numquam porro praesentium quam ratione voluptate
-                    voluptatem voluptatum.
-                </div>
-            </div>
+        <div class="carousel-item">
+          <div class="d-block img-carousel" style="background-image: url({{ img('header.jpg') }});"></div>
+          <div class="carousel-caption d-none d-md-block">
+            <h3>......</h3>
+            <p>.....</p>
+          </div>
         </div>
-    </section>
+      </div>
+      <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Précédent</span>
+      </a>
+      <a class="carousel-control-next" href="#carousel" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Suivant</span>
+      </a>
+    </div>
+  </section>
 
-    <section class="col-12 join-us">
-        <div class="row">
-            <div class="col-sm">
-                <h2>Vous souhaitez nous rejoindre ?</h2>
-            </div>
-            <div class="col-sm">
-                <a href="#" class="btn btn-lg btn-custom">Télécharger le launcher</a>
-            </div>
+  <section class="col-12 home-circles">
+    <div class="row">
+      <h2 class="text-center category-title col-12">{{ theme_config.home_title }}</h2>
+
+      <div class="col-md item">
+        <div class="rounded-circle">
+          <i class="fa {{ theme_config.home_bubble.icon.0 }} fa-2x" aria-hidden="true"></i>
         </div>
-    </section>
+        <div class="desc">{{ theme_config.home_bubble.text.0 }}</div>
+      </div>
+      <div class="col-md item">
+        <div class="rounded-circle">
+          <i class="fa {{ theme_config.home_bubble.icon.1 }} fa-2x" aria-hidden="true"></i>
+        </div>
+        <div class="desc">{{ theme_config.home_bubble.text.1 }}</div>
+      </div>
+      <div class="col-md item">
+        <div class="rounded-circle">
+          <i class="fa {{ theme_config.home_bubble.icon.2 }} fa-2x" aria-hidden="true"></i>
+        </div>
+        <div class="desc">{{ theme_config.home_bubble.text.2 }}</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="col-12 join-us">
+    <div class="row">
+      <div class="col-sm">
+        <h2>{{ theme_config.join_us_text }}</h2>
+      </div>
+      <div class="col-sm">
+        {% if theme_config.join_us_button.action == 'copy' %}
+          <button id="copyToClipBoard" class="btn btn-lg btn-custom"
+                  data-clipboard-text="{{ theme_config.join_us_button.href }}" data-toggle="tooltip"
+                  data-placement="top" data-trigger="click" title="Tooltip on top">
+            {{ theme_config.join_us_button.text }}
+          </button>
+        {% else %}
+          <a href="{{ theme_config.join_us_button.href }}" class="btn btn-lg btn-custom"
+             {% if theme_config.join_us_button.action == 'open_new_tab' %}target="_blank"
+             rel="noopener nofollow"{% endif %}>{{ theme_config.join_us_button.text }}</a>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block javascript %}
+  {{ parent() }}
+  {% if theme_config.join_us_button.action == 'copy' %}
+    <script src="{{ js('clipboard.min') }}" defer></script>
+    <script async>
+      $(document).ready(function () {
+        var copyButton = $('#copyToClipBoard');
+        copyButton.tooltip();
+        function setTooltip(message) {
+          copyButton.tooltip('hide')
+            .attr('data-original-title', message)
+            .tooltip('show');
+        }
+        function hideTooltip() {
+          setTimeout(function () {
+            copyButton.tooltip('hide');
+          }, 1500);
+        }
+        var clipboard = new Clipboard('button');
+        clipboard.on('success', function (e) {
+          setTooltip("{{ lang('ADDRESS_SUCCESSFULLY_COPIED') }}");
+          hideTooltip();
+        });
+      });
+    </script>
+  {% endif %}
 {% endblock %}

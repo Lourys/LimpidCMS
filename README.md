@@ -1,13 +1,14 @@
 # Démo LimpidCMS
 
 ## TODO
+- Faire la personnalisation du thème par défaut (SLIDERS)
 - Dashboard admin
 - ~~Déplacer les descriptions de permissions depuis format JSON en DB vers fichier de lang.~~
 - Revoir tous les models (le CMS_Model n'est pas top...)
 - ~~Faire les 404~~
 - Sidebar à intégrer
 - ~~Faire un système de Captcha natif~~
-- Edition d'avatar + liaison avec gravatar (possibilité de désactiver gravatar) ?
+- ~~Edition d'avatar + liaison avec gravatar (possibilité de désactiver gravatar) ?~~
 - ~~Edition de bio~~
 - Profil public (avec permission)
 - ~~Dynamiser les valeurs (auteur et avatar) sur les actus (listing + view)~~

@@ -3,40 +3,71 @@
 {% import 'macros/form.twig' as form %}
 
 {% block content %}
-    <article class="card card-custom">
-        <div class="card-header">
-            <div class="row">
-                <div class="col"><i class="fa fa-user"></i>&nbsp;&nbsp;&nbsp;{{ lang('MY_ACCOUNT') }}</div>
-            </div>
+  <article class="card card-custom">
+    <div class="card-header">
+      <div class="row">
+        <div class="col"><i class="fa fa-user"></i>&nbsp;&nbsp;&nbsp;{{ lang('MY_ACCOUNT') }}</div>
+      </div>
+    </div>
+    <div class="card-body account">
+      <div class="row">
+        <div class="col-lg-3">
+          <div class="nav flex-column nav-pills">
+            <li class="nav-item text-center">
+              <a class="nav-link active" href="{{ route('users/account') }}">{{ lang('ACCOUNT_MANAGEMENT') }}</a>
+            </li>
+            {% for name,uri in account_nav %}
+              <li class="nav-item">
+                <a class="nav-link" href="{{ route(uri) }}">{{ name }}</a>
+              </li>
+            {% endfor %}
+          </div>
+          <br>
         </div>
-        <div class="card-body account">
+        <div class="col-lg">
+          <h4 class="title">{{ lang('ACCOUNT') }}</h4>
+          <hr>
+          {% if this.authManager.isPermitted(this.session.userdata('id'), 'MISCELLANEOUS__AVATAR_EDITION') %}
             <div class="row">
-                <div class="col-lg-3">
-                    <div class="nav flex-column nav-pills">
-                        <li class="nav-item text-center">
-                            <a class="nav-link active" href="{{ route('users/account') }}">{{ lang('ACCOUNT_MANAGEMENT') }}</a>
-                        </li>
-                        {% for name,uri in account_nav %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route(uri) }}">{{ name }}</a>
-                            </li>
-                        {% endfor %}
-                    </div>
-                    <br>
-                </div>
-                <div class="col-lg">
-                    <h4 class="title">{{ lang('ACCOUNT') }}</h4>
-                    <hr>
-                    {{ form_open() }}
-                    {{ form.input('username', lang('USERNAME'), user.username, {placeholder: lang('USERNAME_EXAMPLE'), required: true}) }}
-                    {{ form.input('email', lang('EMAIL'), user.email, {type: 'email', placeholder: lang('EMAIL_EXAMPLE'), required: true}) }}
-                    {{ form.input('password', lang('PASSWORD'), null, {type: 'password', placeholder: lang('PASSWORD_EXAMPLE')}) }}
-                    {{ form.input('password_confirm', lang('PASSWORD_CONFIRMATION'), null, {type: 'password', placeholder: lang('PASSWORD_EXAMPLE')}) }}
-                    {{ form.textarea('biography', lang('BIOGRAPHY'), user.biography, {placeholder: lang('BIOGRAPHY_EXAMPLE'), rows: 3}) }}
-                    {{ form.submit(lang('SAVE_CHANGES'), null, {btnType: 'secondary'}) }}
-                    {{ form_close() }}
-                </div>
+              <div class="col-sm-4">
+                {{ form_open(route('users/delete_avatar')) }}
+                  {{ form.simpleInput('user_id', this.session.userdata('id'), {type: 'hidden'}) }}
+                  <img class="img-fluid img-thumbnail mx-auto d-block"
+                       src="{{ base_url('uploads/avatars/' ~ user.avatar) }}" alt="{{ lang('AVATAR') }}">
+                  {% if user.avatar != null %}
+                    {{ form.submit(lang('DELETE'), null, {btnType: 'secondary', class: 'btn-sm delete-img'}) }}
+                  {% endif %}
+                {{ form_close() }}
+              </div>
+              <div class="col-sm-8">
+                {{ form_open_multipart(route('users/edit_avatar')) }}
+                  {{ form.simpleInput('user_id', this.session.userdata('id'), {type: 'hidden'}) }}
+                  <div class="form-group avatarUpload">
+                    <label for="avatarUpload">{{ lang('SEND_FILE') }}</label>
+                    <input id="avatarUpload" type="file" name="avatarUpload" aria-describedby="avatarHelp"
+                           class="form-control-file mx-auto d-block">
+                    <small id="avatarHelp" class="form-text text-muted">
+                      {{ lang('MAX_HEIGHT') }} : {{ settings.avatar.max_height }}px |
+                      {{ lang('MAX_WIDTH') }} : {{ settings.avatar.max_width }}px |
+                      {{ lang('MAX_SIZE') }} : {{ settings.avatar.max_size ~ lang('KILOBYTE_SYMBOL') }}
+                    </small>
+                  </div>
+                  {{ form.submit(lang('SEND'), null, {btnType: 'secondary', class: 'mx-auto d-block'}) }}
+                {{ form_close() }}
+              </div>
             </div>
+            <hr>
+          {% endif %}
+          {{ form_open() }}
+          {{ form.input('username', lang('USERNAME'), user.username, {placeholder: lang('USERNAME_EXAMPLE'), required: true}) }}
+          {{ form.input('email', lang('EMAIL'), user.email, {type: 'email', placeholder: lang('EMAIL_EXAMPLE'), required: true}) }}
+          {{ form.input('password', lang('PASSWORD'), null, {type: 'password', placeholder: lang('PASSWORD_EXAMPLE')}) }}
+          {{ form.input('password_confirm', lang('PASSWORD_CONFIRMATION'), null, {type: 'password', placeholder: lang('PASSWORD_EXAMPLE')}) }}
+          {{ form.textarea('biography', lang('BIOGRAPHY'), user.biography, {placeholder: lang('BIOGRAPHY_EXAMPLE'), rows: 3}) }}
+          {{ form.submit(lang('SAVE_CHANGES'), null, {btnType: 'secondary'}) }}
+          {{ form_close() }}
         </div>
-    </article>
+      </div>
+    </div>
+  </article>
 {% endblock %}

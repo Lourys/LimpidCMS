@@ -43,7 +43,7 @@
                             <td style="color: {{ user.group_color }};">{{ user.group_name }}</td>
                             <td>{{ user.registered_at }}</td>
                             <td>
-                                <a href="{{ route('users/admin_take_control/' ~ user.id) }}" class="btn btn-info btn-sm">
+                                <a href="{{ route('users/take_control/' ~ user.id) }}" class="btn btn-info btn-sm">
                                     <i class="fa fa-key"></i> {{ lang('TAKE_USER_CONTROL') }}
                                 </a>&nbsp;
                                 <a href="{{ route('users/admin_edit/' ~ user.id) }}" class="btn btn-primary btn-sm">

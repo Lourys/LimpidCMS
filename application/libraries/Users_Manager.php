@@ -4,6 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 /**
  * Users manager
  *
+ * @property CMS_Controller $limpid
  */
 class Users_Manager
 {
@@ -25,7 +26,7 @@ class Users_Manager
    * @param int $group_id
    * @param string|null $ip_address
    *
-   * @return bool|null
+   * @return int|bool|null
    */
   function registerUser($username, $email, $password, $group_id, $ip_address = null)
   {

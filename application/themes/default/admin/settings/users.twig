@@ -1,0 +1,58 @@
+{% extends 'layouts/admin.twig' %}
+
+{% import 'macros/form.twig' as form %}
+
+{% block content %}
+  <section class="content-header">
+    <h1>{{ lang('SETTINGS_EDITION') }}</h1>
+    <ol class="breadcrumb">
+      <li><a href="{{ route('admin/admin_index') }}"><i class="fa fa-dashboard"></i> {{ lang('HOME') }}</a></li>
+      <li>{{ lang('SETTINGS') }}</li>
+      <li class="active">{{ lang('SETTINGS_EDITION') }}</li>
+    </ol>
+  </section>
+  <section class="content">
+    {{ form_open() }}
+    <div class="nav-tabs-custom">
+      {% include 'admin/settings/nav.twig' %}
+      <div class="tab-content">
+        <div class="box box-solid">
+          <div class="box-header with-border">
+            <i class="fa fa-arrow-right"></i>
+            <h4 class="box-title">{{ lang('PROFILE_PICTURE') }}</h4>
+          </div>
+          <div class="box-body">
+            <div class="row">
+              <div class="col-md-5">
+                <b>Gravatar :</b>
+                <p>{{ lang('GRAVATAR_DESCRIPTION') }}</p>
+                {{ lang('ACTIVATE_GRAVATAR') }} ?
+                <input type="hidden" name="gravatarEnabled" value="false">
+                <div class="form-group">
+                  <label class="switch">
+                    <input type="checkbox" name="gravatarEnabled" value="true"
+                           {% if (this.input.post('gravatarEnabled') == 'true') or (settings.gravatarEnabled == true) %}checked{% endif %}>
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-7">
+                <div class="col-md-6">
+                  {{ form.input('avatar[max_height]', lang('AVATAR_MAX_HEIGHT'), this.input.post() ? this.input.post('avatar[max_height]') : settings.avatar.max_height, {placeholder: 500, required: true, type: 'number', suffix: 'px'}) }}
+                </div>
+                <div class="col-md-6">
+                  {{ form.input('avatar[max_width]', lang('AVATAR_MAX_WIDTH'), this.input.post() ? this.input.post('avatar[max_width]') : settings.avatar.max_width, {placeholder: 500, required: true, type: 'number', suffix: 'px'}) }}
+                </div>
+                <div class="col-md-12">
+                  {{ form.input('avatar[max_size]', lang('AVATAR_MAX_SIZE'), this.input.post() ? this.input.post('avatar[max_size]') : settings.avatar.max_size, {placeholder: 1024, required: true, type: 'number', suffix: lang('KILOBYTE_SYMBOL')}) }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {{ form.submit(lang('EDIT'), null, {btnType: 'success'}) }}
+      </div>
+    </div>
+    {{ form_close() }}
+  </section>
+{% endblock %}

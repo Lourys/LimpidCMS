@@ -1,0 +1,6 @@
+<ul class="nav nav-tabs pull-right">
+  <li {% if current_url() == route('settings/admin_general') %}class="active"{% endif %}><a href="{{ route('settings/admin_general') }}">{{ lang('GENERAL_SETTINGS') }}</a></li>
+  <li {% if current_url() == route('settings/admin_security') %}class="active"{% endif %}><a href="{{ route('settings/admin_security') }}">{{ lang('SECURITY_SETTINGS') }}</a></li>
+  <li {% if current_url() == route('settings/admin_users') %}class="active"{% endif %}><a href="{{ route('settings/admin_users') }}">{{ lang('USERS_SETTINGS') }}</a></li>
+  <li class="pull-left header"><i class="fa fa-th"></i> {{ lang('EDIT_SETTINGS') }}</li>
+</ul>

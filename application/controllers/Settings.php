@@ -12,55 +12,83 @@ class Settings extends Limpid_Controller
   public function __construct()
   {
     parent::__construct();
-  }
 
-  public function admin_general()
-  {
     if ($this->authManager->isPermitted($this->session->userdata('id'), 'SETTINGS__EDIT')) {
       $this->data['page_title'] = $this->lang->line('SETTINGS_EDITION');
-      $this->data['settings'] = $this->config->config;
-
       $this->load->helper('form');
-      $this->load->library('form_validation');
-
-      // Form rules check
-      $this->form_validation->set_rules('send', '', 'required');
-
-      $this->data['languages'] = [
-        ['name' => 'Français', 'value' => 'french'],
-        ['name' => 'English', 'value' => 'english']
-      ];
-
-      $this->data['timezones'] = $this->getTimezonesInput();
-
-      // If check passed
-      if ($this->form_validation->run()) {
-        $data = $this->input->post();
-        unset($data['send']);
-        foreach ($data as $index => $value) {
-          if ($value === 'true')
-            $value = 1;
-          elseif ($value === 'false')
-            $value = 0;
-
-          if ($this->config->item($index) != $value) {
-            if (!$this->config->edit_item($index, $value, 'config')) {
-              $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
-              redirect(current_url());
-            }
-          }
-        }
-
-        $this->session->set_flashdata('success', $this->lang->line('SETTINGS_SUCCESSFULLY_EDITED'));
-      }
-
-      $this->twig->display('admin/settings/general', $this->data);
       $this->session->unmark_flash('success');
       $this->session->unmark_flash('error');
     } else {
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
       redirect(site_url());
     }
+  }
+
+  public function admin_general()
+  {
+    $this->data['languages'] = [
+      ['name' => 'Français', 'value' => 'french'],
+      ['name' => 'English', 'value' => 'english']
+    ];
+
+    $this->data['timezones'] = $this->getTimezonesInput();
+
+    if ($this->input->method() == 'post') {
+      $data = $this->input->post();
+      if ($this->editSettings($data)) {
+        $this->session->set_flashdata('success', $this->lang->line('SETTINGS_SUCCESSFULLY_EDITED'));
+      } else {
+        $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
+      }
+    }
+
+    $this->twig->display('admin/settings/general', $this->data);
+  }
+
+  public function admin_security()
+  {
+    if ($this->input->method() == 'post') {
+      $data = $this->input->post();
+      if ($this->editSettings($data)) {
+        $this->session->set_flashdata('success', $this->lang->line('SETTINGS_SUCCESSFULLY_EDITED'));
+      } else {
+        $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
+      }
+    }
+
+    $this->twig->display('admin/settings/security', $this->data);
+  }
+
+  public function admin_users()
+  {
+    if ($this->input->method() == 'post') {
+      $data = $this->input->post();
+      if ($this->editSettings($data)) {
+        $this->session->set_flashdata('success', $this->lang->line('SETTINGS_SUCCESSFULLY_EDITED'));
+      } else {
+        $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
+      }
+    }
+
+    $this->twig->display('admin/settings/users', $this->data);
+  }
+
+  private function editSettings($data)
+  {
+    foreach ($data as $index => $value) {
+      if ($value === 'true')
+        $value = 1;
+      elseif ($value === 'false')
+        $value = 0;
+
+      if ($this->config->item($index) != $value) {
+        if (!$this->config->edit_item($index, $value, 'config')) {
+          return false;
+        }
+      }
+    }
+
+    return true;
   }
 
   private function getTimezonesInput()

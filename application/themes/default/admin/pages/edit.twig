@@ -23,7 +23,7 @@
           {{ form.input('title', lang('PAGE_TITLE'), page.title, {placeholder: lang('TITLE_EXAMPLE'), required: true}) }}
         </div>
         <div class="col-md-12">
-          {{ form.input('slug', lang('SLUG'), page.slug, {placeholder: lang('SLUG_EXAMPLE'), addon_before: route('pages/view/ '), required: true}) }}
+          {{ form.input('slug', lang('SLUG'), page.slug, {placeholder: lang('SLUG_EXAMPLE'), prefix: route('pages/view/ '), required: true}) }}
         </div>
         <div class="col-md-12">
           {{ form.textarea('content', lang('CONTENT'), page.content) }}

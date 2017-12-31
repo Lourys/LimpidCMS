@@ -22,7 +22,7 @@
     <div class="card-body">
       <div class="row no-gutters">
         <div class="col-sm-12 col-md-4 col-xl-3">
-          <img src="{{ site_url('uploads/avatars/' ~ author.avatar) }}" class="img-fluid rounded d-inline-block" alt="{{ author.username }}">
+          <img src="{{ base_url('uploads/avatars/' ~ author.avatar) }}" class="img-fluid img-thumbnail d-inline-block" width="100" alt="{{ author.username }}">
           <div class="d-inline-block pl-2">
             <a class="font-weight-bold" href="#">{{ author.username }}</a><br>
             <span style="color: {{ author.group.color }};font-size: .8em">{{ author.group.name }}</span>

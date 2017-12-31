@@ -25,7 +25,7 @@ class CMS_Config extends CI_Config
     $config = file_get_contents(APPPATH . 'config/' . $file . '.php');
     $lines = preg_split('(\r\n|\n|\r)', $config);
     for ($i = 2; $i < count($lines); $i++) {
-      if (strpos($lines[$i], $item)) {
+      if (strpos($lines[$i], '$config[\'' . $item . '\']') !== false) {
         if ($value === null) {
           $lines[$i] = '$config[\'' . addslashes($item) . '\'] = null;';
           break;
