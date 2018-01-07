@@ -28,8 +28,8 @@ class Pages extends Limpid_Controller
   public function view($slug)
   {
     if ($this->data['page'] = $this->pagesManager->getPageBySlug($slug)) {
-      if ($this->data['page']->active || $this->authManager->isPermitted($this->session->userdata('id'), 'PAGES__VIEW_DEACTIVATED')) {
-        $this->data['page_title'] = $this->data['page']->title;
+      if ($this->data['page']['active'] || $authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'PAGES__VIEW_DEACTIVATED')) {
+        $this->data['page_title'] = $this->data['page']['title'];
         // Render the view
         $this->twig->display('pages/view', $this->data);
       } else {
@@ -44,7 +44,7 @@ class Pages extends Limpid_Controller
 
   public function admin_add()
   {
-    if ($this->authManager->isPermitted($this->session->userdata('id'), 'PAGES__ADD')) {
+    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'PAGES__ADD')) {
       $this->data['page_title'] = $this->lang->line('PAGE_CREATION');
       $this->load->helper('form');
       $this->load->library('form_validation');
@@ -76,13 +76,13 @@ class Pages extends Limpid_Controller
       // If user doesn't have required permission
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
 
-      redirect(route('admin/admin_index'));
+      redirect(route('admin/admin_index'), 'auto', $authorized === false ? 403 : 401);
     }
   }
 
   public function admin_manage()
   {
-    if ($this->authManager->isPermitted($this->session->userdata('id'), 'PAGES__MANAGE')) {
+    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'PAGES__MANAGE')) {
       $this->data['page_title'] = $this->lang->line('PAGES_MANAGEMENT');
       $this->data['pages'] = $this->pagesManager->getPages();
 
@@ -92,13 +92,13 @@ class Pages extends Limpid_Controller
       // If user doesn't have required permission
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
 
-      redirect(route('admin/admin_index'));
+      redirect(route('admin/admin_index'), 'auto', $authorized === false ? 403 : 401);
     }
   }
 
   public function admin_edit($id)
   {
-    if ($this->authManager->isPermitted($this->session->userdata('id'), 'PAGES__EDIT')) {
+    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'PAGES__EDIT')) {
       if ($this->data['page'] = $this->pagesManager->getPageByID($id)) {
         $this->data['page_title'] = $this->lang->line('PAGE_EDITION');
         $this->load->helper('form');
@@ -106,7 +106,7 @@ class Pages extends Limpid_Controller
 
         // Add rule if input slug is different to initial slug
         $is_unique_rule = '';
-        if ($this->data['page']->slug != $this->input->post('slug'))
+        if ($this->data['page']['slug'] != $this->input->post('slug'))
           $is_unique_rule = '|is_unique[pages.slug]';
 
         // Form rules check
@@ -144,13 +144,13 @@ class Pages extends Limpid_Controller
       }
     } else {
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      redirect(route('admin/admin_index'));
+      redirect(route('admin/admin_index'), 'auto', $authorized === false ? 403 : 401);
     }
   }
 
   public function admin_delete($id)
   {
-    if ($this->authManager->isPermitted($this->session->userdata('id'), 'PAGES__DELETE')) {
+    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'PAGES__DELETE')) {
       if ($this->pagesManager->deletePage($id))
         // If page deleting succeed
         $this->session->set_flashdata('success', $this->lang->line('PAGES_DELETE_SUCCEEDED'));
@@ -163,7 +163,7 @@ class Pages extends Limpid_Controller
       // If user doesn't have required permission
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
 
-      redirect(route('admin/admin_index'));
+      redirect(route('admin/admin_index'), 'auto', $authorized === false ? 403 : 401);
     }
   }
 

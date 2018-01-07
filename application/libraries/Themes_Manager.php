@@ -4,6 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 /**
  * Themes manager
  *
+ * @property CMS_Controller limpid
  */
 class Themes_Manager
 {

@@ -12,10 +12,10 @@ class Plugins extends Limpid_Controller
   public function __construct()
   {
     parent::__construct();
-    if (!$this->authManager->isPermitted($this->session->userdata('id'), 'PLUGINS__MANAGEMENT')) {
+    if (!$authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'PLUGINS__MANAGEMENT')) {
       // If user doesn't have required permission
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      redirect(route('admin/admin_index'));
+      redirect(route('admin/admin_index'), 'auto', $authorized === false ? 403 : 401);
       exit();
     }
   }
@@ -63,7 +63,7 @@ class Plugins extends Limpid_Controller
   {
     if (!$this->pluginsManager->getPlugin($uri)) {
       $plugin = $this->pluginsManager->getAvailablePlugin($uri);
-      if ($this->pluginsManager->installPlugin($plugin->uri))
+      if ($this->pluginsManager->installPlugin($plugin['uri']))
         $this->session->set_flashdata('success', $this->lang->line('PLUGIN_SUCCESSFULLY_INSTALLED'));
       else
         $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));

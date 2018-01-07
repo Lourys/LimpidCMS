@@ -10,7 +10,7 @@ application/logs/*
 application/config/database.php
 
 public/uploads/avatars/*
-!public/uploads/avatars/.gitkeep
+!public/uploads/avatars/default.png
 public/availablePlugins.json
 public/availableThemes.json
 public/default2.zip

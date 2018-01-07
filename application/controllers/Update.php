@@ -11,9 +11,9 @@ class Update extends Limpid_Controller
   public function __construct()
   {
     parent::__construct();
-    if (!$this->authManager->isPermitted($this->session->userdata('id'), 'UPDATE__ACCESS')) {
+    if (!$authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'UPDATE__ACCESS')) {
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      redirect(site_url());
+      redirect(site_url(), 'auto', $authorized === false ? 403 : 401);
       exit();
     }
   }

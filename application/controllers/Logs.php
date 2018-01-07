@@ -16,18 +16,17 @@ class Logs extends Limpid_Controller
 
   public function admin_index()
   {
-    $this->load->helper('form');
-    $this->load->library('form_validation');
-
-    if ($this->authManager->isPermitted($this->session->userdata('id'), 'LOGS_VIEW')) {
+    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'LOGS__LIST')) {
+      $this->load->helper('form');
+      $this->load->library('form_validation');
       $this->data['page_title'] = $this->lang->line('LOGS');
 
       $this->data['thresholds'] = [
-        ['name'  => $this->lang->line('DISABLE_LOGGING'), 'value' => 0],
-        ['name'  => $this->lang->line('ERRORS_LOGGING'), 'value' => 1],
-        ['name'  => $this->lang->line('DEBUG_LOGGING'), 'value' => 2],
-        ['name'  => $this->lang->line('INFO_LOGGING'), 'value' => 3],
-        ['name'  => $this->lang->line('ALL_LOGGING'), 'value' => 4]
+        ['name' => $this->lang->line('DISABLE_LOGGING'), 'value' => 0],
+        ['name' => $this->lang->line('ERRORS_LOGGING'), 'value' => 1],
+        ['name' => $this->lang->line('DEBUG_LOGGING'), 'value' => 2],
+        ['name' => $this->lang->line('INFO_LOGGING'), 'value' => 3],
+        ['name' => $this->lang->line('ALL_LOGGING'), 'value' => 4]
       ];
 
       $logFiles = array_values(array_diff(scandir(APPPATH . 'logs'), array('..', '.', 'index.html')));
@@ -53,51 +52,61 @@ class Logs extends Limpid_Controller
         } else {
           $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
         }
-
-        redirect(current_url());
       }
 
       $this->twig->display('admin/logs/index', $this->data);
+      $this->session->unmark_flash('success');
+      $this->session->unmark_flash('error');
     } else {
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      redirect(site_url());
+      redirect(site_url(), 'auto', $authorized === false ? 403 : 401);
     }
   }
 
   public function admin_download($file)
   {
-    $file = APPPATH . 'logs/' . $file;
+    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'LOGS__DOWNLOAD')) {
+      $file = APPPATH . 'logs/' . $file;
 
-    if (file_exists($file)) {
-      header('Content-Description: File Transfer');
-      header('Content-Type: application/octet-stream');
-      header('Content-Disposition: attachment; filename="'.basename($file).'"');
-      header('Expires: 0');
-      header('Cache-Control: must-revalidate');
-      header('Pragma: public');
-      header('Content-Length: ' . filesize($file));
-      readfile($file);
-      echo '<script>javascript:window.close()</script>';
-      exit;
+      if (file_exists($file)) {
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="' . basename($file) . '"');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize($file));
+        readfile($file);
+        echo '<script>javascript:window.close()</script>';
+        exit;
+      } else {
+        show_404();
+      }
     } else {
-      show_404();
+      $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
+      redirect(site_url(), 'auto', $authorized === false ? 403 : 401);
     }
   }
 
   public function admin_delete($file)
   {
-    $file = APPPATH . 'logs/' . $file;
+    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'LOGS__DELETE')) {
+      $file = APPPATH . 'logs/' . $file;
 
-    if (file_exists($file)) {
-      if (unlink($file)) {
-        $this->session->set_flashdata('success', $this->lang->line('LOG_SUCCESSFULLY_DELETED'));
+      if (file_exists($file)) {
+        if (unlink($file)) {
+          $this->session->set_flashdata('success', $this->lang->line('LOG_SUCCESSFULLY_DELETED'));
+        } else {
+          $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
+        }
+
+        redirect(route('logs/admin_index'));
       } else {
-        $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
+        show_404();
       }
-
-      redirect(route('logs/admin_index'));
     } else {
-      show_404();
+      $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
+      redirect(site_url(), 'auto', $authorized === false ? 403 : 401);
     }
   }
 

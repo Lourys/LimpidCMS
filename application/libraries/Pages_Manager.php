@@ -4,6 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 /**
  * Pages manager
  *
+ * @property CMS_Controller limpid
  */
 class Pages_Manager
 {
@@ -62,11 +63,8 @@ class Pages_Manager
       return null;
     }
 
-    if ($page = (array)$this->limpid->pages->find($id)) {
-      $data = array_merge($page, $data);
-      if ($page = $this->limpid->pages->update($id, $data))
-        return $page;
-    }
+    if ($page = $this->limpid->pages->update($data, $id))
+      return $page;
 
     return null;
   }
@@ -98,7 +96,7 @@ class Pages_Manager
    */
   function getPages()
   {
-    if ($page = $this->limpid->pages->getAll())
+    if ($page = $this->limpid->pages->get_all())
       return $page;
 
     return null;
@@ -118,7 +116,7 @@ class Pages_Manager
       return null;
     }
 
-    if ($page = $this->limpid->pages->find($id))
+    if ($page = $this->limpid->pages->get($id))
       return $page;
 
     return null;
@@ -138,7 +136,7 @@ class Pages_Manager
       return null;
     }
 
-    if ($page = $this->limpid->pages->find(['slug' => $slug]))
+    if ($page = $this->limpid->pages->get(['slug' => $slug]))
       return $page;
 
     return null;

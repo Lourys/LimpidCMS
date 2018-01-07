@@ -21,6 +21,10 @@
                 <a class="nav-link" href="{{ route(uri) }}">{{ name }}</a>
               </li>
             {% endfor %}
+            <br>
+            <li class="nav-item text-center">
+              <a class="nav-link" href="{{ route('users/profile/' ~ urlencode(user.username)) }}">{{ lang('VIEW_MY_PUBLIC_PROFILE') }}</a>
+            </li>
           </div>
           <br>
         </div>
@@ -32,9 +36,9 @@
               <div class="col-sm-4">
                 {{ form_open(route('users/delete_avatar')) }}
                   {{ form.simpleInput('user_id', this.session.userdata('id'), {type: 'hidden'}) }}
-                  <img class="img-fluid img-thumbnail mx-auto d-block"
+                  <img class="img-fluid rounded-circle mx-auto d-block"
                        src="{{ base_url('uploads/avatars/' ~ user.avatar) }}" alt="{{ lang('AVATAR') }}">
-                  {% if user.avatar != null %}
+                  {% if user.avatar != settings.avatar.default_img %}
                     {{ form.submit(lang('DELETE'), null, {btnType: 'secondary', class: 'btn-sm delete-img'}) }}
                   {% endif %}
                 {{ form_close() }}

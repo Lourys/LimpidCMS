@@ -37,6 +37,9 @@
                 </div>
               </div>
               <div class="col-md-7">
+                <div class="col-md-12">
+                {{ form.input('avatar[default_img]', lang('DEFAULT_AVATAR'), this.input.post() ? this.input.post('avatar[default_img]') : settings.avatar.default_img, {placeholder: lang('DEFAULT_AVATAR_EXAMPLE'), prefix: './uploads/avatar/', required: true}) }}
+                </div>
                 <div class="col-md-6">
                   {{ form.input('avatar[max_height]', lang('AVATAR_MAX_HEIGHT'), this.input.post() ? this.input.post('avatar[max_height]') : settings.avatar.max_height, {placeholder: 500, required: true, type: 'number', suffix: 'px'}) }}
                 </div>

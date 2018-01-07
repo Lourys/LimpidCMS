@@ -12,10 +12,10 @@ class Themes extends Limpid_Controller
   public function __construct()
   {
     parent::__construct();
-    if (!$this->authManager->isPermitted($this->session->userdata('id'), 'THEMES__MANAGEMENT')) {
+    if (!$authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'THEMES__MANAGEMENT')) {
       // If user doesn't have required permission
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      redirect(route('admin/admin_index'));
+      redirect(route('admin/admin_index'), 'auto', $authorized === false ? 403 : 401);
       exit();
     }
     $this->load->library('Themes_Manager', null, 'themesManager');

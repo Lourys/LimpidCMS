@@ -66,27 +66,6 @@
       </div>
     </div>
   </section>
-
-  {% for user in users %}
-    <div id="deleteUser{{ user.id }}" class="modal modal-danger fade" role="dialog">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title">{{ lang('USER_REMOVAL') }} ({{ user.username }})</h4>
-          </div>
-          <div class="modal-body">
-            {{ lang('REMOVAL_CONFIRMATION') }}
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang('CANCEL') }}</button>
-            <a href="{{ route('users/admin_delete/' ~ user.id) }}"
-               class="btn btn-danger">{{ lang('REMOVAL_CONFIRM') }}</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  {% endfor %}
 {% endblock %}
 
 {% block javascript %}

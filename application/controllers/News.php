@@ -23,12 +23,8 @@ class News extends Limpid_Controller
   public function view($slug)
   {
     if ($this->data['news'] = $this->newsManager->getNewsBySlug($slug)) {
-      if ($this->data['news']->active || $this->authManager->isPermitted($this->session->userdata('id'), 'NEWS__VIEW_DEACTIVATED')) {
-        $this->load->library('Users_Manager', null, 'usersManager');
-        $this->load->library('Groups_Manager', null, 'groupsManager');
-        $this->data['author'] = $this->usersManager->getUser($this->data['news']->author_id);
-        $this->data['author']->group = $this->groupsManager->getGroup($this->data['author']->group_id);
-        $this->data['page_title'] = $this->data['news']->title;
+      if ($this->data['news']['active'] || $this->authManager->isPermitted($this->session->userdata('id'), 'NEWS__VIEW_DEACTIVATED')) {
+        $this->data['page_title'] = $this->data['news']['title'];
 
         // Render the view
         $this->twig->display('news/view', $this->data);
@@ -47,7 +43,7 @@ class News extends Limpid_Controller
     require(APPPATH . 'third_party/Twig_Extensions/Text_Extension.php');
     $this->twig->getTwig()->addExtension(new Text_Extension());
 
-    if ($this->data['news'] = $this->newsManager->getNewsLimited(12 * (intval($page) - 1), 12)) {
+    if ($this->data['news'] = $this->newsManager->getNewsPaginated( 12, $page)) {
       $this->data['page_title'] = $this->lang->line('NEWS');
 
       // Load pagination library
@@ -82,7 +78,7 @@ class News extends Limpid_Controller
 
   public function admin_add()
   {
-    if ($this->authManager->isPermitted($this->session->userdata('id'), 'NEWS__ADD')) {
+    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'NEWS__ADD')) {
       $this->data['page_title'] = $this->lang->line('NEWS_CREATION');
       $this->load->helper('form');
       $this->load->library('form_validation');
@@ -113,13 +109,13 @@ class News extends Limpid_Controller
     } else {
       // If user doesn't have required permission
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      redirect(route('admin/admin_index'));
+      redirect(route('admin/admin_index'), 'auto', $authorized === false ? 403 : 401);
     }
   }
 
   public function admin_manage()
   {
-    if ($this->authManager->isPermitted($this->session->userdata('id'), 'NEWS__MANAGE')) {
+    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'NEWS__MANAGE')) {
       $this->data['page_title'] = $this->lang->line('NEWS_MANAGEMENT');
       $this->data['news'] = $this->newsManager->getAllNews();
 
@@ -128,13 +124,13 @@ class News extends Limpid_Controller
     } else {
       // If user doesn't have required permission
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      redirect(route('admin/index'));
+      redirect(route('admin/admin_index'), 'auto', $authorized === false ? 403 : 401);
     }
   }
 
   public function admin_edit($id)
   {
-    if ($this->authManager->isPermitted($this->session->userdata('id'), 'NEWS__EDIT')) {
+    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'NEWS__EDIT')) {
       if ($this->data['news'] = $this->newsManager->getNewsByID($id)) {
         $this->data['page_title'] = $this->lang->line('NEWS_EDITION');
         $this->load->helper('form');
@@ -177,13 +173,13 @@ class News extends Limpid_Controller
     } else {
       // If user doesn't have required permission
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      redirect(route('admin/admin_index'));
+      redirect(route('admin/admin_index'), 'auto', $authorized === false ? 403 : 401);
     }
   }
 
   public function admin_delete($id)
   {
-    if ($this->authManager->isPermitted($this->session->userdata('id'), 'NEWS__DELETE')) {
+    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'NEWS__DELETE')) {
       if ($this->newsManager->deleteNews($id))
         // If news deleting succeed
         $this->session->set_flashdata('success', $this->lang->line('NEWS_DELETE_SUCCEEDED'));
@@ -196,7 +192,7 @@ class News extends Limpid_Controller
       // If user doesn't have required permission
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
 
-      redirect(route('admin/admin_index'));
+      redirect(route('admin/admin_index'), 'auto', $authorized === false ? 403 : 401);
     }
   }
 

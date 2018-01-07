@@ -4,6 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 /**
  * Groups manager
  *
+ * @property CMS_Controller limpid
  */
 class Groups_Manager
 {
@@ -59,11 +60,8 @@ class Groups_Manager
       return null;
     }
 
-    if ($group = (array)$this->limpid->groups->find($group_id)) {
-      $data = array_merge($group, $data);
-      if ($group = $this->limpid->groups->update($group_id, $data))
-        return $group;
-    }
+    if ($group = $this->limpid->groups->update($data, $group_id))
+      return $group;
 
     return null;
   }
@@ -107,7 +105,7 @@ class Groups_Manager
       return null;
     }
 
-    if ($group = $this->limpid->groups->find($id))
+    if ($group = $this->limpid->groups->get($id))
       return $group;
 
     return null;
@@ -120,7 +118,7 @@ class Groups_Manager
    */
   function getGroups()
   {
-    if ($user = $this->limpid->groups->getAllOrdered('name'))
+    if ($user = $this->limpid->groups->order_by('name')->get_all())
       return $user;
 
     return null;
@@ -133,7 +131,7 @@ class Groups_Manager
    */
   function getDefaultGroup()
   {
-    if ($group = $this->limpid->groups->getWhere(['default_group' => true]))
+    if ($group = $this->limpid->groups->get(['default_group' => true]))
       return $group;
 
     return null;

@@ -72,6 +72,7 @@ if ($this->config->item('language') === 'french') {
     /* Utilisateurs */
     $route['inscription'] = 'users/register';
     $route['compte'] = 'users/account';
+    $route['profil/(:any)'] = 'users/profile/$1';
 
     /* Authentification */
     $route['connexion'] = 'auth/login';

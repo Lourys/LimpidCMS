@@ -12,10 +12,10 @@ class Menu extends Limpid_Controller
   public function __construct()
   {
     parent::__construct();
-    if (!$this->authManager->isPermitted($this->session->userdata('id'), 'MENU__MANAGE')) {
+    if (!$authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'MENU__MANAGE')) {
       // If user doesn't have required permission
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      redirect(route('admin/admin_index'));
+      redirect(route('admin/admin_index'), 'auto', $authorized === false ? 403 : 401);
       exit();
     }
     $this->load->library('Menu_Manager', null, 'menuManager');
@@ -129,8 +129,9 @@ class Menu extends Limpid_Controller
    */
   public function ajax_edit_links_position()
   {
-    $data = json_decode($_POST['position']);
-    for ($i = 0; $i < count($data); $i++)
-      $this->menuManager->editLinksPosition($data[$i], $i);
+    $this->load->helper('form');
+    $data = json_decode($this->input->post('position'));
+    for ($position = 0; $position < count($data); $position++)
+      $this->menuManager->editLinksPosition($data[$position], $position);
   }
 }

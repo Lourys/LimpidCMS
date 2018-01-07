@@ -117,7 +117,7 @@
                     {% endif %}
                   </td>
                   <td>
-                    <a href="{{ link.url }}">{{ link.url | truncate(40, false, '...') }}</a>
+                    <a href="{{ include(template_from_string(link.url)) }}">{{ link.url | truncate(40, false, '...') }}</a>
                   </td>
                   <td>
                     <a href="#editLink{{ link.id }}" class="btn btn-primary btn-xs" title="{{ lang('EDIT') }}"
@@ -146,7 +146,7 @@
                                 {% endif %}
                               </td>
                               <td>
-                                <a href="{{ sublink.url }}">{{ sublink.url | truncate(40, false, '...') }}</a>
+                                <a href="{{ include(template_from_string(sublink.url)) }}">{{ sublink.url | truncate(40, false, '...') }}</a>
                               </td>
                               <td style="text-align: right;width: 66px">
                                 {% if sublink.is_divider != true %}
@@ -269,7 +269,7 @@
             <h4 class="modal-title">{{ lang('LINK_REMOVAL') }} ({{ link.title }})</h4>
           </div>
           <div class="modal-body">
-            {{ lang('REMOVAL_CONFIRMATION') }}
+            {{ lang('LINK_REMOVAL_CONFIRMATION') }}
             {% if link.is_dropdown %}
               <br>
               <br>
@@ -321,7 +321,7 @@
             <h4 class="modal-title">{{ lang('LINK_REMOVAL') }} ({{ sublink.title }})</h4>
           </div>
           <div class="modal-body">
-            {{ lang('REMOVAL_CONFIRMATION') }}
+            {{ lang('LINK_REMOVAL_CONFIRMATION') }}
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang('CANCEL') }}</button>
@@ -357,7 +357,10 @@
           type: "POST",
           url: "{{ route('menu/ajax_edit_links_position') }}",
           data: dataObject,
-          dataType: "json"
+          dataType: "json",
+          success: function(response) {
+            console.log(response)
+          }
         });
       }
 
@@ -372,18 +375,18 @@
         }
       });
       {% for link in links %}
-      {% if link.is_dropdown %}
-      new Sortable(nav_{{ link.id }}, {
-        onSort: function (e) {
-          var items = e.to.children;
-          var result = [];
-          for (var i = 0; i < items.length; i++) {
-            result.push($(items[i]).data('id'));
-          }
-          editLinksOrder(result);
-        }
-      });
-      {% endif %}
+        {% if link.is_dropdown %}
+          new Sortable(nav_{{ link.id }}, {
+            onSort: function (e) {
+              var items = e.to.children;
+              var result = [];
+              for (var i = 0; i < items.length; i++) {
+                result.push($(items[i]).data('id'));
+              }
+              editLinksOrder(result);
+            }
+          });
+        {% endif %}
       {% endfor %}
     });
   </script>

@@ -34,7 +34,7 @@ $config['password'] = array('min_length'=>'8','max_length'=>'45',);
 // Gravatar settings
 $config['gravatarEnabled'] = 1;
 // Profile pictures settings
-$config['avatar'] = array('max_height'=>'500','max_width'=>'500','max_size'=>'1024',);
+$config['avatar'] = array('default_img'=>'default.png','max_height'=>'500','max_width'=>'500','max_size'=>'1024',);
 
 /*
 |--------------------------------------------------------------------------
@@ -309,7 +309,7 @@ $config['log_file_permissions'] = 0644;
 | codes to set your own date formatting
 |
 */
-$config['log_date_format'] = 'Y-m-d';
+$config['log_date_format'] = 'H:i:s';
 
 /*
 |--------------------------------------------------------------------------

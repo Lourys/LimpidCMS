@@ -50,7 +50,7 @@ class VisitCounter_Manager
       return null;
     }
 
-    return $this->limpid->visitCounter->find($ip_address);
+    return $this->limpid->visitCounter->get($ip_address);
   }
 
 
@@ -69,11 +69,6 @@ class VisitCounter_Manager
       return null;
     }
 
-    if ($entry = (array)$this->limpid->visitCounter->find($ip_address)) {
-      $data = array_merge($entry, $data);
-      return $this->limpid->visitCounter->update(['ip_address' => $ip_address], $data);
-    }
-
-    return null;
+    return $this->limpid->visitCounter->where($ip_address)->update($data);
   }
 }

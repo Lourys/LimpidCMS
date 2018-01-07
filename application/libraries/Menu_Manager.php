@@ -4,6 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 /**
  * Menu manager
  *
+ * @property CMS_Controller limpid
  */
 class Menu_Manager
 {
@@ -23,7 +24,7 @@ class Menu_Manager
    */
   public function countAll()
   {
-    return $this->limpid->menu->countAll();
+    return $this->limpid->menu->count_rows();
   }
 
   /**
@@ -33,7 +34,7 @@ class Menu_Manager
    */
   function getLinks()
   {
-    if ($links = $this->limpid->menu->getWhereOrdered(['parent_id' => null], 'position'))
+    if ($links = $this->limpid->menu->order_by('position')->fields('id, title, url, is_dropdown')->get_all(['parent_id' => null]))
       return $links;
 
     return null;
@@ -46,7 +47,7 @@ class Menu_Manager
    */
   function getSublinks()
   {
-    if ($links = $this->limpid->menu->getWhereOrdered(['parent_id !=' => null], 'position'))
+    if ($links = $this->limpid->menu->order_by('position')->fields('id, title, url, parent_id, is_divider')->get_all(['parent_id !=' => null]))
       return $links;
 
     return null;
@@ -181,16 +182,16 @@ class Menu_Manager
    * @param int $id
    * @param int $position
    *
-   * @return bool|null
+   * @return string|array|null
    */
   function editLinksPosition($id, $position)
   {
     // Simple check
-    if (empty($id) || $position != null) {
+    if (empty($id) || !is_int($position)) {
       return null;
     }
 
-    if ($link = $this->limpid->menu->update($id, ['position' => $position]))
+    if ($link = $this->limpid->menu->update(['position' => $position], $id))
       return $link;
 
     return null;
@@ -211,11 +212,8 @@ class Menu_Manager
       return null;
     }
 
-    if ($link = (array)$this->limpid->menu->find($link_id)) {
-      $data = array_merge($link, $data);
-      if ($link = $this->limpid->menu->update($link_id, $data))
-        return $link;
-    }
+    if ($link = $this->limpid->menu->update($data, $link_id))
+      return $link;
 
     return null;
   }
@@ -225,7 +223,7 @@ class Menu_Manager
    *
    * @param int $link_id
    *
-   * @return bool|null
+   * @return Menu_model|null
    */
   function deleteLink($link_id)
   {
@@ -234,7 +232,7 @@ class Menu_Manager
       return null;
     }
 
-    if ($link = $this->limpid->menu->rawQuery("DELETE FROM menu WHERE id = '$link_id' || parent_id = '$link_id'", 'none'))
+    if ($link = $this->limpid->menu->where(['id' => $link_id, 'parent_id' => $link_id], 'OR'))
       return $link;
 
     return null;

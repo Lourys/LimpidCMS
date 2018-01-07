@@ -38,6 +38,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @property CI_Lang $lang
  * @property Users_Manager $usersManager
  * @property Captcha $captcha
+ * @property VisitCounter_model visitCounter
+ * @property VisitCounter_Manager visitCounterManager
  */
 class CMS_Controller extends CI_Controller
 {
@@ -91,6 +93,7 @@ class CMS_Controller extends CI_Controller
 
     require(APPPATH . 'third_party/Twig_Extensions/Assets_Extension.php');
     require(APPPATH . 'third_party/Twig_Extensions/Lang_Extension.php');
+    require(APPPATH . 'third_party/Twig_Extensions/Array_Extension.php');
 
     if ($this->router->module) {
       $config['paths'] = [];
@@ -116,6 +119,7 @@ class CMS_Controller extends CI_Controller
     $this->load->library('twig', $config);
     $this->twig->getTwig()->addExtension(new Assets_Extension($this->config->item('theme')));
     $this->twig->getTwig()->addExtension(new Lang_Extension());
+    $this->twig->getTwig()->addExtension(new Array_Extension());
     $this->twig->getTwig()->addExtension(new Twig_Extension_StringLoader());
     $this->twig->addGlobal('site_name', $this->config->item('site_name'));
     $this->twig->addGlobal('settings', $this->config->config);
@@ -134,11 +138,11 @@ class Limpid_Controller extends CMS_Controller
 
     // If is an admin method
     if (strpos($this->router->method, 'admin_') !== false) {
-      if ($this->authManager->isPermitted($this->session->userdata('id'), 'ADMIN__ACCESS')) {
+      if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'ADMIN__ACCESS')) {
         $this->data['plugins_nav'] = $this->pluginsManager->getAdminNav();
       } else {
         $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-        redirect(site_url());
+        redirect(site_url(), 'auto', $authorized === false ? 403 : 401);
         exit();
       }
     } else {

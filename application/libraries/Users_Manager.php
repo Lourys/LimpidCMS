@@ -69,31 +69,25 @@ class Users_Manager
     if (array_key_exists('group_id', $data) && $user_id == 1)
       return false;
 
-    if ($user = (array)$this->limpid->users->find($user_id)) {
-      $data = array_merge($user, $data);
-      if ($user = $this->limpid->users->update($user_id, $data))
-        return $user;
-    }
-
-    return null;
+    return $this->limpid->users->update($data, $user_id);
   }
 
   /**
    * Update users data with condition
    *
-   * @param array $conditions
+   * @param array $condition
    * @param array $data
    *
    * @return bool|null
    */
-  function editUsersWhere($conditions = [], $data = [])
+  function editUsersWhere($condition = [], $data = [])
   {
     // Simple check
-    if (empty($conditions) || empty($data)) {
+    if (empty($condition) || empty($data)) {
       return null;
     }
 
-    return $this->limpid->users->update($conditions, $data);
+    return $this->limpid->users->where($condition)->update($data);
   }
 
   /**
@@ -124,7 +118,7 @@ class Users_Manager
   /**
    * Get user by id
    *
-   * @param int $id
+   * @param int|array $id
    *
    * @return object|null
    */
@@ -135,7 +129,7 @@ class Users_Manager
       return null;
     }
 
-    if ($user = $this->limpid->users->find($id))
+    if ($user = $this->limpid->users->get($id))
       return $user;
 
     return null;
@@ -148,7 +142,7 @@ class Users_Manager
    */
   function getUsers()
   {
-    if ($user = $this->limpid->users->rawQuery('SELECT u.*, g.name AS group_name, g.color AS group_color FROM users u INNER JOIN groups g ON u.group_id = g.id'))
+    if ($user = $this->limpid->users->with_group('fields:name')->get_all())
       return $user;
 
     return null;

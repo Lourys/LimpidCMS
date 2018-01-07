@@ -4,6 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 /**
  * Permissions manager
  *
+ * @property CMS_Controller limpid
  */
 class Permissions_Manager
 {
@@ -30,7 +31,7 @@ class Permissions_Manager
       return null;
     }
 
-    if ($permission = $this->limpid->permissions->find($name))
+    if ($permission = $this->limpid->permissions->get(['name' => $name]))
       return $permission;
 
     return null;
@@ -43,7 +44,7 @@ class Permissions_Manager
    */
   function getPermissions()
   {
-    if ($permissions = $this->limpid->permissions->getAllOrdered('name'))
+    if ($permissions = $this->limpid->permissions->order_by('name')->get_all())
       return $permissions;
 
     return null;
@@ -53,18 +54,17 @@ class Permissions_Manager
    * Register a new permission
    *
    * @param string $name
-   * @param array $description
    *
    * @return bool|int|null
    */
-  function registerPermission($name, $description = [])
+  function registerPermission($name)
   {
     // Simple check
-    if (empty($name) || empty($description)) {
+    if (empty($name)) {
       return null;
     }
 
-    return $this->limpid->permissions->insert(['name' => $name, 'description' => json_encode($description)]);
+    return $this->limpid->permissions->insert(['name' => $name]);
   }
 
   /**

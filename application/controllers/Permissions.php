@@ -23,9 +23,9 @@ class Permissions extends Limpid_Controller
 
   public function admin_manage($group_id)
   {
-    if ($this->authManager->isPermitted($this->session->userdata('id'), 'PERMISSIONS_MANAGE')) {
+    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'PERMISSIONS_MANAGE')) {
       if ($this->data['group'] = $this->groupsManager->getGroup($group_id)) {
-        $this->data['group']->permissions = explode(', ', $this->data['group']->permissions);
+        $this->data['group']['permissions'] = explode(', ', $this->data['group']['permissions']);
 
         $this->data['page_title'] = $this->lang->line('PERMISSIONS_MANAGEMENT');
 
@@ -35,8 +35,8 @@ class Permissions extends Limpid_Controller
 
         $permissions = '';
         for ($i = 0; $i < count($detailedPermissions); $i++) {
-          $permissions .= $detailedPermissions[$i]->name . ',';
-          $this->data['permissions'][explode('_', $detailedPermissions[$i]->name)[0]][]['name'] = $detailedPermissions[$i]->name;
+          $permissions .= $detailedPermissions[$i]['name'] . ',';
+          $this->data['permissions'][explode('_', $detailedPermissions[$i]['name'])[0]][]['name'] = $detailedPermissions[$i]['name'];
         }
 
         // Form rules check
@@ -68,7 +68,7 @@ class Permissions extends Limpid_Controller
       }
     } else {
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      redirect(route('admin/admin_index'));
+      redirect(route('admin/admin_index'), 'auto', $authorized === false ? 403 : 401);
     }
   }
 

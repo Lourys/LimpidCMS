@@ -18,20 +18,22 @@
     </div>
   </article>
 
-  <div class="card card-custom">
-    <div class="card-body">
-      <div class="row no-gutters">
-        <div class="col-sm-12 col-md-4 col-xl-3">
-          <img src="{{ base_url('uploads/avatars/' ~ author.avatar) }}" class="img-fluid img-thumbnail d-inline-block" width="100" alt="{{ author.username }}">
-          <div class="d-inline-block pl-2">
-            <a class="font-weight-bold" href="#">{{ author.username }}</a><br>
-            <span style="color: {{ author.group.color }};font-size: .8em">{{ author.group.name }}</span>
+  {% if news.author %}
+    <div class="card card-custom">
+      <div class="card-body">
+        <div class="row no-gutters">
+          <div class="col-sm-12 col-md-4 col-xl-3">
+            <img src="{{ base_url('uploads/avatars/' ~ news.author.avatar) }}" class="img-fluid rounded-circle d-inline-block" width="100" alt="{{ news.author.username }}">
+            <div class="d-inline-block pl-2">
+              <a class="font-weight-bold" href="{{ route('users/profile/' ~ urlencode(news.author.username)) }}">{{ news.author.username }}</a><br>
+              <span style="color: {{ news.author.group.color }};font-size: .8em">{{ news.author.group.name }}</span>
+            </div>
           </div>
-        </div>
-        <div class="col p-2 p-md-1">
-          <p>{{ author.biography }}</p>
+          <div class="col p-2 p-md-1">
+            <p>{{ news.author.biography }}</p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  {% endif %}
 {% endblock %}

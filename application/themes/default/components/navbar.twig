@@ -39,7 +39,7 @@
                         <a class="nav-link" href="{{ route('users/account') }}"><i class="fa fa-user"></i>&nbsp;&nbsp;Espace membre</a>
                     </li>
                 {% else %}
-                    <li class="nav-item dropdown {% if this.router.class == 'auth' or this.router.class == 'users' %}active{% endif %}">
+                    <li class="nav-item dropdown {% if this.router.class == 'auth' %}active{% endif %}">
                         <a class="nav-link dropdown-toggle" href="#" id="dropdownAuth" data-toggle="dropdown" aria-expanded="false">
                             <i class="fa fa-unlock-alt"></i>&nbsp;&nbsp;Authentification
                         </a>

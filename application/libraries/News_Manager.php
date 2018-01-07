@@ -25,26 +25,26 @@ class News_Manager
    */
   function countTotalNews()
   {
-    return $this->limpid->news->countAll();
+    return $this->limpid->news->count_rows();
   }
 
   /**
    * Get news with LIMIT statement
    *
-   * @param int $limit
-   * @param int $offset
+   * @param int $nb
    *
    * @return array|null
    */
-  function getNewsLimited($limit, $offset)
+  function getNewsPaginated($nb, $page)
   {
     // Simple check
-    if (!is_int($limit) || !is_int($offset)) {
+    if (!is_int($nb)) {
       return null;
     }
 
-    if ($page = $this->limpid->news->rawQuery("SELECT n.*, u.username, u.avatar FROM news n, users u WHERE n.author_id = u.id ORDER BY n.edited_at, n.created_at DESC LIMIT $limit, $offset"))
-      return $page;
+    $total = $this->limpid->news->count_rows();
+    if ($news = $this->limpid->news->with_author('fields:username, avatar')->fields('title, slug, content, created_at, edited_at')->order_by('edited_at, created_at', 'DESC')->paginate($nb, $total, $page))
+      return $news;
 
     return null;
   }
@@ -97,11 +97,8 @@ class News_Manager
       return null;
     }
 
-    if ($news = (array)$this->limpid->news->find($id)) {
-      $data = array_merge($news, $data);
-      if ($news = $this->limpid->news->update($id, $data))
-        return $news;
-    }
+    if ($news = $this->limpid->news->update($data, $id))
+      return $news;
 
     return null;
   }
@@ -133,7 +130,7 @@ class News_Manager
    */
   function getAllNews()
   {
-    if ($news = $this->limpid->news->getAll())
+    if ($news = $this->limpid->news->get_all())
       return $news;
 
     return null;
@@ -153,7 +150,7 @@ class News_Manager
       return null;
     }
 
-    if ($news = $this->limpid->news->find($id))
+    if ($news = $this->limpid->news->get($id))
       return $news;
 
     return null;
@@ -173,7 +170,11 @@ class News_Manager
       return null;
     }
 
-    if ($news = $this->limpid->news->find(['slug' => $slug]))
+    if ($news = $this->limpid->news->with_author([
+      'fields' => 'username, avatar, biography',
+      'with' => ['relation' => 'group', 'fields' => 'name, color']
+    ])->fields('title, content, created_at, edited_at, active')->get(['slug' => $slug]))
+
       return $news;
 
     return null;

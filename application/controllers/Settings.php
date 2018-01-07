@@ -13,14 +13,14 @@ class Settings extends Limpid_Controller
   {
     parent::__construct();
 
-    if ($this->authManager->isPermitted($this->session->userdata('id'), 'SETTINGS__EDIT')) {
+    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'SETTINGS__EDIT')) {
       $this->data['page_title'] = $this->lang->line('SETTINGS_EDITION');
       $this->load->helper('form');
       $this->session->unmark_flash('success');
       $this->session->unmark_flash('error');
     } else {
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      redirect(site_url());
+      redirect(site_url(), 'auto', $authorized === false ? 403 : 401);
     }
   }
 
@@ -64,6 +64,10 @@ class Settings extends Limpid_Controller
     if ($this->input->method() == 'post') {
       $data = $this->input->post();
       if ($this->editSettings($data)) {
+        if ($this->input->post('avatar')['default_img'] != $this->config->item('avatar')['default_img']) {
+          $this->load->library('Users_Manager', null, "usersManager");
+          $this->usersManager->editUsersWhere(['avatar' => $this->config->item('avatar')['default_img']], ['avatar' => $this->input->post('avatar')['default_img']]);
+        }
         $this->session->set_flashdata('success', $this->lang->line('SETTINGS_SUCCESSFULLY_EDITED'));
       } else {
         $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));

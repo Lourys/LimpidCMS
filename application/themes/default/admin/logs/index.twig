@@ -24,8 +24,11 @@
       <div class="box-body">
         {{ form_open() }}
           <div class="row">
+            <div class="col-md-8">
+              <p>{{ lang('LOG_THRESHOLD_DESCRIPTION') }}</p>
+            </div>
             <div class="col-md-3">
-              {{ form.select('threshold', lang('LOG_THRESHOLD'), thresholds, {0: this.config.item('log_threshold')}, {required: true}) }}
+              {{ form.select('threshold', lang('LOG_THRESHOLD'), thresholds, {0: this.input.post() ? this.input.post('log_threshold') : this.config.item('log_threshold')}, {required: true}) }}
               {{ form.submit(lang('EDIT'), null, {btnType: 'success'}) }}
             </div>
           </div>
