@@ -23,9 +23,26 @@ class News_Manager
    *
    * @return int
    */
-  function countTotalNews()
+  public function countAllNews()
   {
     return $this->limpid->news->count_rows();
+  }
+
+  /**
+   * Count all news for a date
+   *
+   * @param string $date
+   *
+   * @return int
+   */
+  public function countAllNewsForDate($date)
+  {
+    // Simple check
+    if (empty($date)) {
+      return null;
+    }
+
+    return $this->limpid->news->where('created_at', '>=', $date)->count_rows();
   }
 
   /**

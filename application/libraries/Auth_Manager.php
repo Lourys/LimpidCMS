@@ -33,8 +33,8 @@ class Auth_Manager
     }
 
     if ($user = $this->limpid->auth->fields('id, username, password')->get(['username' => $username])) {
-      if (password_verify($password, $user->password)) {
-        $this->limpid->session->set_userdata('id', $user->id);
+      if (password_verify($password, $user['password'])) {
+        $this->limpid->session->set_userdata('id', $user['id']);
 
         return $user;
       }
@@ -59,8 +59,8 @@ class Auth_Manager
     }
 
     if ($user = $this->limpid->auth->fields('username, password')->get(['email' => $email])) {
-      if (password_verify($password, $user->password)) {
-        $this->limpid->session->set_userdata('id', $user->id);
+      if (password_verify($password, $user['password'])) {
+        $this->limpid->session->set_userdata('id', $user['id']);
 
         return $user;
       }

@@ -15,7 +15,12 @@ class VisitCounter_Manager
   function __construct()
   {
     $this->limpid =& CMS_Controller::$instance;
-    $this->limpid->load->model('VisitCounter_model', 'visitCounter');
+    // Check if plugin is enabled
+    if ($this->limpid->pluginsManager->getPlugin('VisitCounter')->enabled) {
+      $this->limpid->load->model('VisitCounter_model', 'visitCounter');
+    } else {
+      return false;
+    }
   }
 
   /**
@@ -51,6 +56,35 @@ class VisitCounter_Manager
     }
 
     return $this->limpid->visitCounter->get($ip_address);
+  }
+
+
+  /**
+   * Count all entries
+   *
+   * @return int
+   */
+  public function countAllEntries()
+  {
+    return $this->limpid->visitCounter->count_rows();
+  }
+
+
+  /**
+   * Count all entries for a date
+   *
+   * @param string $date
+   *
+   * @return int
+   */
+  public function countAllEntriesForDate($date)
+  {
+    // Simple check
+    if (empty($date)) {
+      return null;
+    }
+
+    return $this->limpid->visitCounter->where('last_visit', '>=', $date)->count_rows();
   }
 
 

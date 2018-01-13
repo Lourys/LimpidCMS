@@ -47,6 +47,13 @@
                   <div class="col-md-12">
                     {{ form.input('home_title', lang('TITLE'), this.input.post('home_title') ? this.input.post('home_title') : theme_config.home_title, {placeholder: lang('THEME_CONFIG__HOME_TITLE_EXAMPLE'), required: true}) }}
                   </div>
+                  <div class="col-md-12">
+                    <div class="alert alert-info alert-dismissible">
+                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                      <h4><i class="icon fa fa-info"></i> Info</h4>
+                      {{ lang('THEME_CONFIG__FA_ICONS_INFO') }}
+                    </div>
+                  </div>
                   <div class="col-md-4">
                     {{ form.input('home_bubble[icon][0]', lang('THEME_CONFIG__FIRST_BUBBLE_ICON'), this.input.post('home_bubble[icon][0]') ? this.input.post('home_bubble[icon][0]') : theme_config.home_bubble.icon.0, {placeholder: lang('THEME_CONFIG__BUBBLE_ICON_EXAMPLE'), required: true}) }}
                     {{ form.input('home_bubble[text][0]', lang('THEME_CONFIG__FIRST_BUBBLE_TEXT'), this.input.post('home_bubble[text][0]') ? this.input.post('home_bubble[text][0]') : theme_config.home_bubble.text.0, {placeholder: lang('THEME_CONFIG__BUBBLE_TEXT_EXAMPLE'), required: true}) }}
@@ -78,17 +85,13 @@
                     {% set button_actions = {
                       0: {name: lang('THEME_CONFIG__COPY_BUTTON_ADDRESS'), value: "copy"},
                       1: {name: lang('THEME_CONFIG__OPEN_ADDRESS'), value: "open"},
-                      2: {name: lang('THEME_CONFIG__OPEN_ADDRESS_NEW_TAB'), value: "open_new_tab"}}
-                    %}
+                      2: {name: lang('THEME_CONFIG__OPEN_ADDRESS_NEW_TAB'), value: "open_new_tab"}} %}
                     {{ form.select('join_us_button[action]', lang('THEME_CONFIG__JOIN_US_BUTTON_ACTION'), button_actions, {0: theme_config.join_us_button.action}, {required: true}) }}
                     {{ form.input('join_us_button[text]', lang('THEME_CONFIG__JOIN_US_BUTTON_TEXT'), this.input.post('join_us_button[text]') ? this.input.post('join_us_button[text]') : theme_config.join_us_button.text, {placeholder: lang('THEME_CONFIG__JOIN_US_BUTTON_TEXT_EXAMPLE'), required: true}) }}
                     {{ form.input('join_us_button[href]', lang('THEME_CONFIG__JOIN_US_BUTTON_ADRESS'), this.input.post('join_us_button[href]') ? this.input.post('join_us_button[href]') : theme_config.join_us_button.href, {placeholder: lang('THEME_CONFIG__JOIN_US_BUTTON_ADRESS_EXAMPLE'), required: true}) }}
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="col-md-12">
-              <hr>
             </div>
           </div>
         </div>

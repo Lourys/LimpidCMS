@@ -98,13 +98,14 @@ class CMS_Controller extends CI_Controller
     if ($this->router->module) {
       $config['paths'] = [];
       if (is_dir(APPPATH . 'themes/' . $this->config->item('theme') . '/' . $this->router->module . '/'))
-        array_push($config['paths'], APPPATH . 'themes/' . $this->config->item('theme') . '/' . $this->router->module . '/');
+        array_push($config['paths'], APPPATH . 'themes/' . $this->config->item('theme') . '/plugins/' . $this->router->module . '/');
       array_push($config['paths'], APPPATH . 'plugins/' . $this->router->module . '/views/');
-      array_push($config['paths'], APPPATH . 'themes/' . $this->config->item('theme') . '/');
+      array_push($config['paths'], APPPATH . 'themes/default/plugins/' . $this->router->module . '/');
     } else {
       $config = [
         'paths' => [
-          APPPATH . 'themes/' . $this->config->item('theme') . '/'
+          APPPATH . 'themes/' . $this->config->item('theme') . '/',
+          APPPATH . 'themes/default/'
         ]
       ];
     }
@@ -135,6 +136,10 @@ class Limpid_Controller extends CMS_Controller
   public function __construct()
   {
     parent::__construct();
+    if ($this->router->module) {
+      if (!$this->pluginsManager->isEnabled($this->router->module))
+        show_404();
+    }
 
     // If is an admin method
     if (strpos($this->router->method, 'admin_') !== false) {
@@ -142,8 +147,7 @@ class Limpid_Controller extends CMS_Controller
         $this->data['plugins_nav'] = $this->pluginsManager->getAdminNav();
       } else {
         $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-        redirect(site_url(), 'auto', $authorized === false ? 403 : 401);
-        exit();
+        show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
       }
     } else {
       $this->load->library('Menu_Manager', null, 'menuManager');

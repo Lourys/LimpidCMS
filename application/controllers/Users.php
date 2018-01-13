@@ -157,10 +157,14 @@ class Users extends Limpid_Controller
         $this->form_validation->set_rules('user_id', 'ID', 'required');
 
         if ($this->form_validation->run()) {
+          // Demo specific
+          $this->session->set_flashdata('error', 'Cette fonctionnalité est désactivée pour la version démo');
+          redirect($redirect);
+
           // Check if user is permitted to edit others avatars
           if ($this->input->post('user_id') != $this->session->userdata('id') && !$authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'USERS__EDIT')) {
             $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-            redirect($redirect, 'auto', $authorized === false ? 403 : 401);
+            show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
           }
 
           $extension = strtolower(pathinfo($_FILES['avatarUpload']['name'], PATHINFO_EXTENSION));
@@ -193,7 +197,7 @@ class Users extends Limpid_Controller
         }
       } else {
         $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-        redirect($redirect, 'auto', $authorized === false ? 403 : 401);
+        show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
       }
     } else {
       // If user isn't logged
@@ -219,7 +223,7 @@ class Users extends Limpid_Controller
           // Check if user is permitted to edit others avatars
           if ($this->input->post('user_id') != $this->session->userdata('id') && !$this->authManager->isPermitted($this->session->userdata('id'), 'USERS__EDIT')) {
             $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-            redirect($redirect, 'auto', $authorized === false ? 403 : 401);
+            show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
           }
           $user = $this->usersManager->getUser($this->input->post('user_id'));
 
@@ -238,7 +242,7 @@ class Users extends Limpid_Controller
         }
       } else {
         $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-        redirect($redirect, 'auto', $authorized === false ? 403 : 401);
+        show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
       }
     } else {
       // If user isn't logged
@@ -291,7 +295,7 @@ class Users extends Limpid_Controller
       // If user doesn't have required permission
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
 
-      redirect(route('admin/admin_index'), 'auto', $authorized === false ? 403 : 401);
+      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
     }
   }
 
@@ -308,7 +312,7 @@ class Users extends Limpid_Controller
       // If user doesn't have required permission
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
 
-      redirect(route('admin/admin_index'), 'auto', $authorized === false ? 403 : 401);
+      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
     }
   }
 
@@ -374,7 +378,7 @@ class Users extends Limpid_Controller
       }
     } else {
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      redirect(route('admin/admin_index'), 'auto', $authorized === false ? 403 : 401);
+      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
     }
   }
 
@@ -385,9 +389,10 @@ class Users extends Limpid_Controller
 
       // Avatar deletion
       $user = $this->usersManager->getUser($id);
-      if ($user['avatar'] != $this->config->item('avatar')['default_img']) {
+      if ($user['avatar'] && $user['avatar'] != $this->config->item('avatar')['default_img']) {
         if (file_exists('./uploads/avatars/' . $user['avatar'])) {
           if (!unlink('./uploads/avatars/' . $user['avatar'])) {
+            var_dump('./uploads/avatars/' . $user['avatar']);
             $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
             redirect(route('users/admin_manage'));
           }
@@ -407,7 +412,7 @@ class Users extends Limpid_Controller
       // If user doesn't have required permission
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
 
-      redirect(route('admin/admin_index'), 'auto', $authorized === false ? 403 : 401);
+      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
     }
   }
 
@@ -432,7 +437,7 @@ class Users extends Limpid_Controller
       // If user doesn't have required permission
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
 
-      redirect(route('admin/admin_index'), 'auto', $authorized === false ? 403 : 401);
+      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
     }
   }
 

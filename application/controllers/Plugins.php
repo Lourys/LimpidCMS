@@ -15,7 +15,7 @@ class Plugins extends Limpid_Controller
     if (!$authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'PLUGINS__MANAGEMENT')) {
       // If user doesn't have required permission
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      redirect(route('admin/admin_index'), 'auto', $authorized === false ? 403 : 401);
+      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
       exit();
     }
   }
@@ -76,6 +76,10 @@ class Plugins extends Limpid_Controller
 
   public function admin_uninstall($uri)
   {
+    // Demo specific
+    $this->session->set_flashdata('error', 'Cette fonctionnalité est désactivée pour la version démo');
+    redirect(route('plugins/admin_manage'));
+
     if ($this->pluginsManager->isEnabled($uri)) {
       $this->session->set_flashdata('error', $this->lang->line('DISABLE_PLUGIN_BEFORE_UNINSTALLING'));
     } else {

@@ -49,7 +49,7 @@ class News extends Limpid_Controller
       // Load pagination library
       $this->load->library('pagination');
       $config['base_url'] = route('news/listing');
-      $config['total_rows'] = $this->newsManager->countTotalNews();
+      $config['total_rows'] = $this->newsManager->countAllNews();
       $config['per_page'] = 12;
       $config['use_page_numbers'] = TRUE;
       $config['prefix'] = 'page/';
@@ -109,7 +109,7 @@ class News extends Limpid_Controller
     } else {
       // If user doesn't have required permission
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      redirect(route('admin/admin_index'), 'auto', $authorized === false ? 403 : 401);
+      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
     }
   }
 
@@ -124,7 +124,7 @@ class News extends Limpid_Controller
     } else {
       // If user doesn't have required permission
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      redirect(route('admin/admin_index'), 'auto', $authorized === false ? 403 : 401);
+      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
     }
   }
 
@@ -173,7 +173,7 @@ class News extends Limpid_Controller
     } else {
       // If user doesn't have required permission
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      redirect(route('admin/admin_index'), 'auto', $authorized === false ? 403 : 401);
+      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
     }
   }
 
@@ -192,7 +192,7 @@ class News extends Limpid_Controller
       // If user doesn't have required permission
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
 
-      redirect(route('admin/admin_index'), 'auto', $authorized === false ? 403 : 401);
+      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
     }
   }
 

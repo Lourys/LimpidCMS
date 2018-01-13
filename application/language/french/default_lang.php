@@ -260,6 +260,7 @@ $lang['WEBSITE_NAME'] = 'Nom du site';
 $lang['WEBSITE_NAME_EXAMPLE'] = 'LimpidCMS';
 $lang['WEBSITE_DESCRIPTION'] = 'Description du site';
 $lang['WEBSITE_DESCRIPTION_EXAMPLE'] = 'LimpidCMS est un cms adapté aux serveurs de jeu en tous genre !';
+$lang['ERROR_ENCOUNTERED'] = 'Une erreur a été rencontrée';
 $lang['zeroRecords'] = 'Aucune donnée ne correspond à votre recherche';
 
 $lang['ADMIN__ACCESS'] = 'Accès au panel d\'administration';
@@ -314,6 +315,7 @@ $lang['DEFAULT_AVATAR'] = 'Avatar par défaut';
 $lang['DEFAULT_AVATAR_EXAMPLE'] = 'defaut.png';
 $lang['PROFILE_OF'] = 'Profil de';
 $lang['VIEW_MY_PUBLIC_PROFILE'] = 'Voir mon profil public';
+$lang['LAST_24_HOURS'] = 'Dernières 24h';
 
 $lang['TIMEZONE'] = 'Fuseau horaire';
 $lang['AFRICA'] = 'Afrique';
@@ -349,3 +351,5 @@ $lang['THEME_CONFIG__JOIN_US_BUTTON_TEXT'] = 'Texte du bouton';
 $lang['THEME_CONFIG__JOIN_US_BUTTON_TEXT_EXAMPLE'] = 'Télécharger le launcher';
 $lang['THEME_CONFIG__JOIN_US_BUTTON_ADRESS'] = 'Adresse du bouton';
 $lang['THEME_CONFIG__JOIN_US_BUTTON_ADRESS_EXAMPLE'] = 'https://votresite.fr/launcher.exe';
+$lang['THEME_CONFIG__FA_ICONS_INFO'] = 'Vous trouverez la liste des icônes sur <a href="http://fontawesome.io/icons/" target="_blank" rel="noopener nofollow">Font Awesome</a>.<br> Une fois une icône choisit, il ne vous suffit plus qu\'à copier son nom (celui visible sur la liste) dans un des champs ci-dessous.';
+$lang['STATISTICS'] = 'Statistiques';

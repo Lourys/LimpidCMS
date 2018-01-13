@@ -42,10 +42,10 @@ if (!function_exists('displayCaptcha')) {
 
     // LimpidCMS CAPTCHA generation
     if ($Config->item('limpidCaptchaEnabled') == true && function_exists('gd_info')) {
-      $CI =& CMS_Controller::$instance;
-      $CI->load->library('Captcha');
+      $limpid =& CMS_Controller::$instance;
+      $limpid->load->library('Captcha');
       $script = '<script type="text/javascript" async>
-                   $("<img src=\'' . $CI->captcha->generateCaptcha() . ' \' alt=\'captcha\'><div class=\'form-group\'><label for=\'captchaAnswer\'>Captcha :</label><input name=\'captcha_answer\' type=\'text\' class=\'form-control\' id=\'captchaAnswer\'></input></div>").insertBefore( "#captchaProtected" );
+                   $("<img src=\'' . $limpid->captcha->generateCaptcha() . ' \' alt=\'captcha\'><div class=\'form-group\'><label for=\'captchaAnswer\'>Captcha :</label><input name=\'captcha_answer\' type=\'text\' class=\'form-control\' id=\'captchaAnswer\'></input></div>").insertBefore( "#captchaProtected" );
                  </script>';
 
       return $script;
@@ -59,5 +59,15 @@ if (!function_exists('validation_errors')) {
   function validation_errors()
   {
     return null;
+  }
+}
+
+if (!function_exists('load_widget')) {
+  function load_widget($pluginName)
+  {
+    $limpid =& CMS_Controller::$instance;
+    $limpid->load->library($pluginName . '_Widget', null, $pluginName . 'Widget');
+
+    return;
   }
 }

@@ -210,16 +210,14 @@
                                 <li role="separator" class="divider"
                                     data-id="{{ sublink.id }}"></li>
                               {% elseif sublink.parent_id == link.id %}
-                                <li data-id="{{ sublink.id }}"><a
-                                          href="{{ include(template_from_string(sublink.url)) }}">{{ sublink.title }}</a>
+                                <li data-id="{{ sublink.id }}"><a>{{ sublink.title }}</a>
                                 </li>
                               {% endif %}
                             {% endfor %}
                           </ul>
                         </li>
                       {% else %}
-                        <li data-id="{{ link.id }}"><a
-                                  href="{{ include(template_from_string(link.url)) }}">{{ link.title }}</a>
+                        <li data-id="{{ link.id }}"><a>{{ link.title }}</a>
                         </li>
                       {% endif %}
                     {% endfor %}

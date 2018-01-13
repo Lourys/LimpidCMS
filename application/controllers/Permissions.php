@@ -68,7 +68,7 @@ class Permissions extends Limpid_Controller
       }
     } else {
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      redirect(route('admin/admin_index'), 'auto', $authorized === false ? 403 : 401);
+      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
     }
   }
 

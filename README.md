@@ -2,11 +2,11 @@
 
 ## TODO
 - Faire la personnalisation du thème par défaut (SLIDERS)
-- Dashboard admin
+- ~~Dashboard admin~~
 - ~~Déplacer les descriptions de permissions depuis format JSON en DB vers fichier de lang.~~
 - ~~Revoir tous les models (le CMS_Model n'est pas top...)~~
 - ~~Faire les 404~~
-- Sidebar à intégrer
+- ~~Sidebar à intégrer~~
 - ~~Faire un système de Captcha natif~~
 - ~~Edition d'avatar + liaison avec gravatar (possibilité de désactiver gravatar) ?~~
 - ~~Edition de bio~~
@@ -15,7 +15,7 @@
 - ~~Catégoriser les permissions~~
 - ~~Intégrer nom et avatar auteur des articles.~~
 - ~~Sur le theme de base, dropdown n'est pas aussi large que le bouton, ca casse un peu le truc (Bouton Authentification par exemple)~~
-- ~~Définir une redirection 403 ou 401 selon les cas pour les non permissions~~
+- ~~Définir une erreur 403 ou 401 selon les cas pour les non permissions~~
 
 ## TOFIX
 - ~~Réparer les plugins~~

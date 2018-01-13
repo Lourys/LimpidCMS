@@ -18,6 +18,33 @@ class Pages_Manager
   }
 
   /**
+   * Count all pages
+   *
+   * @return int
+   */
+  public function countAllPages()
+  {
+    return $this->limpid->pages->count_rows();
+  }
+
+  /**
+   * Count all news for a date
+   *
+   * @param string $date
+   *
+   * @return int
+   */
+  public function countAllPagesForDate($date)
+  {
+    // Simple check
+    if (empty($date)) {
+      return null;
+    }
+
+    return $this->limpid->pages->where('created_at', '>=', $date)->count_rows();
+  }
+
+  /**
    * Create page
    *
    * @param string $title

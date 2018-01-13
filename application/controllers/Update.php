@@ -13,7 +13,7 @@ class Update extends Limpid_Controller
     parent::__construct();
     if (!$authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'UPDATE__ACCESS')) {
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      redirect(site_url(), 'auto', $authorized === false ? 403 : 401);
+      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
       exit();
     }
   }

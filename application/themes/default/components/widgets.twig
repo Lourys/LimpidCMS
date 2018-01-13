@@ -1,0 +1,19 @@
+{% if this.pluginsManager.isEnabled('VisitCounter') %}
+  {# Load visitCounter vars #}
+  {{ load_widget('VisitCounter') }}
+  {% set visitCounter = this.VisitCounterWidget.defaultWidget() %}
+
+  <div class="card card-custom">
+    <div class="card-header">
+      <div class="row">
+        <div class="col"><i class="fa fa-line-chart" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;{{ lang('STATISTICS') }}</div>
+      </div>
+    </div>
+    <div class="card-body text-center">
+      <p>Visiteurs aujourd'hui : {{ visitCounter.nb_since_24h }}</p>
+      <p>Visiteurs au total : {{ visitCounter.nb_total }}</p>
+      <hr>
+      <p>Visiteurs actuel : {{ visitCounter.nb_since_5m }}</p>
+    </div>
+  </div>
+{% endif %}

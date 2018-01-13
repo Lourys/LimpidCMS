@@ -18,6 +18,33 @@ class Users_Manager
   }
 
   /**
+   * Count all users
+   *
+   * @return int
+   */
+  public function countAllUsers()
+  {
+    return $this->limpid->users->count_rows();
+  }
+
+  /**
+   * Count all users for a date
+   *
+   * @param string $date
+   *
+   * @return int
+   */
+  public function countAllUsersForDate($date)
+  {
+    // Simple check
+    if (empty($date)) {
+      return null;
+    }
+
+    return $this->limpid->users->where('registered_at', '>=', $date)->count_rows();
+  }
+
+  /**
    * Register user
    *
    * @param string $username
@@ -56,7 +83,7 @@ class Users_Manager
    * @param int $user_id
    * @param array $data
    *
-   * @return bool|null
+   * @return array|bool|null|string
    */
   function editUser($user_id, $data = [])
   {

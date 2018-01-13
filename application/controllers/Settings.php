@@ -20,7 +20,7 @@ class Settings extends Limpid_Controller
       $this->session->unmark_flash('error');
     } else {
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      redirect(site_url(), 'auto', $authorized === false ? 403 : 401);
+      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
     }
   }
 

@@ -47,6 +47,10 @@ class Logs extends Limpid_Controller
 
       $this->form_validation->set_rules('threshold', $this->lang->line('LOG_THRESHOLD'), 'required|greater_than_equal_to[0]|less_than_equal_to[4]');
       if ($this->form_validation->run()) {
+        // Demo specific
+        $this->session->set_flashdata('error', 'Cette fonctionnalité est désactivée pour la version démo');
+        redirect(current_url());
+
         if ($this->config->edit_item('log_threshold', (int) $this->input->post('threshold'), 'config')) {
           $this->session->set_flashdata('success', $this->lang->line('LOG_THRESHOLD_SUCCESSFULLY_EDITED'));
         } else {
@@ -59,7 +63,7 @@ class Logs extends Limpid_Controller
       $this->session->unmark_flash('error');
     } else {
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      redirect(site_url(), 'auto', $authorized === false ? 403 : 401);
+      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
     }
   }
 
@@ -84,7 +88,7 @@ class Logs extends Limpid_Controller
       }
     } else {
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      redirect(site_url(), 'auto', $authorized === false ? 403 : 401);
+      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
     }
   }
 
@@ -106,7 +110,7 @@ class Logs extends Limpid_Controller
       }
     } else {
       $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      redirect(site_url(), 'auto', $authorized === false ? 403 : 401);
+      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
     }
   }
 
