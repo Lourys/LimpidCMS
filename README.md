@@ -22,4 +22,4 @@
 - ~~Afficher les bonnes valeurs directement après l'édition dans les paramètres.~~
 - ~~Edition des thèmes non fonctionnelle~~
 - ~~Remettre l'éditeur sur la création de pages (et p-ê l'édition...)~~
-- ~~Rendre les tableaux du panel responsive~~
+- Rendre les tableaux du panel responsive (en fait c'est tj pas bon...)

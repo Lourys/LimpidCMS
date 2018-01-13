@@ -97,8 +97,8 @@
           <div class="box-header with-border">
             <h3 class="box-title">{{ lang('LINKS_MANAGEMENT') }}</h3>
           </div>
-          <div class="box-body no-padding">
-            <table class="table table-responsive">
+          <div class="box-body table-responsive no-padding">
+            <table class="table">
               <tbody>
               <tr>
                 <th>{{ lang('TITLE') }}</th>
@@ -133,42 +133,44 @@
                 {% if link.is_dropdown %}
                   <tr id="link_{{ link.id }}" class="collapse" aria-expanded="false">
                     <td colspan="100%">
-                      <table class="table table-responsive" style="margin-bottom: 0">
-                        <tbody>
-                        {% for sublink in sublinks %}
-                          {% if sublink.parent_id == link.id %}
-                            <tr>
-                              <td style="padding-left: 30px">
-                                {% if sublink.is_divider %}
-                                  --------------------------
-                                {% else %}
-                                  {{ sublink.title }}
-                                {% endif %}
-                              </td>
-                              <td>
-                                <a href="{{ include(template_from_string(sublink.url)) }}">{{ sublink.url | truncate(40, false, '...') }}</a>
-                              </td>
-                              <td style="text-align: right;width: 66px">
-                                {% if sublink.is_divider != true %}
-                                  <a href="#editLink{{ sublink.id }}"
-                                     class="btn btn-primary btn-xs" title="Editer"
+                      <div class="table-responsive">
+                        <table class="table" style="margin-bottom: 0">
+                          <tbody>
+                          {% for sublink in sublinks %}
+                            {% if sublink.parent_id == link.id %}
+                              <tr>
+                                <td style="padding-left: 30px">
+                                  {% if sublink.is_divider %}
+                                    --------------------------
+                                  {% else %}
+                                    {{ sublink.title }}
+                                  {% endif %}
+                                </td>
+                                <td>
+                                  <a href="{{ include(template_from_string(sublink.url)) }}">{{ sublink.url | truncate(40, false, '...') }}</a>
+                                </td>
+                                <td style="text-align: right;width: 66px">
+                                  {% if sublink.is_divider != true %}
+                                    <a href="#editLink{{ sublink.id }}"
+                                       class="btn btn-primary btn-xs" title="Editer"
+                                       data-toggle="modal"
+                                       data-target="#editLink{{ sublink.id }}">
+                                      <i class="fa fa-pencil"></i>
+                                    </a>&nbsp;
+                                  {% endif %}
+                                  <a href="#deleteLink{{ sublink.id }}"
+                                     class="btn btn-danger btn-xs" title="Supprimer"
                                      data-toggle="modal"
-                                     data-target="#editLink{{ sublink.id }}">
-                                    <i class="fa fa-pencil"></i>
-                                  </a>&nbsp;
-                                {% endif %}
-                                <a href="#deleteLink{{ sublink.id }}"
-                                   class="btn btn-danger btn-xs" title="Supprimer"
-                                   data-toggle="modal"
-                                   data-target="#deleteLink{{ sublink.id }}">
-                                  <i class="fa fa-times"></i>
-                                </a>
-                              </td>
-                            </tr>
-                          {% endif %}
-                        {% endfor %}
-                        </tbody>
-                      </table>
+                                     data-target="#deleteLink{{ sublink.id }}">
+                                    <i class="fa fa-times"></i>
+                                  </a>
+                                </td>
+                              </tr>
+                            {% endif %}
+                          {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
                     </td>
                   </tr>
                 {% endif %}
@@ -356,7 +358,7 @@
           url: "{{ route('menu/ajax_edit_links_position') }}",
           data: dataObject,
           dataType: "json",
-          success: function(response) {
+          success: function (response) {
             console.log(response)
           }
         });
@@ -373,18 +375,18 @@
         }
       });
       {% for link in links %}
-        {% if link.is_dropdown %}
-          new Sortable(nav_{{ link.id }}, {
-            onSort: function (e) {
-              var items = e.to.children;
-              var result = [];
-              for (var i = 0; i < items.length; i++) {
-                result.push($(items[i]).data('id'));
-              }
-              editLinksOrder(result);
-            }
-          });
-        {% endif %}
+      {% if link.is_dropdown %}
+      new Sortable(nav_{{ link.id }}, {
+        onSort: function (e) {
+          var items = e.to.children;
+          var result = [];
+          for (var i = 0; i < items.length; i++) {
+            result.push($(items[i]).data('id'));
+          }
+          editLinksOrder(result);
+        }
+      });
+      {% endif %}
       {% endfor %}
     });
   </script>

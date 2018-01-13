@@ -46,4 +46,5 @@ switch ($_SERVER['CONTENT_TYPE']) {
     throw new \Exception("Unsupported content type: $_SERVER[HTTP_CONTENT_TYPE]");
 }
 
+shell_exec('git stash');
 shell_exec('git pull');

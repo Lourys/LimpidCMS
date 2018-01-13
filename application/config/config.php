@@ -62,7 +62,7 @@ $config['avatar'] = array('default_img'=>'default.png','max_height'=>'250','max_
 if (ENVIRONMENT == 'development')
   $config['base_url'] = 'http://localhost:8080/demo.limpidcms.fr/public/';
 else
-  $config['base_url'] = 'https://demo.limpidcms.fr/index.php';
+  $config['base_url'] = 'https://demo.limpidcms.fr/';
 
 /*
 |--------------------------------------------------------------------------

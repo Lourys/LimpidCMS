@@ -23,43 +23,46 @@
       </div>
       <div class="box-body">
         {{ form_open() }}
-          <div class="row">
-            <div class="col-md-8">
-              <p>{{ lang('LOG_THRESHOLD_DESCRIPTION') }}</p>
-            </div>
-            <div class="col-md-3">
-              {{ form.select('threshold', lang('LOG_THRESHOLD'), thresholds, {0: this.input.post() ? this.input.post('log_threshold') : this.config.item('log_threshold')}, {required: true}) }}
-              {{ form.submit(lang('EDIT'), null, {btnType: 'success'}) }}
-            </div>
+        <div class="row">
+          <div class="col-md-8">
+            <p>{{ lang('LOG_THRESHOLD_DESCRIPTION') }}</p>
           </div>
+          <div class="col-md-3">
+            {{ form.select('threshold', lang('LOG_THRESHOLD'), thresholds, {0: this.input.post() ? this.input.post('log_threshold') : this.config.item('log_threshold')}, {required: true}) }}
+            {{ form.submit(lang('EDIT'), null, {btnType: 'success'}) }}
+          </div>
+        </div>
         {{ form_close() }}
         <hr>
-        <table id="table" class="table table-responsive">
-          <thead>
-          <tr>
-            <th>{{ lang('NAME') }}</th>
-            <th>{{ lang('SIZE') }}</th>
-            <th style="width: 174px">{{ lang('ACTIONS') }}</th>
-          </tr>
-          </thead>
-          <tbody>
-          {% for file in logFiles %}
+        <div class="table-responsive">
+          <table id="table" class="table">
+            <thead>
             <tr>
-              <td>{{ file.name }}</td>
-              <td>{{ file.size }}</td>
-              <td>
-                <a href="{{ route('logs/admin_download/' ~ urlencode(file.name)) }}" target="_blank" class="btn btn-primary btn-sm">
-                  <i class="fa fa-download"></i> {{ lang('DOWNLOAD') }}
-                </a>&nbsp;
-                <a href="#deleteLogs{{ loop.index }}" class="btn btn-danger btn-sm"
-                   data-toggle="modal" data-target="#deleteLogs{{ loop.index }}">
-                  <i class="fa fa-times"></i> {{ lang('DELETE') }}
-                </a>
-              </td>
+              <th>{{ lang('NAME') }}</th>
+              <th>{{ lang('SIZE') }}</th>
+              <th style="width: 174px">{{ lang('ACTIONS') }}</th>
             </tr>
-          {% endfor %}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+            {% for file in logFiles %}
+              <tr>
+                <td>{{ file.name }}</td>
+                <td>{{ file.size }}</td>
+                <td>
+                  <a href="{{ route('logs/admin_download/' ~ urlencode(file.name)) }}" target="_blank"
+                     class="btn btn-primary btn-sm">
+                    <i class="fa fa-download"></i> {{ lang('DOWNLOAD') }}
+                  </a>&nbsp;
+                  <a href="#deleteLogs{{ loop.index }}" class="btn btn-danger btn-sm"
+                     data-toggle="modal" data-target="#deleteLogs{{ loop.index }}">
+                    <i class="fa fa-times"></i> {{ lang('DELETE') }}
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </section>
@@ -77,7 +80,8 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang('CANCEL') }}</button>
-            <a href="{{ route('logs/admin_delete/' ~ urlencode(file.name)) }}" class="btn btn-danger">{{ lang('DELETION_CONFIRM') }}</a>
+            <a href="{{ route('logs/admin_delete/' ~ urlencode(file.name)) }}"
+               class="btn btn-danger">{{ lang('DELETION_CONFIRM') }}</a>
           </div>
         </div>
       </div>
@@ -109,7 +113,7 @@
           },
           aria: {sortAscending: "{{ lang('sortAscending') }}", sortDescending: "{{ lang('sortDescending') }}"}
         },
-        order: [[ 0, "desc" ]]
+        order: [[0, "desc"]]
       })
     });
   </script>

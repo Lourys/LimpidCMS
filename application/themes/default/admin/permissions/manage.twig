@@ -35,8 +35,8 @@
         </ul>
         <div class="tab-content">
           {% for key, category in permissions %}
-            <div id="{{ key }}" class="tab-pane fade {% if loop.index == 1 %}in active{% endif %}">
-              <table class="table table-responsive">
+            <div id="{{ key }}" class="tab-pane fade table-responsive {% if loop.index == 1 %}in active{% endif %}">
+              <table class="table">
                 <thead>
                 <tr>
                   <th>{{ lang('PERMISSION') }}</th>
