@@ -23,159 +23,138 @@ class Groups extends Limpid_Controller
 
   public function admin_add()
   {
-    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'GROUPS__ADD')) {
-      $this->data['page_title'] = $this->lang->line('GROUP_CREATION');
-      $this->load->helper('form');
-      $this->load->library('form_validation');
+    $this->authManager->checkAccess('GROUPS__ADD');
 
-      $this->load->library('Permissions_Manager', null, 'permissionsManager');
-      $this->data['permissions'] = $this->permissionsManager->getPermissions();
+    $this->data['page_title'] = $this->lang->line('GROUP_CREATION');
+    $this->load->helper('form');
+    $this->load->library('form_validation');
 
-      // Build the permissions list
-      $permissions = '';
-      for ($i = 0; $i < count($this->data['permissions']); $i++) {
-        $permissions .= $this->data['permissions'][$i]['name'] . ',';
-        $this->data['permissions'][$i]['value'] = $this->data['permissions'][$i]['name'];
-        $this->data['permissions'][$i]['name'] = $this->lang->line($this->data['permissions'][$i]['name']);
-      }
+    $this->load->library('Permissions_Manager', null, 'permissionsManager');
+    $this->data['permissions'] = $this->permissionsManager->getPermissions();
 
-      // Form rules check
-      $this->form_validation->set_rules('name', $this->lang->line('GROUP_NAME'), 'required|min_length[3]|max_length[60]');
-      $this->form_validation->set_rules('color', $this->lang->line('GROUP_COLOR'), 'required|exact_length[7]');
-      $this->form_validation->set_rules('permissions', $this->lang->line('GROUP_PERMISSIONS'), 'in_list[' . $permissions . ']');
+    // Build the permissions list
+    $permissions = '';
+    for ($i = 0; $i < count($this->data['permissions']); $i++) {
+      $permissions .= $this->data['permissions'][$i]['name'] . ',';
+      $this->data['permissions'][$i]['value'] = $this->data['permissions'][$i]['name'];
+      $this->data['permissions'][$i]['name'] = $this->lang->line($this->data['permissions'][$i]['name']);
+    }
 
-      // If check passed
-      if ($this->form_validation->run()) {
-        if ($this->groupsManager->createGroup($this->input->post('name'), $this->input->post('color'), $this->input->post('permissions'))) {
-          // If group creation succeed
-          $this->session->set_flashdata('success', $this->lang->line('GROUPS_ADD_SUCCEEDED'));
-          redirect(route('groups/admin_manage'));
-        } else {
-          // If group creation failed
-          $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
-          redirect(current_url());
-        }
+    // Form rules check
+    $this->form_validation->set_rules('name', $this->lang->line('GROUP_NAME'), 'required|min_length[3]|max_length[60]');
+    $this->form_validation->set_rules('color', $this->lang->line('GROUP_COLOR'), 'required|exact_length[7]');
+    $this->form_validation->set_rules('permissions', $this->lang->line('GROUP_PERMISSIONS'), 'in_list[' . $permissions . ']');
+
+    // If check passed
+    if ($this->form_validation->run()) {
+      if ($this->groupsManager->createGroup($this->input->post('name'), $this->input->post('color'), $this->input->post('permissions'))) {
+        // If group creation succeed
+        $this->session->set_flashdata('success', $this->lang->line('GROUPS_ADD_SUCCEEDED'));
+        redirect(route('groups/admin_manage'));
       } else {
-        // Render the view
-        $this->twig->display('admin/groups/add', $this->data);
+        // If group creation failed
+        $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
+        redirect(current_url());
       }
     } else {
-      // If user doesn't have required permission
-      $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-
-      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
+      // Render the view
+      $this->twig->display('admin/groups/add', $this->data);
     }
   }
 
 
   public function admin_manage()
   {
-    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'GROUPS__MANAGE')) {
-      $this->data['page_title'] = $this->lang->line('GROUPS_MANAGEMENT');
-      $this->data['groups'] = $this->groupsManager->getGroups();
+    $this->authManager->checkAccess('GROUPS__MANAGE');
 
-      // Render the view
-      $this->twig->display('admin/groups/manage', $this->data);
-    } else {
-      // If user doesn't have required permission
-      $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
+    $this->data['page_title'] = $this->lang->line('GROUPS_MANAGEMENT');
+    $this->data['groups'] = $this->groupsManager->getGroups();
 
-      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
-    }
+    // Render the view
+    $this->twig->display('admin/groups/manage', $this->data);
   }
 
 
   public function admin_edit($id)
   {
-    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'GROUPS__EDIT')) {
-      if ($this->data['group'] = $this->groupsManager->getGroup($id)) {
-        $this->data['group']['permissions'] = explode(',', $this->data['group']['permissions']);
-        $this->data['page_title'] = $this->lang->line('GROUP_EDITION');
-        $this->load->helper('form');
-        $this->load->library('form_validation');
+    $this->authManager->checkAccess('GROUPS__EDIT');
 
-        // Form rules check
-        $this->form_validation->set_rules('name', $this->lang->line('GROUP_NAME'), 'required|min_length[3]|max_length[60]');
-        $this->form_validation->set_rules('color', $this->lang->line('GROUP_COLOR'), 'required|exact_length[7]');
+    if ($this->data['group'] = $this->groupsManager->getGroup($id)) {
+      $this->data['group']['permissions'] = explode(',', $this->data['group']['permissions']);
+      $this->data['page_title'] = $this->lang->line('GROUP_EDITION');
+      $this->load->helper('form');
+      $this->load->library('form_validation');
 
-        // If check passed
-        if ($this->form_validation->run()) {
-          $data = [
-            'name' => $this->input->post('name'),
-            'color' => $this->input->post('color')
-          ];
+      // Form rules check
+      $this->form_validation->set_rules('name', $this->lang->line('GROUP_NAME'), 'required|min_length[3]|max_length[60]');
+      $this->form_validation->set_rules('color', $this->lang->line('GROUP_COLOR'), 'required|exact_length[7]');
 
-          if ($this->groupsManager->editGroup($id, $data)) {
-            // If group edition succeed
-            $this->session->set_flashdata('success', $this->lang->line('GROUPS_EDIT_SUCCEEDED'));
-            redirect(route('groups/admin_manage'));
-          } else {
-            // If group edition failed
-            $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
-            redirect(current_url());
-          }
+      // If check passed
+      if ($this->form_validation->run()) {
+        $data = [
+          'name' => $this->input->post('name'),
+          'color' => $this->input->post('color')
+        ];
+
+        if ($this->groupsManager->editGroup($id, $data)) {
+          // If group edition succeed
+          $this->session->set_flashdata('success', $this->lang->line('GROUPS_EDIT_SUCCEEDED'));
+          redirect(route('groups/admin_manage'));
         } else {
-          // Render the view
-          $this->twig->display('admin/groups/edit', $this->data);
+          // If group edition failed
+          $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
+          redirect(current_url());
         }
       } else {
-        // If the group was not found
-        $this->session->set_flashdata('error', $this->lang->line('GROUP_NOT_FOUND'));
-        redirect(route('groups/admin_manage'));
+        // Render the view
+        $this->twig->display('admin/groups/edit', $this->data);
       }
     } else {
-      $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
+      // If the group was not found
+      $this->session->set_flashdata('error', $this->lang->line('GROUP_NOT_FOUND'));
+      redirect(route('groups/admin_manage'));
     }
   }
 
   public function admin_make_default($id)
   {
-    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'GROUPS__EDIT')) {
-      if ($this->groupsManager->getGroup($id)) {
-        $default_group = $this->groupsManager->getDefaultGroup();
-        if ($this->groupsManager->editGroup($default_group['id'], ['default_group' => false]) && $this->groupsManager->editGroup($id, ['default_group' => true])) {
-          $this->session->set_flashdata('success', $this->lang->line('MAKE_DEFAULT_SUCCEED'));
-        } else {
-          // If group edition failed
-          $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
-        }
+    $this->authManager->checkAccess('GROUPS__EDIT');
 
-        redirect(route('groups/admin_manage'));
+    if ($this->groupsManager->getGroup($id)) {
+      $default_group = $this->groupsManager->getDefaultGroup();
+      if ($this->groupsManager->editGroup($default_group['id'], ['default_group' => false]) && $this->groupsManager->editGroup($id, ['default_group' => true])) {
+        $this->session->set_flashdata('success', $this->lang->line('MAKE_DEFAULT_SUCCEED'));
       } else {
-        // If the group was not found
-        $this->session->set_flashdata('error', $this->lang->line('GROUP_NOT_FOUND'));
-        redirect(route('groups/admin_manage'));
+        // If group edition failed
+        $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
       }
+
+      redirect(route('groups/admin_manage'));
     } else {
-      $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
+      // If the group was not found
+      $this->session->set_flashdata('error', $this->lang->line('GROUP_NOT_FOUND'));
+      redirect(route('groups/admin_manage'));
     }
   }
 
 
   public function admin_delete($id)
   {
-    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'GROUPS__DELETE')) {
-      $this->load->library('Users_Manager', null, 'usersManager');
+    $this->authManager->checkAccess('GROUPS__DELETE');
 
-      // Replace actual users' group by default group
-      $this->usersManager->editUsersWhere(['group_id' => $id], ['group_id' => $this->groupsManager->getDefaultGroup()['id']]);
+    $this->load->library('Users_Manager', null, 'usersManager');
 
-      if ($this->groupsManager->deleteGroup($id))
-        // If group deleting succeed
-        $this->session->set_flashdata('success', $this->lang->line('GROUPS_DELETE_SUCCEEDED'));
-      else
-        // If group deleting failed
-        $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
+    // Replace actual users' group by default group
+    $this->usersManager->editUsersWhere(['group_id' => $id], ['group_id' => $this->groupsManager->getDefaultGroup()['id']]);
 
-      redirect(route('groups/admin_manage'));
-    } else {
-      // If user doesn't have required permission
-      $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
+    if ($this->groupsManager->deleteGroup($id))
+      // If group deleting succeed
+      $this->session->set_flashdata('success', $this->lang->line('GROUPS_DELETE_SUCCEEDED'));
+    else
+      // If group deleting failed
+      $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
 
-      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
-    }
+    redirect(route('groups/admin_manage'));
   }
 }
 

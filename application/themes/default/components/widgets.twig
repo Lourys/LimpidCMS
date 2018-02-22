@@ -10,10 +10,10 @@
       </div>
     </div>
     <div class="card-body text-center">
-      <p>Visiteurs aujourd'hui : {{ visitCounter.nb_since_24h }}</p>
+      <p>Visiteurs (dernières 24h) : {{ visitCounter.nb_since_24h }}</p>
       <p>Visiteurs au total : {{ visitCounter.nb_total }}</p>
       <hr>
-      <p>Visiteurs actuel : {{ visitCounter.nb_since_5m }}</p>
+      <p>Visiteur{% if visitCounter.nb_since_5m > 1 %}s{% endif %} actuel : {{ visitCounter.nb_since_5m }}</p>
     </div>
   </div>
 {% endif %}

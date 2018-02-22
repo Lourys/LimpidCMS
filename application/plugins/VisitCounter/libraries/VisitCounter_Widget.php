@@ -9,7 +9,7 @@ class VisitCounter_Widget
   {
     $this->limpid =& CMS_Controller::$instance;
     // Check if plugin is enabled
-    if ($this->limpid->pluginsManager->getPlugin('VisitCounter')->enabled) {
+    if ($this->limpid->pluginsManager->getPlugin('Minecraft')->enabled) {
       $this->limpid->load->library('VisitCounter_Manager', null, 'visitCounterManager');
     } else {
       return false;

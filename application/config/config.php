@@ -261,7 +261,7 @@ $config['allow_get_array'] = TRUE;
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 0;
+$config['log_threshold'] = 1;
 
 /*
 |--------------------------------------------------------------------------
@@ -442,11 +442,11 @@ $config['sess_regenerate_destroy'] = FALSE;
 $config['cookie_prefix']	= '';
 $config['cookie_domain']	= '';
 $config['cookie_path']		= '/';
-if (ENVIRONMENT == 'development')
-  $config['cookie_secure']	= FALSE;
-else
-  $config['cookie_secure']	= TRUE;
 $config['cookie_httponly'] 	= TRUE;
+if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443)
+  $config['cookie_secure']	= TRUE;
+else
+  $config['cookie_secure']	= FALSE;
 
 /*
 |--------------------------------------------------------------------------

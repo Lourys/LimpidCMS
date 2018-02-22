@@ -102,16 +102,19 @@ class Auth_Manager
   /**
    * Check if user has permission
    *
-   * @param int $user_id
    * @param string $permission
+   * @param int $user_id
    *
-   * @return bool|null
+   * @return bool|null Returns null if user is not found
    */
-  function isPermitted($user_id, $permission)
+  function isPermitted($permission, $user_id = null)
   {
-    // Simple check
-    if (empty($user_id) || empty($permission)) {
-      return null;
+    // Simple checks
+    if (empty($permission)) {
+      return true;
+    }
+    if (empty($user_id)) {
+      $user_id = $this->limpid->session->userdata('id');
     }
 
     if ($row = $this->limpid->auth->with_group('fields:id, permissions')->fields(null)->get($user_id)) {
@@ -119,16 +122,39 @@ class Auth_Manager
       if ($row['group']['id'] == 1)
         return true;
 
-      return in_array($permission, explode(', ', $row['groups']['permissions'])) ? true : false;
+      return in_array($permission, explode(', ', $row['group']['permissions'])) ? true : false;
     }
 
-    //
-    // Not logged
+    // User not found
     return null;
+  }
+
+
+  /**
+   * Check access authorisation to content by given permission
+   *
+   * @param string $permission
+   * @param int $user_id
+   *
+   * @return void
+   */
+  public function checkAccess($permission, $user_id = null)
+  {
+    // If user doesn't have required permission
+    if (!$authorized = $this->isPermitted($permission, $user_id)) {
+      $this->limpid->load->library('user_agent');
+
+      $this->limpid->session->set_flashdata('error', $this->limpid->lang->line('PERMISSION_ERROR'));
+      redirect($this->limpid->agent->referrer() ? $this->limpid->agent->referrer() : site_url());
+
+      //show_error($this->limpid->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->limpid->lang->line('ERROR_ENCOUNTERED'));
+    }
   }
 
   /**
    * Logout current user
+   *
+   * @return void
    */
   public function logout()
   {

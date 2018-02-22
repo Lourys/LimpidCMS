@@ -11,27 +11,31 @@ class VisitCounter_Actions
 
   public function onInstall()
   {
-    $this->limpid->load->dbforge();
+    if (!$this->limpid->db->table_exists('web_stats')) {
+      $this->limpid->load->dbforge();
 
-    // Fields initialization
-    $fields = array(
-      'ip_address' => array(
-        'type' => 'VARCHAR',
-        'constraint' => '15'
-      ),
-      'first_visit' => array(
-        'type' => 'TIMESTAMP'
-      ),
-      'last_visit' => array(
-        'type' => 'TIMESTAMP',
-        'null' => true,
-      ),
-    );
-    $this->limpid->dbforge->add_key('ip_address', TRUE);
-    $this->limpid->dbforge->add_field($fields);
+      // Fields initialization
+      $fields = [
+        'ip_address' => [
+          'type' => 'VARCHAR',
+          'constraint' => '15'
+        ],
+        'first_visit' => [
+          'type' => 'TIMESTAMP'
+        ],
+        'last_visit' => [
+          'type' => 'TIMESTAMP',
+          'null' => true,
+        ],
+      ];
+      $this->limpid->dbforge->add_key('ip_address', TRUE);
+      $this->limpid->dbforge->add_field($fields);
 
-    // Create table
-    return $this->limpid->dbforge->create_table('web_stats', true);
+      // Create table
+      return $this->limpid->dbforge->create_table('web_stats', true);
+    }
+
+    return true;
   }
 
   public function onEnable()

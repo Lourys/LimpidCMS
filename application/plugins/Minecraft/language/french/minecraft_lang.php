@@ -1,0 +1,24 @@
+<?php
+$lang['MINECRAFT'] = 'Minecraft';
+$lang['MINECRAFT__OVERVIEW'] = 'Accès à l\'aperçu général';
+$lang['MINECRAFT__SETTINGS'] = 'Accès au paramètres du plugin';
+$lang['MINECRAFT_SETTINGS'] = 'Paramètres Minecraft';
+$lang['MINECRAFT_SERVER_ADD'] = 'Ajouter un serveur';
+$lang['MINECRAFT_SERVERS_MANAGEMENT'] = 'Gestion des serveurs';
+$lang['MINECRAFT_SERVER_CREATION_INFORMATION'] = 'La connexion à votre serveur Minecraft s\'établit via le protocole RCON. Ce dernier est un protocole supporté nativement par Minecraft, vous n\'aurez donc rien à installer de plus.';
+$lang['MINECRAFT_SERVER_NAME'] = 'Nom du serveur';
+$lang['MINECRAFT_SERVER_NAME_EXAMPLE'] = 'Minecraft N°1';
+$lang['MINECRAFT_SERVER_IP_ADDRESS'] = 'Adresse IP du serveur';
+$lang['MINECRAFT_SERVER_IP_ADDRESS_EXAMPLE'] = '127.0.0.1';
+$lang['MINECRAFT_SERVER_PORT'] = 'Port du serveur';
+$lang['MINECRAFT_SERVER_PORT_EXAMPLE'] = '25565';
+$lang['MINECRAFT_RCON_PORT'] = 'Port RCON';
+$lang['MINECRAFT_RCON_PORT_EXAMPLE'] = '25575';
+$lang['MINECRAFT_RCON_PASS'] = 'Mot de passe RCON';
+$lang['MINECRAFT_RCON_PASS_EXAMPLE'] = '●●●●●●●●●●●';
+$lang['MINECRAFT_SERVER_SUCCESSFULLY_CREATED'] = 'Le serveur a été ajouté avec succès';
+$lang['MINECRAFT_SERVER_REMOVAL'] = 'Suppression du serveur';
+$lang['MINECRAFT_SERVER_REMOVAL_CONFIRMATION'] = 'Êtes vous sûr·e de vouloir supprimer ce serveur ?';
+$lang['MINECRAFT_SERVER_SUCCESSFULLY_DELETED'] = 'Le serveur a été supprimé avec succès';
+$lang['MINECRAFT_NO_SERVER_CREATED'] = 'Aucun serveur n\'a été créé';
+$lang['MINECRAFT_SERVER_SUCCESSFULLY_EDITED'] = 'Le serveur a été édité avec succès';

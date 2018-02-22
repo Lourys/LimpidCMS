@@ -12,16 +12,12 @@ class Settings extends Limpid_Controller
   public function __construct()
   {
     parent::__construct();
+    $this->authManager->checkAccess('SETTINGS__EDIT');
 
-    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'SETTINGS__EDIT')) {
-      $this->data['page_title'] = $this->lang->line('SETTINGS_EDITION');
-      $this->load->helper('form');
-      $this->session->unmark_flash('success');
-      $this->session->unmark_flash('error');
-    } else {
-      $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
-    }
+    $this->data['page_title'] = $this->lang->line('SETTINGS_EDITION');
+    $this->load->helper('form');
+    $this->session->unmark_flash('success');
+    $this->session->unmark_flash('error');
   }
 
   public function admin_general()

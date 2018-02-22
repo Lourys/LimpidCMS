@@ -16,10 +16,11 @@
 - ~~Intégrer nom et avatar auteur des articles.~~
 - ~~Sur le theme de base, dropdown n'est pas aussi large que le bouton, ca casse un peu le truc (Bouton Authentification par exemple)~~
 - ~~Définir une erreur 403 ou 401 selon les cas pour les non permissions~~
+- Création du plugin Minecraft
 
 ## TOFIX
 - ~~Réparer les plugins~~
 - ~~Afficher les bonnes valeurs directement après l'édition dans les paramètres.~~
 - ~~Edition des thèmes non fonctionnelle~~
 - ~~Remettre l'éditeur sur la création de pages (et p-ê l'édition...)~~
-- Rendre les tableaux du panel responsive (en fait c'est tj pas bon...)
+- ~~Rendre les tableaux du panel responsive (en fait c'est tj pas bon...)~~

@@ -152,14 +152,14 @@
                                 <td style="text-align: right;width: 66px">
                                   {% if sublink.is_divider != true %}
                                     <a href="#editLink{{ sublink.id }}"
-                                       class="btn btn-primary btn-xs" title="Editer"
+                                       class="btn btn-primary btn-xs" title="{{ lang('EDIT') }}"
                                        data-toggle="modal"
                                        data-target="#editLink{{ sublink.id }}">
                                       <i class="fa fa-pencil"></i>
                                     </a>&nbsp;
                                   {% endif %}
                                   <a href="#deleteLink{{ sublink.id }}"
-                                     class="btn btn-danger btn-xs" title="Supprimer"
+                                     class="btn btn-danger btn-xs" title="{{ lang('DELETE') }}"
                                      data-toggle="modal"
                                      data-target="#deleteLink{{ sublink.id }}">
                                     <i class="fa fa-times"></i>

@@ -12,12 +12,8 @@ class Menu extends Limpid_Controller
   public function __construct()
   {
     parent::__construct();
-    if (!$authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'MENU__MANAGE')) {
-      // If user doesn't have required permission
-      $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
-      exit();
-    }
+    $this->authManager->checkAccess('MENU__MANAGE');
+
     $this->load->library('Menu_Manager', null, 'menuManager');
   }
 

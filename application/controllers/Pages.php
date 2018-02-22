@@ -28,7 +28,7 @@ class Pages extends Limpid_Controller
   public function view($slug)
   {
     if ($this->data['page'] = $this->pagesManager->getPageBySlug($slug)) {
-      if ($this->data['page']['active'] || $authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'PAGES__VIEW_DEACTIVATED')) {
+      if ($this->data['page']['active'] || $authorized = $this->authManager->isPermitted('PAGES__VIEW_DEACTIVATED')) {
         $this->data['page_title'] = $this->data['page']['title'];
         // Render the view
         $this->twig->display('pages/view', $this->data);
@@ -44,14 +44,65 @@ class Pages extends Limpid_Controller
 
   public function admin_add()
   {
-    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'PAGES__ADD')) {
-      $this->data['page_title'] = $this->lang->line('PAGE_CREATION');
+    $this->authManager->checkAccess('PAGES__ADD');
+
+    $this->data['page_title'] = $this->lang->line('PAGE_CREATION');
+    $this->load->helper('form');
+    $this->load->library('form_validation');
+
+    // Form rules check
+    $this->form_validation->set_rules('title', $this->lang->line('TITLE'), 'required|min_length[3]|max_length[110]');
+    $this->form_validation->set_rules('slug', $this->lang->line('SLUG'), 'required|min_length[1]|max_length[200]|regex_match[/^(?!-)((?:[a-z0-9]+-?)+)(?<!-)$/]|is_unique[pages.slug]');
+    $this->form_validation->set_rules('content', $this->lang->line('CONTENT'), 'required|min_length[6]');
+    $this->form_validation->set_rules('reachable', $this->lang->line('REACHABLE') . ' ?', 'in_list[true,]');
+    // Custom error message
+    $this->form_validation->set_message('regex_match', $this->lang->line('FORM_VALIDATION_REGEX_SLUG'));
+
+    // If check passed
+    if ($this->form_validation->run()) {
+      if ($this->pagesManager->addPage($this->input->post('title'), $this->input->post('slug'), $this->input->post('content'), $this->input->post('reachable') ? true : false)) {
+        // If news adding succeed
+        $this->session->set_flashdata('success', $this->lang->line('PAGES_ADD_SUCCEEDED'));
+        redirect(route('pages/admin_manage'));
+      } else {
+        // If news adding failed
+        $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
+        redirect(current_url());
+      }
+    } else {
+      // Render the view
+      $this->twig->display('admin/pages/add', $this->data);
+    }
+  }
+
+  public function admin_manage()
+  {
+    $this->authManager->checkAccess('PAGES__MANAGE');
+
+    $this->data['page_title'] = $this->lang->line('PAGES_MANAGEMENT');
+    $this->data['pages'] = $this->pagesManager->getPages();
+
+    // Render the view
+    $this->twig->display('admin/pages/manage', $this->data);
+  }
+
+  public function admin_edit($id)
+  {
+    $this->authManager->checkAccess('PAGES__EDIT');
+
+    if ($this->data['page'] = $this->pagesManager->getPageByID($id)) {
+      $this->data['page_title'] = $this->lang->line('PAGE_EDITION');
       $this->load->helper('form');
       $this->load->library('form_validation');
 
+      // Add rule if input slug is different to initial slug
+      $is_unique_rule = '';
+      if ($this->data['page']['slug'] != $this->input->post('slug'))
+        $is_unique_rule = '|is_unique[pages.slug]';
+
       // Form rules check
       $this->form_validation->set_rules('title', $this->lang->line('TITLE'), 'required|min_length[3]|max_length[110]');
-      $this->form_validation->set_rules('slug', $this->lang->line('SLUG'), 'required|min_length[1]|max_length[200]|regex_match[/^(?!-)((?:[a-z0-9]+-?)+)(?<!-)$/]|is_unique[pages.slug]');
+      $this->form_validation->set_rules('slug', $this->lang->line('SLUG'), 'required|min_length[1]|max_length[200]|regex_match[/^(?!-)((?:[a-z0-9]+-?)+)(?<!-)$/]' . $is_unique_rule);
       $this->form_validation->set_rules('content', $this->lang->line('CONTENT'), 'required|min_length[6]');
       $this->form_validation->set_rules('reachable', $this->lang->line('REACHABLE') . ' ?', 'in_list[true,]');
       // Custom error message
@@ -59,112 +110,43 @@ class Pages extends Limpid_Controller
 
       // If check passed
       if ($this->form_validation->run()) {
-        if ($this->pagesManager->addPage($this->input->post('title'), $this->input->post('slug'), $this->input->post('content'), $this->input->post('reachable') ? true : false)) {
-          // If news adding succeed
-          $this->session->set_flashdata('success', $this->lang->line('PAGES_ADD_SUCCEEDED'));
-          redirect(route('pages/admin_manage'));
-        } else {
-          // If news adding failed
+        $data = array(
+          'title' => $this->input->post('title'),
+          'slug' => $this->input->post('slug'),
+          'content' => $this->input->post('content'),
+          'active' => $this->input->post('reachable') ? true : false
+        );
+        if ($this->pagesManager->editPage($id, $data))
+          // If page editing succeed
+          $this->session->set_flashdata('success', $this->lang->line('PAGES_EDIT_SUCCEEDED'));
+        else
+          // If page editing failed
           $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
-          redirect(current_url());
-        }
+
+        redirect(current_url());
       } else {
         // Render the view
-        $this->twig->display('admin/pages/add', $this->data);
+        $this->twig->display('admin/pages/edit', $this->data);
       }
     } else {
-      // If user doesn't have required permission
-      $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-
-      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
-    }
-  }
-
-  public function admin_manage()
-  {
-    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'PAGES__MANAGE')) {
-      $this->data['page_title'] = $this->lang->line('PAGES_MANAGEMENT');
-      $this->data['pages'] = $this->pagesManager->getPages();
-
-      // Render the view
-      $this->twig->display('admin/pages/manage', $this->data);
-    } else {
-      // If user doesn't have required permission
-      $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-
-      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
-    }
-  }
-
-  public function admin_edit($id)
-  {
-    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'PAGES__EDIT')) {
-      if ($this->data['page'] = $this->pagesManager->getPageByID($id)) {
-        $this->data['page_title'] = $this->lang->line('PAGE_EDITION');
-        $this->load->helper('form');
-        $this->load->library('form_validation');
-
-        // Add rule if input slug is different to initial slug
-        $is_unique_rule = '';
-        if ($this->data['page']['slug'] != $this->input->post('slug'))
-          $is_unique_rule = '|is_unique[pages.slug]';
-
-        // Form rules check
-        $this->form_validation->set_rules('title', $this->lang->line('TITLE'), 'required|min_length[3]|max_length[110]');
-        $this->form_validation->set_rules('slug', $this->lang->line('SLUG'), 'required|min_length[1]|max_length[200]|regex_match[/^(?!-)((?:[a-z0-9]+-?)+)(?<!-)$/]' . $is_unique_rule);
-        $this->form_validation->set_rules('content', $this->lang->line('CONTENT'), 'required|min_length[6]');
-        $this->form_validation->set_rules('reachable', $this->lang->line('REACHABLE') . ' ?', 'in_list[true,]');
-        // Custom error message
-        $this->form_validation->set_message('regex_match', $this->lang->line('FORM_VALIDATION_REGEX_SLUG'));
-
-        // If check passed
-        if ($this->form_validation->run()) {
-          $data = array(
-            'title' => $this->input->post('title'),
-            'slug' => $this->input->post('slug'),
-            'content' => $this->input->post('content'),
-            'active' => $this->input->post('reachable') ? true : false
-          );
-          if ($this->pagesManager->editPage($id, $data))
-            // If page editing succeed
-            $this->session->set_flashdata('success', $this->lang->line('PAGES_EDIT_SUCCEEDED'));
-          else
-            // If page editing failed
-            $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
-
-          redirect(current_url());
-        } else {
-          // Render the view
-          $this->twig->display('admin/pages/edit', $this->data);
-        }
-      } else {
-        // If the page was not found
-        $this->session->set_flashdata('error', $this->lang->line('PAGE_NOT_FOUND'));
-        redirect(route('pages/admin_manage'));
-      }
-    } else {
-      $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
+      // If the page was not found
+      $this->session->set_flashdata('error', $this->lang->line('PAGE_NOT_FOUND'));
+      redirect(route('pages/admin_manage'));
     }
   }
 
   public function admin_delete($id)
   {
-    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'PAGES__DELETE')) {
-      if ($this->pagesManager->deletePage($id))
-        // If page deleting succeed
-        $this->session->set_flashdata('success', $this->lang->line('PAGES_DELETE_SUCCEEDED'));
-      else
-        // If page deleting failed
-        $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
+    $this->authManager->checkAccess('PAGES__DELETE');
 
-      redirect(route('pages/admin_manage'));
-    } else {
-      // If user doesn't have required permission
-      $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
+    if ($this->pagesManager->deletePage($id))
+      // If page deleting succeed
+      $this->session->set_flashdata('success', $this->lang->line('PAGES_DELETE_SUCCEEDED'));
+    else
+      // If page deleting failed
+      $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
 
-      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
-    }
+    redirect(route('pages/admin_manage'));
   }
 
 }

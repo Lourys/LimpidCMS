@@ -23,7 +23,7 @@ class News extends Limpid_Controller
   public function view($slug)
   {
     if ($this->data['news'] = $this->newsManager->getNewsBySlug($slug)) {
-      if ($this->data['news']['active'] || $this->authManager->isPermitted($this->session->userdata('id'), 'NEWS__VIEW_DEACTIVATED')) {
+      if ($this->data['news']['active'] || $this->authManager->isPermitted('NEWS__VIEW_DEACTIVATED')) {
         $this->data['page_title'] = $this->data['news']['title'];
 
         // Render the view
@@ -43,7 +43,7 @@ class News extends Limpid_Controller
     require(APPPATH . 'third_party/Twig_Extensions/Text_Extension.php');
     $this->twig->getTwig()->addExtension(new Text_Extension());
 
-    if ($this->data['news'] = $this->newsManager->getNewsPaginated( 12, $page)) {
+    if ($this->data['news'] = $this->newsManager->getNewsPaginated(12, $page)) {
       $this->data['page_title'] = $this->lang->line('NEWS');
 
       // Load pagination library
@@ -78,13 +78,59 @@ class News extends Limpid_Controller
 
   public function admin_add()
   {
-    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'NEWS__ADD')) {
-      $this->data['page_title'] = $this->lang->line('NEWS_CREATION');
+    $this->authManager->checkAccess('NEWS__ADD');
+
+    $this->data['page_title'] = $this->lang->line('NEWS_CREATION');
+    $this->load->helper('form');
+    $this->load->library('form_validation');
+
+    // Form rules check
+    $this->form_validation->set_rules('title', $this->lang->line('NEWS_TITLE'), 'required|min_length[3]|max_length[110]');
+    $this->form_validation->set_rules('slug', $this->lang->line('SLUG'), 'required|min_length[1]|max_length[200]|regex_match[/^(?!-)((?:[a-z0-9]+-?)+)(?<!-)$/]');
+    $this->form_validation->set_rules('content', $this->lang->line('CONTENT'), 'required|min_length[6]');
+    $this->form_validation->set_rules('active', $this->lang->line('ACTIVE') . ' ?', 'in_list[true,]');
+    // Custom error message
+    $this->form_validation->set_message('regex_match', $this->lang->line('FORM_VALIDATION_REGEX_SLUG'));
+
+    // If check passed
+    if ($this->form_validation->run()) {
+      if ($this->newsManager->addNews($this->input->post('title'), $this->input->post('slug'), $this->input->post('content'), $this->session->userdata('id'), $this->input->post('active') ? true : false)) {
+        // If news adding succeed
+        $this->session->set_flashdata('success', $this->lang->line('NEWS_ADD_SUCCEEDED'));
+        redirect(route('news/admin_manage'));
+      } else {
+        // If news adding failed
+        $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
+        redirect(current_url());
+      }
+    } else {
+      // Render the view
+      $this->twig->display('admin/news/add', $this->data);
+    }
+  }
+
+  public function admin_manage()
+  {
+    $this->authManager->checkAccess('NEWS__MANAGE');
+
+    $this->data['page_title'] = $this->lang->line('NEWS_MANAGEMENT');
+    $this->data['news'] = $this->newsManager->getAllNews();
+
+    // Render the view
+    $this->twig->display('admin/news/manage', $this->data);
+  }
+
+  public function admin_edit($id)
+  {
+    $this->authManager->checkAccess('NEWS__EDIT');
+
+    if ($this->data['news'] = $this->newsManager->getNewsByID($id)) {
+      $this->data['page_title'] = $this->lang->line('NEWS_EDITION');
       $this->load->helper('form');
       $this->load->library('form_validation');
 
       // Form rules check
-      $this->form_validation->set_rules('title', $this->lang->line('NEWS_TITLE'), 'required|min_length[3]|max_length[110]');
+      $this->form_validation->set_rules('title', $this->lang->line('TITLE'), 'required|min_length[3]|max_length[110]');
       $this->form_validation->set_rules('slug', $this->lang->line('SLUG'), 'required|min_length[1]|max_length[200]|regex_match[/^(?!-)((?:[a-z0-9]+-?)+)(?<!-)$/]');
       $this->form_validation->set_rules('content', $this->lang->line('CONTENT'), 'required|min_length[6]');
       $this->form_validation->set_rules('active', $this->lang->line('ACTIVE') . ' ?', 'in_list[true,]');
@@ -93,107 +139,44 @@ class News extends Limpid_Controller
 
       // If check passed
       if ($this->form_validation->run()) {
-        if ($this->newsManager->addNews($this->input->post('title'), $this->input->post('slug'), $this->input->post('content'), $this->session->userdata('id'), $this->input->post('active') ? true : false)) {
-          // If news adding succeed
-          $this->session->set_flashdata('success', $this->lang->line('NEWS_ADD_SUCCEEDED'));
-          redirect(route('news/admin_manage'));
-        } else {
-          // If news adding failed
+        $data = array(
+          'title' => $this->input->post('title'),
+          'slug' => $this->input->post('slug'),
+          'content' => $this->input->post('content'),
+          'active' => $this->input->post('active') ? true : false,
+          'edited_at' => date('Y-m-d H:i:s')
+        );
+        if ($this->newsManager->editNews($id, $data))
+          // If news editing succeed
+          $this->session->set_flashdata('success', $this->lang->line('NEWS_EDIT_SUCCEEDED'));
+        else
+          // If news editing failed
           $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
-          redirect(current_url());
-        }
+
+        redirect(current_url());
       } else {
         // Render the view
-        $this->twig->display('admin/news/add', $this->data);
+        $this->twig->display('admin/news/edit', $this->data);
       }
     } else {
-      // If user doesn't have required permission
-      $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
-    }
-  }
-
-  public function admin_manage()
-  {
-    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'NEWS__MANAGE')) {
-      $this->data['page_title'] = $this->lang->line('NEWS_MANAGEMENT');
-      $this->data['news'] = $this->newsManager->getAllNews();
-
-      // Render the view
-      $this->twig->display('admin/news/manage', $this->data);
-    } else {
-      // If user doesn't have required permission
-      $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
-    }
-  }
-
-  public function admin_edit($id)
-  {
-    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'NEWS__EDIT')) {
-      if ($this->data['news'] = $this->newsManager->getNewsByID($id)) {
-        $this->data['page_title'] = $this->lang->line('NEWS_EDITION');
-        $this->load->helper('form');
-        $this->load->library('form_validation');
-
-        // Form rules check
-        $this->form_validation->set_rules('title', $this->lang->line('TITLE'), 'required|min_length[3]|max_length[110]');
-        $this->form_validation->set_rules('slug', $this->lang->line('SLUG'), 'required|min_length[1]|max_length[200]|regex_match[/^(?!-)((?:[a-z0-9]+-?)+)(?<!-)$/]');
-        $this->form_validation->set_rules('content', $this->lang->line('CONTENT'), 'required|min_length[6]');
-        $this->form_validation->set_rules('active', $this->lang->line('ACTIVE') . ' ?', 'in_list[true,]');
-        // Custom error message
-        $this->form_validation->set_message('regex_match', $this->lang->line('FORM_VALIDATION_REGEX_SLUG'));
-
-        // If check passed
-        if ($this->form_validation->run()) {
-          $data = array(
-            'title' => $this->input->post('title'),
-            'slug' => $this->input->post('slug'),
-            'content' => $this->input->post('content'),
-            'active' => $this->input->post('active') ? true : false,
-            'edited_at' => date('Y-m-d H:i:s')
-          );
-          if ($this->newsManager->editNews($id, $data))
-            // If news editing succeed
-            $this->session->set_flashdata('success', $this->lang->line('NEWS_EDIT_SUCCEEDED'));
-          else
-            // If news editing failed
-            $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
-
-          redirect(current_url());
-        } else {
-          // Render the view
-          $this->twig->display('admin/news/edit', $this->data);
-        }
-      } else {
-        // If the news was not found
-        $this->session->set_flashdata('error', $this->lang->line('NEWS_NOT_FOUND'));
-        redirect(route('news/admin_manage'));
-      }
-    } else {
-      // If user doesn't have required permission
-      $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
+      // If the news was not found
+      $this->session->set_flashdata('error', $this->lang->line('NEWS_NOT_FOUND'));
+      redirect(route('news/admin_manage'));
     }
   }
 
   public function admin_delete($id)
   {
-    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'NEWS__DELETE')) {
-      if ($this->newsManager->deleteNews($id))
-        // If news deleting succeed
-        $this->session->set_flashdata('success', $this->lang->line('NEWS_DELETE_SUCCEEDED'));
-      else
-        // If news deleting failed
-        $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
+    $this->authManager->checkAccess('NEWS__DELETE');
 
-      redirect(route('news/admin_manage'));
-    } else {
-      // If user doesn't have required permission
-      $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
+    if ($this->newsManager->deleteNews($id))
+      // If news deleting succeed
+      $this->session->set_flashdata('success', $this->lang->line('NEWS_DELETE_SUCCEEDED'));
+    else
+      // If news deleting failed
+      $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
 
-      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
-    }
+    redirect(route('news/admin_manage'));
   }
 
 }

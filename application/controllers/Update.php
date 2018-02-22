@@ -11,11 +11,7 @@ class Update extends Limpid_Controller
   public function __construct()
   {
     parent::__construct();
-    if (!$authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'UPDATE__ACCESS')) {
-      $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
-      exit();
-    }
+    $this->authManager->checkAccess('UPDATE__ACCESS');
   }
 
   public function admin_update()

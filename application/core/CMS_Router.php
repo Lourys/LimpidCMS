@@ -20,7 +20,6 @@ class CMS_Router extends CI_Router
 
     $this->config =& load_class('Config', 'core');
 
-    // Process 'modules_locations' from config
     $locations = APPPATH . 'plugins/';
 
     if (!$locations) {

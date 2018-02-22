@@ -16,101 +16,92 @@ class Logs extends Limpid_Controller
 
   public function admin_index()
   {
-    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'LOGS__LIST')) {
-      $this->load->helper('form');
-      $this->load->library('form_validation');
-      $this->data['page_title'] = $this->lang->line('LOGS');
+    $this->authManager->checkAccess('LOGS__LIST');
 
-      $this->data['thresholds'] = [
-        ['name' => $this->lang->line('DISABLE_LOGGING'), 'value' => 0],
-        ['name' => $this->lang->line('ERRORS_LOGGING'), 'value' => 1],
-        ['name' => $this->lang->line('DEBUG_LOGGING'), 'value' => 2],
-        ['name' => $this->lang->line('INFO_LOGGING'), 'value' => 3],
-        ['name' => $this->lang->line('ALL_LOGGING'), 'value' => 4]
+    $this->load->helper('form');
+    $this->load->library('form_validation');
+    $this->data['page_title'] = $this->lang->line('LOGS');
+
+    $this->data['thresholds'] = [
+      ['name' => $this->lang->line('DISABLE_LOGGING'), 'value' => 0],
+      ['name' => $this->lang->line('ERRORS_LOGGING'), 'value' => 1],
+      ['name' => $this->lang->line('DEBUG_LOGGING'), 'value' => 2],
+      ['name' => $this->lang->line('INFO_LOGGING'), 'value' => 3],
+      ['name' => $this->lang->line('ALL_LOGGING'), 'value' => 4]
+    ];
+
+    $logFiles = array_values(array_diff(scandir(APPPATH . 'logs'), array('..', '.', 'index.html')));
+    for ($i = 0; $i < count($logFiles); $i++) {
+      $size = filesize(APPPATH . 'logs/' . $logFiles[$i]);
+      if ($size < 100) {
+        $size = $size . ' ' . $this->lang->line('BYTE_SYMBOL');
+      } elseif ($size >= 100 && $size < 1048576) {
+        $size = round($size / 1024, 1) . ' ' . $this->lang->line('KILOBYTE_SYMBOL');
+      } elseif ($size >= 1048576 && $size < 1073741824) {
+        $size = round($size / 1024 / 1024, 1) . ' ' . $this->lang->line('MEGABYTE_SYMBOL');
+      }
+      $this->data['logFiles'][$i] = [
+        'name' => $logFiles[$i],
+        'size' => $size
       ];
-
-      $logFiles = array_values(array_diff(scandir(APPPATH . 'logs'), array('..', '.', 'index.html')));
-      for ($i = 0; $i < count($logFiles); $i++) {
-        $size = filesize(APPPATH . 'logs/' . $logFiles[$i]);
-        if ($size < 100) {
-          $size = $size . ' ' . $this->lang->line('BYTE_SYMBOL');
-        } elseif ($size >= 100 && $size < 1048576) {
-          $size = round($size / 1024, 1) . ' ' . $this->lang->line('KILOBYTE_SYMBOL');
-        } elseif ($size >= 1048576 && $size < 1073741824) {
-          $size = round($size / 1024 / 1024, 1) . ' ' . $this->lang->line('MEGABYTE_SYMBOL');
-        }
-        $this->data['logFiles'][$i] = [
-          'name' => $logFiles[$i],
-          'size' => $size
-        ];
-      }
-
-      $this->form_validation->set_rules('threshold', $this->lang->line('LOG_THRESHOLD'), 'required|greater_than_equal_to[0]|less_than_equal_to[4]');
-      if ($this->form_validation->run()) {
-        // Demo specific
-        $this->session->set_flashdata('error', 'Cette fonctionnalité est désactivée pour la version démo');
-        redirect(current_url());
-
-        if ($this->config->edit_item('log_threshold', (int) $this->input->post('threshold'), 'config')) {
-          $this->session->set_flashdata('success', $this->lang->line('LOG_THRESHOLD_SUCCESSFULLY_EDITED'));
-        } else {
-          $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
-        }
-      }
-
-      $this->twig->display('admin/logs/index', $this->data);
-      $this->session->unmark_flash('success');
-      $this->session->unmark_flash('error');
-    } else {
-      $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
     }
+
+    $this->form_validation->set_rules('threshold', $this->lang->line('LOG_THRESHOLD'), 'required|greater_than_equal_to[0]|less_than_equal_to[4]');
+    if ($this->form_validation->run()) {
+      // Demo specific
+      $this->session->set_flashdata('error', 'Cette fonctionnalité est désactivée pour la version démo');
+      redirect(current_url());
+
+      if ($this->config->edit_item('log_threshold', (int)$this->input->post('threshold'), 'config')) {
+        $this->session->set_flashdata('success', $this->lang->line('LOG_THRESHOLD_SUCCESSFULLY_EDITED'));
+      } else {
+        $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
+      }
+    }
+
+    $this->twig->display('admin/logs/index', $this->data);
+    $this->session->unmark_flash('success');
+    $this->session->unmark_flash('error');
   }
 
   public function admin_download($file)
   {
-    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'LOGS__DOWNLOAD')) {
-      $file = APPPATH . 'logs/' . $file;
+    $this->authManager->checkAccess('LOGS__DOWNLOAD');
 
-      if (file_exists($file)) {
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename="' . basename($file) . '"');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-        header('Content-Length: ' . filesize($file));
-        readfile($file);
-        echo '<script>javascript:window.close()</script>';
-        exit;
-      } else {
-        show_404();
-      }
+    $file = APPPATH . 'logs/' . $file;
+
+    if (file_exists($file)) {
+      header('Content-Description: File Transfer');
+      header('Content-Type: application/octet-stream');
+      header('Content-Disposition: attachment; filename="' . basename($file) . '"');
+      header('Expires: 0');
+      header('Cache-Control: must-revalidate');
+      header('Pragma: public');
+      header('Content-Length: ' . filesize($file));
+      readfile($file);
+      echo '<script>javascript:window.close()</script>';
+      exit;
     } else {
-      $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
+      show_404();
     }
   }
 
   public function admin_delete($file)
   {
-    if ($authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'LOGS__DELETE')) {
-      $file = APPPATH . 'logs/' . $file;
+    $this->authManager->checkAccess('LOGS__DELETE');
 
-      if (file_exists($file)) {
-        if (unlink($file)) {
-          $this->session->set_flashdata('success', $this->lang->line('LOG_SUCCESSFULLY_DELETED'));
-        } else {
-          $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
-        }
+    $file = APPPATH . 'logs/' . $file;
 
-        redirect(route('logs/admin_index'));
+    if (file_exists($file)) {
+      if (unlink($file)) {
+        $this->session->set_flashdata('success', $this->lang->line('LOG_SUCCESSFULLY_DELETED'));
       } else {
-        show_404();
+        $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
       }
+
+      redirect(route('logs/admin_index'));
     } else {
-      $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
+      show_404();
     }
   }
 

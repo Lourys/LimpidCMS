@@ -45,7 +45,7 @@
       <div class="row">
         <span class="col align-middle">Il y a <b>126</b> joueurs connectés</span>
         <span class="col align-middle text-right">
-          {% if this.authManager.isPermitted(this.session.userdata('id'), 'ADMIN__ACCESS') %}
+          {% if this.authManager.isPermitted('ADMIN__ACCESS') %}
             <a href="{{ route('admin/admin_index') }}">
                   <i class="fa fa-cog"></i>&nbsp;Administration
               </a>&nbsp;&nbsp;-&nbsp;

@@ -31,7 +31,7 @@
         <div class="col-lg">
           <h4 class="title">{{ lang('ACCOUNT') }}</h4>
           <hr>
-          {% if this.authManager.isPermitted(this.session.userdata('id'), 'MISCELLANEOUS__AVATAR_EDITION') %}
+          {% if this.authManager.isPermitted('MISCELLANEOUS__AVATAR_EDITION') %}
             <div class="row">
               <div class="col-sm-4">
                 {{ form_open(route('users/delete_avatar')) }}

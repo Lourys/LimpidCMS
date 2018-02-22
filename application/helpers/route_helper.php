@@ -12,7 +12,7 @@ if (!function_exists('route')) {
     {
         $Router =& load_class('Router');
 
-        $uri = trim($uri, '/');
+        $uri = trim(strtolower($uri), '/');
 
         $routes = $Router->routes;
 

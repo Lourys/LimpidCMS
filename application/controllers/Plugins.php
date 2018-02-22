@@ -12,12 +12,7 @@ class Plugins extends Limpid_Controller
   public function __construct()
   {
     parent::__construct();
-    if (!$authorized = $this->authManager->isPermitted($this->session->userdata('id'), 'PLUGINS__MANAGEMENT')) {
-      // If user doesn't have required permission
-      $this->session->set_flashdata('error', $this->lang->line('PERMISSION_ERROR'));
-      show_error($this->lang->line('PERMISSION_ERROR'), $authorized === false ? 403 : 401, $this->lang->line('ERROR_ENCOUNTERED'));
-      exit();
-    }
+    $this->authManager->checkAccess('PLUGINS__MANAGEMENT');
   }
 
   public function admin_available()
