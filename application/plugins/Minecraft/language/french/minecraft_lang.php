@@ -22,3 +22,7 @@ $lang['MINECRAFT_SERVER_REMOVAL_CONFIRMATION'] = 'Êtes vous sûr·e de vouloir 
 $lang['MINECRAFT_SERVER_SUCCESSFULLY_DELETED'] = 'Le serveur a été supprimé avec succès';
 $lang['MINECRAFT_NO_SERVER_CREATED'] = 'Aucun serveur n\'a été créé';
 $lang['MINECRAFT_SERVER_SUCCESSFULLY_EDITED'] = 'Le serveur a été édité avec succès';
+$lang['MINECRAFT_SERVER_OFFLINE'] = 'Le serveur est hors-ligne';
+$lang['MINECRAFT_TIMEOUT'] = 'Timeout';
+$lang['MINECRAFT_TIMEOUT_EXAMPLE'] = '3';
+$lang['MINECRAFT_SERVERS'] = 'Serveurs minecraft';

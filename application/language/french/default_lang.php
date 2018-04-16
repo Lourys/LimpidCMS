@@ -354,3 +354,4 @@ $lang['THEME_CONFIG__JOIN_US_BUTTON_ADRESS'] = 'Adresse du bouton';
 $lang['THEME_CONFIG__JOIN_US_BUTTON_ADRESS_EXAMPLE'] = 'https://votresite.fr/launcher.exe';
 $lang['THEME_CONFIG__FA_ICONS_INFO'] = 'Vous trouverez la liste des icônes sur <a href="http://fontawesome.io/icons/" target="_blank" rel="noopener nofollow">Font Awesome</a>.<br> Une fois une icône choisit, il ne vous suffit plus qu\'à copier son nom (celui visible sur la liste) dans un des champs ci-dessous.';
 $lang['STATISTICS'] = 'Statistiques';
+$lang['OPTIONAL'] = 'Optionnel';

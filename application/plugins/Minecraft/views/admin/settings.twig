@@ -30,10 +30,13 @@
           {{ form.input('port', lang('MINECRAFT_SERVER_PORT'), this.input.post('port'), {type: 'number', placeholder: lang('MINECRAFT_SERVER_PORT_EXAMPLE'), required: true}) }}
         </div>
         <div class="col-md-6">
-          {{ form.input('rcon_port', lang('MINECRAFT_RCON_PORT'), this.input.post('rcon_port'), {type: 'number', placeholder: lang('MINECRAFT_RCON_PORT_EXAMPLE'), required: true}) }}
+          {{ form.input('rcon_port', lang('MINECRAFT_RCON_PORT') ~ ' (' ~ lang('OPTIONAL') ~ ')', this.input.post('rcon_port'), {type: 'number', placeholder: lang('MINECRAFT_RCON_PORT_EXAMPLE')}) }}
         </div>
         <div class="col-md-6">
-          {{ form.input('rcon_pass', lang('MINECRAFT_RCON_PASS'), this.input.post('rcon_pass'), {type: 'password', placeholder: lang('MINECRAFT_RCON_PASS_EXAMPLE'), required: true}) }}
+          {{ form.input('rcon_pass', lang('MINECRAFT_RCON_PASS') ~ ' (' ~ lang('OPTIONAL') ~ ')', this.input.post('rcon_pass'), {type: 'password', placeholder: lang('MINECRAFT_RCON_PASS_EXAMPLE')}) }}
+        </div>
+        <div class="col-md-6">
+          {{ form.input('timeout', lang('MINECRAFT_TIMEOUT') ~ ' (' ~ lang('OPTIONAL') ~ ')', server.timeout, {type: 'number', placeholder: lang('MINECRAFT_TIMEOUT_EXAMPLE')}) }}
         </div>
         <div class="col-md-12">
           {{ form.submit(lang('ADD'), 'createServer', {btnType: 'success'}) }}
@@ -55,11 +58,19 @@
           {% endif %}
           {% for server in servers %}
             <div class="col-md-4">
-              <div class="box box-success box-solid">
+              <div class="box {% if server.status %}box-success{% else %}box-danger{% endif %} box-solid">
                 <div class="box-header with-border">
                   <h3 class="box-title">{{ server.name }}</h3>
 
                   <div class="box-tools pull-right">
+                    <b style="vertical-align: middle;">
+                      {% if server.status %}
+                        {{ server.status.players.online }}/{{ server.status.players.max }}
+                      {% else %}
+                        {{ lang('MINECRAFT_SERVER_OFFLINE') }}
+                      {% endif %}
+                      &nbsp;&nbsp;
+                    </b>
                     <button type="button" class="btn btn-box-tool" data-toggle="collapse"
                             data-target="#server{{ server.id }}"><i
                               class="fa fa-cogs"></i>
@@ -79,10 +90,13 @@
                     {{ form.input('port', lang('MINECRAFT_SERVER_PORT'), server.port, {type: 'number', placeholder: lang('MINECRAFT_SERVER_PORT_EXAMPLE'), required: true}) }}
                   </div>
                   <div class="col-md-6">
-                    {{ form.input('rcon_port', lang('MINECRAFT_RCON_PORT'), server.rcon_port, {type: 'number', placeholder: lang('MINECRAFT_RCON_PORT_EXAMPLE'), required: true}) }}
+                    {{ form.input('rcon_port', lang('MINECRAFT_RCON_PORT') ~ ' (' ~ lang('OPTIONAL') ~ ')', server.rcon_port, {type: 'number', placeholder: lang('MINECRAFT_RCON_PORT_EXAMPLE')}) }}
                   </div>
                   <div class="col-md-6">
-                    {{ form.input('rcon_pass', lang('MINECRAFT_RCON_PASS'), server.rcon_pass, {type: 'password', placeholder: lang('MINECRAFT_RCON_PASS_EXAMPLE'), required: true}) }}
+                    {{ form.input('rcon_pass', lang('MINECRAFT_RCON_PASS') ~ ' (' ~ lang('OPTIONAL') ~ ')', server.rcon_pass, {type: 'password', placeholder: lang('MINECRAFT_RCON_PASS_EXAMPLE')}) }}
+                  </div>
+                  <div class="col-md-6">
+                    {{ form.input('timeout', lang('MINECRAFT_TIMEOUT') ~ ' (' ~ lang('OPTIONAL') ~ ')', server.timeout, {type: 'number', placeholder: lang('MINECRAFT_TIMEOUT_EXAMPLE')}) }}
                   </div>
                   <div class="col-md-12">
                     {{ form.submit(lang('EDIT'), 'editServer', {btnType: 'success'}) }}

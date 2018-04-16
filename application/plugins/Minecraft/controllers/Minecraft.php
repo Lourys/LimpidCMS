@@ -9,6 +9,7 @@ class Minecraft extends Limpid_Controller
   public function __construct()
   {
     parent::__construct();
+    $this->load->library('Minecraft_Manager', null, 'minecraftManager');
   }
 
   public function admin_index()
@@ -16,6 +17,9 @@ class Minecraft extends Limpid_Controller
     $this->authManager->checkAccess('MINECRAFT__OVERVIEW');
 
     $this->data['page_title'] = 'Minecraft';
+    $this->data['nb_servers'] = $this->minecraftManager->countServers();
+
+
     $this->twig->display('admin/index', $this->data);
   }
 
@@ -23,9 +27,12 @@ class Minecraft extends Limpid_Controller
   {
     $this->authManager->checkAccess('MINECRAFT__SETTINGS');
 
-    $this->load->library('Minecraft_Manager', null, 'minecraftManager');
     $this->data['page_title'] = 'Paramètres Minecraft';
     $this->data['servers'] = $this->minecraftManager->getServers();
+
+    for ($i = 0; $i < count($this->data['servers']); $i++) {
+      $this->data['servers'][$i]['status'] = $this->minecraftManager->ping($this->data['servers'][$i]['id']);
+    }
 
     $this->load->helper('form');
     $this->load->library('form_validation');
@@ -39,13 +46,22 @@ class Minecraft extends Limpid_Controller
       $this->form_validation->set_rules('name', $this->lang->line('MINECRAFT_SERVER_NAME'), 'required|max_length[20]');
       $this->form_validation->set_rules('ip_address', $this->lang->line('MINECRAFT_SERVER_IP_ADDRESS'), 'required|max_length[15]');
       $this->form_validation->set_rules('port', $this->lang->line('MINECRAFT_SERVER_PORT'), 'required|integer|less_than[65535]');
-      $this->form_validation->set_rules('rcon_port', $this->lang->line('MINECRAFT_RCON_PORT'), 'required|integer|less_than[65535]');
-      $this->form_validation->set_rules('rcon_pass', $this->lang->line('MINECRAFT_RCON_PASS'), 'required');
+      $this->form_validation->set_rules('rcon_port', $this->lang->line('MINECRAFT_RCON_PORT'), 'integer|less_than[65535]');
+      $this->form_validation->set_rules('timeout', $this->lang->line('MINECRAFT_TIMEOUT'), 'integer|is_natural');
     }
 
     if ($this->form_validation->run()) {
+      $data = [
+        'name' => $this->input->post('name'),
+        'ip_address' => $this->input->post('ip_address'),
+        'port' => $this->input->post('port'),
+        'rcon_port' => $this->input->post('rcon_port') ? $this->input->post('rcon_port') : null,
+        'rcon_pass' => $this->input->post('rcon_pass') ? $this->input->post('rcon_pass') : null,
+        'timeout' => $this->input->post('timeout') ? $this->input->post('rcon_port') : null,
+      ];
+
       if ($this->input->post('createServer') !== null) {
-        if ($this->minecraftManager->addServer($this->input->post('name'), $this->input->post('ip_address'), $this->input->post('port'), $this->input->post('rcon_port'), $this->input->post('rcon_pass'))) {
+        if ($this->minecraftManager->addServer($data)) {
           $this->session->set_flashdata('success', $this->lang->line('MINECRAFT_SERVER_SUCCESSFULLY_CREATED'));
         } else {
           // If server adding failed
@@ -53,13 +69,6 @@ class Minecraft extends Limpid_Controller
         }
       }
       if ($this->input->post('editServer') !== null) {
-        $data = [
-          'name' => $this->input->post('name'),
-          'ip_address' => $this->input->post('ip_address'),
-          'port' => $this->input->post('port'),
-          'rcon_port' => $this->input->post('rcon_port'),
-          'rcon_pass' => $this->input->post('rcon_pass'),
-        ];
         if ($this->minecraftManager->editServer($this->input->post('id'), $data)) {
           $this->session->set_flashdata('success', $this->lang->line('MINECRAFT_SERVER_SUCCESSFULLY_EDITED'));
         } else {

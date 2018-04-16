@@ -11,37 +11,15 @@
   </section>
 
   <section class="content">
+    <a href="{{ route('minecraft/admin_settings') }}" class="btn btn-primary pull-right"><i class="fa fa-cogs"></i> {{ lang('MINECRAFT_SETTINGS') }}</a>
+    <div class="clearfix"></div>
     <div class="row">
       <div class="col-md-4 col-sm-6 col-xs-12">
         <div class="info-box bg-green">
-          <span class="info-box-icon"><i class="fa fa-newspaper-o"></i></span>
+          <span class="info-box-icon"><i class="fa fa-server"></i></span>
           <div class="info-box-content">
-            <span class="info-box-text">{{ lang('NEWS') }}</span>
-            <span class="info-box-number">{{ widgets.news.nb_total }}</span>
-            <div class="progress" style="opacity: .05"></div>
-            <span class="progress-description"><b>+</b> {{ widgets.news.nb_last_24h }} ({{ lang('LAST_24_HOURS') }})</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-4 col-sm-6 col-xs-12">
-        <div class="info-box bg-blue">
-          <span class="info-box-icon"><i class="fa fa-newspaper-o"></i></span>
-          <div class="info-box-content">
-            <span class="info-box-text">{{ lang('PAGES') }}</span>
-            <span class="info-box-number">{{ widgets.pages.nb_total }}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-4 col-sm-12 col-xs-12">
-        <div class="info-box bg-red">
-          <span class="info-box-icon"><i class="fa fa-user"></i></span>
-          <div class="info-box-content">
-            <span class="info-box-text">{{ lang('USERS') }}</span>
-            <span class="info-box-number">{{ widgets.users.nb_total }}</span>
-            <div class="progress" style="opacity: .05"></div>
-            <span class="progress-description"><b>+</b> {{ widgets.users.nb_last_24h }} ({{ lang('LAST_24_HOURS') }})</span>
+            <span class="info-box-text">{{ lang('MINECRAFT_SERVERS') }}</span>
+            <span class="info-box-number">{{ nb_servers }}</span>
           </div>
         </div>
       </div>

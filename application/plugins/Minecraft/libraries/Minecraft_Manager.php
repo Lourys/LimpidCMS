@@ -8,6 +8,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Minecraft_Manager
 {
   private $limpid;
+  private $pingData = [];
 
   /**
    * Minecraft_Manager constructor.
@@ -23,10 +24,22 @@ class Minecraft_Manager
     }
   }
 
-  public function addServer($name, $ip_address, $port, $rcon_port, $rcon_pass)
+  public function addServer($params)
   {
+    $params = array_merge(array(
+      'name' => null,
+      'ip_address' => null,
+      'port' => 25565,
+      'rcon_port' => null,
+      'rcon_pass' => null,
+      'timeout' => null
+    ), $params);
+
+    // Create variables from parameter list
+    extract($params);
+
     // Simple check
-    if (empty($name) || empty($ip_address) || empty($port) || empty($rcon_port) || empty($rcon_pass)) {
+    if (empty($name) || empty($ip_address) || empty($port)) {
       return null;
     }
 
@@ -37,6 +50,7 @@ class Minecraft_Manager
       'port' => $port,
       'rcon_port' => $rcon_port,
       'rcon_pass' => $rcon_pass,
+      'timeout' => $timeout,
       'game' => 'minecraft'
     ];
 
@@ -76,6 +90,63 @@ class Minecraft_Manager
   {
     if ($server = $this->limpid->minecraft->get_all(['game' => 'minecraft']))
       return $server;
+
+    return null;
+  }
+
+  public function countServers()
+  {
+    if ($server = $this->limpid->minecraft->count_rows(['game' => 'minecraft']))
+      return $server;
+
+    return null;
+  }
+
+  public function sendCommand($id, $command)
+  {
+    if ($server = $this->limpid->minecraft->get(['game' => 'minecraft', 'id' => $id])) {
+      $rconInstance = 'rcon_' . $server['id'];
+      if (!isset($this->limpid->$rconInstance)) {
+        $this->limpid->load->library('MinecraftRcon', [
+          'host' => $server['ip_address'],
+          'port' => $server['rcon_port'],
+          'password' => $server['rcon_pass'],
+          'timeout' => $server['timeout']
+        ], $rconInstance);
+
+        if ($this->limpid->$rconInstance->connect()) {
+          return $this->limpid->$rconInstance->sendCommand($command);
+        } else {
+          unset($this->limpid->$rconInstance);
+        }
+      } else {
+        return $this->limpid->$rconInstance->sendCommand($command);
+      }
+
+      return false;
+    }
+
+    return null;
+  }
+
+  public function ping($id)
+  {
+    if ($server = $this->limpid->minecraft->get(['game' => 'minecraft', 'id' => $id])) {
+      if (isset($this->pingData[$server['id']])) {
+        return $this->pingData[$server['id']];
+      }
+
+      $pingInstance = 'ping_' . $server['id'];
+      if (!isset($this->limpid->$pingInstance)) {
+        $this->limpid->load->library('MinecraftPing', [
+          'host' => $server['ip_address'],
+          'port' => $server['port']
+        ], $pingInstance);
+      }
+
+      $this->pingData[$server['id']] = $this->limpid->$pingInstance->Query();
+      return $this->pingData[$server['id']];
+    }
 
     return null;
   }
