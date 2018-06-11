@@ -168,7 +168,7 @@ class Users extends Limpid_Controller
         }
 
         $extension = strtolower(pathinfo($_FILES['avatarUpload']['name'], PATHINFO_EXTENSION));
-        $fileName = uniqid();
+        $fileName = $this->input->post('user_id') . uniqid();
 
         $config['upload_path'] = './uploads/avatars/';
         $config['allowed_types'] = 'jpg|png|gif';

@@ -3,99 +3,100 @@
 {% import 'macros/form.twig' as form %}
 
 {% block stylesheets %}
-    {{ parent() }}
-    <link href="https://cdn.datatables.net/v/bs/dt-1.10.15/r-2.1.1/datatables.min.css" rel="stylesheet">
+  {{ parent() }}
+  <link href="https://cdn.datatables.net/v/bs/dt-1.10.15/r-2.1.1/datatables.min.css" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
-    <section class="content-header">
-        <h1>{{ lang('GROUPS_MANAGEMENT') }}</h1>
-        <ol class="breadcrumb">
-            <li><a href="{{ route('admin/admin_index') }}"><i class="fa fa-dashboard"></i> {{ lang('HOME') }}</a>
-            </li>
-            <li>{{ lang('GROUPS') }}</li>
-            <li class="active">{{ lang('GROUPS_MANAGEMENT') }}</li>
-        </ol>
-    </section>
-    <section class="content">
-        <div class="box">
-            <div class="box-header with-border">
-                <h3 class="box-title">{{ lang('MANAGE_GROUPS') }}</h3>
-            </div>
-            <div class="box-body table-responsive">
-                <table id="table" class="table">
-                    <thead>
-                        <tr>
-                            <th>{{ lang('GROUP_NAME') }}</th>
-                            <th>{{ lang('GROUP_COLOR') }}</th>
-                            <th style="width: 495px">{{ lang('ACTIONS') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for group in groups %}
-                        <tr>
-                            <td>{{ group.name }}</td>
-                            <td>
-                                <p style="background-color:{{ group.color }};height:28px;width:50%;border-radius:5px;"></p>
-                            </td>
-                            <td>
-                                {% if group.id != 1 %}
-                                    <a href="{{ route('permissions/admin_manage/' ~ group.id) }}" class="btn btn-info btn-sm">
-                                        <i class="fa fa-id-card"></i> {{ lang('MANAGE_PERMISSIONS') }}
-                                    </a>&nbsp;
-                                {% endif %}
-                                <a href="{{ route('groups/admin_edit/' ~ group.id) }}" class="btn btn-primary btn-sm">
-                                    <i class="fa fa-pencil"></i> {{ lang('EDIT') }}
-                                </a>&nbsp;
-                                {% if group.id != 1 and group.default_group != true %}
-                                    <a href="{{ route('groups/admin_make_default/' ~ group.id) }}" class="btn btn-secondary btn-sm">
-                                        <i class="fa fa-check"></i> {{ lang('MAKE_DEFAULT_GROUP') }}
-                                    </a>&nbsp;
-                                {% endif %}
-                                {% if group.id != 1 %}
-                                    {% if group.default_group != true %}
-                                        <a href="#deleteGroup{{ group.id }}" class="btn btn-danger btn-sm"
-                                           data-toggle="modal" data-target="#deleteGroup{{ group.id }}">
-                                            <i class="fa fa-times"></i> {{ lang('DELETE') }}
-                                        </a>
-                                    {% else %}
-                                        <button class="btn btn-secondary btn-sm" disabled>{{ lang('DEFAULT_GROUP') }}</button>
-                                    {% endif %}
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </section>
+  <section class="content-header">
+    <h1>{{ lang('GROUPS_MANAGEMENT') }}</h1>
+    <ol class="breadcrumb">
+      <li><a href="{{ route('admin/admin_index') }}"><i class="fa fa-dashboard"></i> {{ lang('HOME') }}</a>
+      </li>
+      <li>{{ lang('GROUPS') }}</li>
+      <li class="active">{{ lang('GROUPS_MANAGEMENT') }}</li>
+    </ol>
+  </section>
+  <section class="content">
+    <div class="box">
+      <div class="box-header with-border">
+        <h3 class="box-title">{{ lang('MANAGE_GROUPS') }}</h3>
+      </div>
+      <div class="box-body table-responsive">
+        <table id="table" class="table">
+          <thead>
+          <tr>
+            <th>{{ lang('GROUP_NAME') }}</th>
+            <th>{{ lang('GROUP_COLOR') }}</th>
+            <th style="width: 495px">{{ lang('ACTIONS') }}</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% for group in groups %}
+            <tr>
+              <td>{{ group.name }}</td>
+              <td>
+                <p style="background-color:{{ group.color }};height:28px;width:50%;border-radius:5px;"></p>
+              </td>
+              <td>
+                {% if group.id != 1 %}
+                  <a href="{{ route('permissions/admin_manage/' ~ group.id) }}" class="btn btn-info btn-sm">
+                    <i class="fa fa-id-card"></i> {{ lang('MANAGE_PERMISSIONS') }}
+                  </a>&nbsp;
+                {% endif %}
+                <a href="{{ route('groups/admin_edit/' ~ group.id) }}" class="btn btn-primary btn-sm">
+                  <i class="fa fa-pencil"></i> {{ lang('EDIT') }}
+                </a>&nbsp;
+                {% if group.id != 1 and group.default_group != true %}
+                  <a href="{{ route('groups/admin_make_default/' ~ group.id) }}" class="btn btn-secondary btn-sm">
+                    <i class="fa fa-check"></i> {{ lang('MAKE_DEFAULT_GROUP') }}
+                  </a>&nbsp;
+                {% endif %}
+                {% if group.id != 1 %}
+                  {% if group.default_group != true %}
+                    <a href="#deleteGroup{{ group.id }}" class="btn btn-danger btn-sm"
+                       data-toggle="modal" data-target="#deleteGroup{{ group.id }}">
+                      <i class="fa fa-times"></i> {{ lang('DELETE') }}
+                    </a>
+                  {% else %}
+                    <button class="btn btn-secondary btn-sm" disabled>{{ lang('DEFAULT_GROUP') }}</button>
+                  {% endif %}
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
 
-    {% for group in groups %}
-        {% if group.id != 1 and group.default_group != true %}
-            <div id="deleteGroup{{ group.id }}" class="modal modal-danger fade" role="dialog">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">{{ lang('GROUP_REMOVAL') }} ({{ group.name }})</h4>
-                        </div>
-                        <div class="modal-body">
-                            {{ lang('GROUP_REMOVAL_CONFIRMATION') }}
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang('CANCEL') }}</button>
-                            <a href="{{ route('groups/admin_delete/' ~ group.id) }}" class="btn btn-danger">{{ lang('REMOVAL_CONFIRM') }}</a>
-                        </div>
-                    </div>
-                </div>
+  {% for group in groups %}
+    {% if group.id != 1 and group.default_group != true %}
+      <div id="deleteGroup{{ group.id }}" class="modal modal-danger fade" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">{{ lang('GROUP_REMOVAL') }} ({{ group.name }})</h4>
             </div>
-        {% endif %}
-    {% endfor %}
+            <div class="modal-body">
+              {{ lang('GROUP_REMOVAL_CONFIRMATION') }}
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang('CANCEL') }}</button>
+              <a href="{{ route('groups/admin_delete/' ~ group.id) }}"
+                 class="btn btn-danger">{{ lang('REMOVAL_CONFIRM') }}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %}
 {% endblock %}
 
 {% block javascript %}
-    {{ parent() }}
-    <script src="https://cdn.datatables.net/v/bs/dt-1.10.15/r-2.1.1/datatables.min.js"></script>
-    <script async>$(document).ready(function(){$("#table").DataTable({language:{emptyTable:"{{ lang('emptyTable') }}",info:"{{ lang('info') }}",infoEmpty:"{{ lang('infoEmpty') }}",infoFiltered:"{{ lang('infoFiltered') }}",thousands:"{{ lang('thousands') }}",lengthMenu:"{{ lang('lengthMenu') }}",loadingRecords:"{{ lang('loadingRecords') }}",processing:"{{ lang('processing') }}",search:"{{ lang('search') }}",zeroRecords:"{{ lang('zeroRecords') }}",paginate:{first:"{{ lang('first') }}",last:"{{ lang('last') }}",next:"{{ lang('next') }}",previous:"{{ lang('previous') }}"},aria:{sortAscending:"{{ lang('sortAscending') }}",sortDescending:"{{ lang('sortDescending') }}"}}})});</script>
+  {{ parent() }}
+
+  {{ displayDataTables() }}
 {% endblock %}

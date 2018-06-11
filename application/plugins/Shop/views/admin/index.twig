@@ -1,0 +1,152 @@
+{% extends 'layouts/admin.twig' %}
+
+{% block content %}
+  <section class="content-header">
+    <h1>{{ lang('SHOP') }}</h1>
+    <ol class="breadcrumb">
+      <li><a href="{{ route('admin/admin_index') }}"><i class="fa fa-dashboard"></i> {{ lang('HOME') }}</a></li>
+      <li>{{ lang('PLUGINS') }}</li>
+      <li class="active">{{ lang('SHOP') }}</li>
+    </ol>
+  </section>
+
+  <section class="content">
+    <a href="{{ route('minecraft/admin_settings') }}" class="btn btn-primary pull-right"><i
+              class="fa fa-cogs"></i> {{ lang('SHOP_SETTINGS') }}</a>
+    <div class="clearfix"></div>
+    <br>
+    <div class="row">
+      <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="info-box bg-green">
+          <span class="info-box-icon"><i class="fa fa-shopping-basket"></i></span>
+          <div class="info-box-content">
+            <span class="info-box-text">{{ lang('SHOP_ITEMS_COUNT') }}</span>
+            <span class="info-box-number">{{ nb_servers }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="info-box bg-blue">
+          <span class="info-box-icon"><i class="fa fa-cart-arrow-down"></i></span>
+          <div class="info-box-content">
+            <span class="info-box-text">{{ lang('SHOP_ITEM_SOLD_CUR_MONTH') }}</span>
+            <span class="info-box-number">{{ nb_servers }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="info-box bg-yellow">
+          <span class="info-box-icon"><i class="fa fa-money"></i></span>
+          <div class="info-box-content">
+            <span class="info-box-text">{{ lang('SHOP_MONEY_EARNED_CUR_MONTH') }}</span>
+            <span class="info-box-number">{{ nb_servers }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <hr>
+        <div class="col-md-6">
+          <a class="btn btn-lg btn-primary" style="width: 100%;">
+            <i class="fa fa-object-group fa-2x"></i><br> {{ lang('SHOP_ADD_CATEGORY') }}
+          </a>
+        </div>
+        <div class="col-md-6">
+          <a class="btn btn-lg btn-primary" style="width: 100%;">
+            <i class="fa fa-cart-plus fa-2x"></i><br> {{ lang('SHOP_ADD_ITEM') }}
+          </a>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <hr>
+        <div class="col-md-6">
+          <div class="box box-solid">
+            <div class="box-header with-border">
+              <i class="fa fa-object-group"></i>
+              <h3 class="box-title">{{ lang('SHOP_CATEGORIES') }}</h3>
+            </div>
+            <div class="box-body table-responsive">
+              <table id="table" class="table">
+                <thead>
+                <tr>
+                  <th>{{ lang('TITLE') }}</th>
+                  <th>{{ lang('PAGE_LINK') }}</th>
+                  <th style="width: 174px">{{ lang('ACTIONS') }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for page in pages %}
+                  <tr>
+                    <td>{{ page.title }}</td>
+                    <td>
+                      <a href="{{ route('pages/view/' ~ page.slug) }}" target="_blank">
+                        {{ route('pages/view/' ~ page.slug) }}
+                      </a>
+                    </td>
+                    <td>
+                      <a href="{{ route('pages/admin_edit/' ~ page.id) }}" class="btn btn-primary btn-sm">
+                        <i class="fa fa-pencil"></i> {{ lang('EDIT') }}
+                      </a>&nbsp;
+                      <a href="#deletePage{{ page.id }}" class="btn btn-danger btn-sm"
+                         data-toggle="modal" data-target="#deletePage{{ page.id }}">
+                        <i class="fa fa-times"></i> {{ lang('DELETE') }}
+                      </a>
+                    </td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="box box-solid">
+            <div class="box-header with-border">
+              <i class="fa fa-shopping-cart"></i>
+              <h3 class="box-title">{{ lang('SHOP_ITEMS') }}</h3>
+            </div>
+            <div class="box-body table-responsive">
+              <table id="table" class="table">
+                <thead>
+                <tr>
+                  <th>{{ lang('TITLE') }}</th>
+                  <th>{{ lang('PAGE_LINK') }}</th>
+                  <th style="width: 174px">{{ lang('ACTIONS') }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for page in pages %}
+                  <tr>
+                    <td>{{ page.title }}</td>
+                    <td>
+                      <a href="{{ route('pages/view/' ~ page.slug) }}" target="_blank">
+                        {{ route('pages/view/' ~ page.slug) }}
+                      </a>
+                    </td>
+                    <td>
+                      <a href="{{ route('pages/admin_edit/' ~ page.id) }}" class="btn btn-primary btn-sm">
+                        <i class="fa fa-pencil"></i> {{ lang('EDIT') }}
+                      </a>&nbsp;
+                      <a href="#deletePage{{ page.id }}" class="btn btn-danger btn-sm"
+                         data-toggle="modal" data-target="#deletePage{{ page.id }}">
+                        <i class="fa fa-times"></i> {{ lang('DELETE') }}
+                      </a>
+                    </td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block javascript %}
+  {{ parent() }}
+
+  {{ displayDataTables() }}
+{% endblock %}

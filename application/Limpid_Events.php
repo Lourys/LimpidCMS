@@ -27,12 +27,12 @@ class Limpid_Events
   {
     $this->limpid->load->library('Users_Manager', null, 'usersManager');
     $user = $this->limpid->usersManager->getUser($user_id);
-    $fileName = uniqid();
-    if ($user->avatar == null) {
-      $hasGravatar = strpos(@get_headers('https://www.gravatar.com/avatar/' . md5($user->email) . '?d=404')[0], '200') === false ? false : true;
+    $fileName = $user_id . uniqid();
+    if ($user['avatar'] == null) {
+      $hasGravatar = strpos(@get_headers('https://www.gravatar.com/avatar/' . md5($user['email']) . '?d=404')[0], '200') === false ? false : true;
       if ($hasGravatar) {
-        if (@file_put_contents('./uploads/avatars/' . $fileName . '.jpg', @file_get_contents('https://www.gravatar.com/avatar/' . md5($user->email) . '?s=' . $this->limpid->config->item('avatar')['max_width']))) {
-          $this->limpid->usersManager->editUser($user->id, ['avatar' => $fileName . '.jpg']);
+        if (@file_put_contents('./uploads/avatars/' . $fileName . '.jpg', @file_get_contents('https://www.gravatar.com/avatar/' . md5($user['email']) . '?s=' . $this->limpid->config->item('avatar')['max_width']))) {
+          $this->limpid->usersManager->editUser($user['id'], ['avatar' => $fileName . '.jpg']);
         } else {
           echo'aïe!';
           die();

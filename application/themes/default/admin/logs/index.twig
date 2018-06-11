@@ -91,30 +91,6 @@
 
 {% block javascript %}
   {{ parent() }}
-  <script src="https://cdn.datatables.net/v/bs/dt-1.10.15/r-2.1.1/datatables.min.js"></script>
-  <script async>$(document).ready(function () {
-      $("#table").DataTable({
-        language: {
-          emptyTable: "{{ lang('emptyTable') }}",
-          info: "{{ lang('info') }}",
-          infoEmpty: "{{ lang('infoEmpty') }}",
-          infoFiltered: "{{ lang('infoFiltered') }}",
-          thousands: "{{ lang('thousands') }}",
-          lengthMenu: "{{ lang('lengthMenu') }}",
-          loadingRecords: "{{ lang('loadingRecords') }}",
-          processing: "{{ lang('processing') }}",
-          search: "{{ lang('search') }}",
-          zeroRecords: "{{ lang('zeroRecords') }}",
-          paginate: {
-            first: "{{ lang('first') }}",
-            last: "{{ lang('last') }}",
-            next: "{{ lang('next') }}",
-            previous: "{{ lang('previous') }}"
-          },
-          aria: {sortAscending: "{{ lang('sortAscending') }}", sortDescending: "{{ lang('sortDescending') }}"}
-        },
-        order: [[0, "desc"]]
-      })
-    });
-  </script>
+
+  {{ displayDataTables() }}
 {% endblock %}

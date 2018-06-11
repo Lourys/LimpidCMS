@@ -1,0 +1,140 @@
+{% extends 'layouts/admin.twig' %}
+
+{% import 'macros/form.twig' as form %}
+
+{% block content %}
+  <section class="content-header">
+    <h1>{{ lang('MINECRAFT_SETTINGS') }}</h1>
+    <ol class="breadcrumb">
+      <li><a href="{{ route('admin/admin_index') }}"><i class="fa fa-dashboard"></i> {{ lang('HOME') }}</a></li>
+      <li><a href="{{ route('plugins/admin_manage') }}">{{ lang('PLUGINS_MANAGEMENT') }}</a></li>
+      <li class="active">{{ lang('MINECRAFT_SETTINGS') }}</li>
+    </ol>
+  </section>
+
+  <section class="content">
+    <div class="box">
+      <div class="box-header with-border">
+        <h3 class="box-title">{{ lang('MINECRAFT_SERVER_ADD') }}</h3>
+      </div>
+      <div class="box-body">
+        <p class="text-muted">{{ lang('MINECRAFT_SERVER_CREATION_INFORMATION') }}</p>
+        {{ form_open() }}
+        <div class="col-md-12">
+          {{ form.input('name', lang('MINECRAFT_SERVER_NAME'), this.input.post('name'), {placeholder: lang('MINECRAFT_SERVER_NAME_EXAMPLE'), required: true}) }}
+        </div>
+        <div class="col-md-6">
+          {{ form.input('ip_address', lang('MINECRAFT_SERVER_IP_ADDRESS'), this.input.post('ip_address'), {placeholder: lang('MINECRAFT_SERVER_IP_ADDRESS_EXAMPLE'), required: true}) }}
+        </div>
+        <div class="col-md-6">
+          {{ form.input('port', lang('MINECRAFT_SERVER_PORT'), this.input.post('port'), {type: 'number', placeholder: lang('MINECRAFT_SERVER_PORT_EXAMPLE'), required: true}) }}
+        </div>
+        <div class="col-md-6">
+          {{ form.input('rcon_port', lang('MINECRAFT_RCON_PORT') ~ ' (' ~ lang('OPTIONAL') ~ ')', this.input.post('rcon_port'), {type: 'number', placeholder: lang('MINECRAFT_RCON_PORT_EXAMPLE')}) }}
+        </div>
+        <div class="col-md-6">
+          {{ form.input('rcon_pass', lang('MINECRAFT_RCON_PASS') ~ ' (' ~ lang('OPTIONAL') ~ ')', this.input.post('rcon_pass'), {type: 'password', placeholder: lang('MINECRAFT_RCON_PASS_EXAMPLE')}) }}
+        </div>
+        <div class="col-md-6">
+          {{ form.input('timeout', lang('MINECRAFT_TIMEOUT') ~ ' (' ~ lang('OPTIONAL') ~ ')', server.timeout, {type: 'number', placeholder: lang('MINECRAFT_TIMEOUT_EXAMPLE')}) }}
+        </div>
+        <div class="col-md-12">
+          {{ form.submit(lang('ADD'), 'createServer', {btnType: 'success'}) }}
+        </div>
+        {{ form_close() }}
+      </div>
+    </div>
+
+    <div class="box">
+      <div class="box-header with-border">
+        <h3 class="box-title">{{ lang('MINECRAFT_SERVERS_MANAGEMENT') }}</h3>
+      </div>
+      <div class="box-body">
+        <div class="row">
+          {% if servers == null %}
+            <div class="col-md-12 text-center">
+              <b class="text-uppercase">{{ lang('MINECRAFT_NO_SERVER_CREATED') }}</b>
+            </div>
+          {% endif %}
+          {% for server in servers %}
+            <div class="col-md-4">
+              <div class="box {% if server.status %}box-success{% else %}box-danger{% endif %} box-solid">
+                <div class="box-header with-border">
+                  <h3 class="box-title">{{ server.name }}</h3>
+
+                  <div class="box-tools pull-right">
+                    <b style="vertical-align: middle;">
+                      {% if server.status %}
+                        {{ server.status.players.online }}/{{ server.status.players.max }}
+                      {% else %}
+                        {{ lang('MINECRAFT_SERVER_OFFLINE') }}
+                      {% endif %}
+                      &nbsp;&nbsp;
+                    </b>
+                    <button type="button" class="btn btn-box-tool" data-toggle="collapse"
+                            data-target="#server{{ server.id }}"><i
+                              class="fa fa-cogs"></i>
+                    </button>
+                  </div>
+                </div>
+                <div id="server{{ server.id }}" class="box-body collapse">
+                  {{ form_open() }}
+                  {{ form.simpleInput('id', server.id, {type: 'hidden'}) }}
+                  <div class="col-md-12">
+                    {{ form.input('name', lang('MINECRAFT_SERVER_NAME'), server.name, {placeholder: lang('MINECRAFT_SERVER_NAME_EXAMPLE'), required: true}) }}
+                  </div>
+                  <div class="col-md-6">
+                    {{ form.input('ip_address', lang('MINECRAFT_SERVER_IP_ADDRESS'), server.ip_address, {placeholder: lang('MINECRAFT_SERVER_IP_ADDRESS_EXAMPLE'), required: true}) }}
+                  </div>
+                  <div class="col-md-6">
+                    {{ form.input('port', lang('MINECRAFT_SERVER_PORT'), server.port, {type: 'number', placeholder: lang('MINECRAFT_SERVER_PORT_EXAMPLE'), required: true}) }}
+                  </div>
+                  <div class="col-md-6">
+                    {{ form.input('rcon_port', lang('MINECRAFT_RCON_PORT') ~ ' (' ~ lang('OPTIONAL') ~ ')', server.rcon_port, {type: 'number', placeholder: lang('MINECRAFT_RCON_PORT_EXAMPLE')}) }}
+                  </div>
+                  <div class="col-md-6">
+                    {{ form.input('rcon_pass', lang('MINECRAFT_RCON_PASS') ~ ' (' ~ lang('OPTIONAL') ~ ')', server.rcon_pass, {type: 'password', placeholder: lang('MINECRAFT_RCON_PASS_EXAMPLE')}) }}
+                  </div>
+                  <div class="col-md-6">
+                    {{ form.input('timeout', lang('MINECRAFT_TIMEOUT') ~ ' (' ~ lang('OPTIONAL') ~ ')', server.timeout, {type: 'number', placeholder: lang('MINECRAFT_TIMEOUT_EXAMPLE')}) }}
+                  </div>
+                  <div class="col-md-12">
+                    {{ form.submit(lang('EDIT'), 'editServer', {btnType: 'success'}) }}
+                    <a href="#deleteServer{{ server.id }}" class="btn btn-danger" title="{{ lang('DELETE') }}"
+                       data-toggle="modal" data-target="#deleteServer{{ server.id }}">
+                      {{ lang('DELETE') }}
+                    </a>
+                  </div>
+                  {{ form_close() }}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {% for server in servers %}
+    <div id="deleteServer{{ server.id }}" class="modal modal-danger fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          {{ form_open() }}
+          {{ form.simpleInput('id', server.id, {type: 'hidden'}) }}
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">{{ lang('MINECRAFT_SERVER_REMOVAL') }} ({{ server.name }})</h4>
+          </div>
+          <div class="modal-body">
+            {{ lang('MINECRAFT_SERVER_REMOVAL_CONFIRMATION') }}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang('CANCEL') }}</button>
+            {{ form.submit(lang('REMOVAL_CONFIRM'), 'deleteServer', {btnType: 'danger'}) }}
+          </div>
+          {{ form_close() }}
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+{% endblock %}

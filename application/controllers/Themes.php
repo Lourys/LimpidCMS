@@ -78,6 +78,8 @@ class Themes extends Limpid_Controller
   public function admin_config()
   {
     if ($theme = $this->themesManager->getEnabledTheme()) {
+      $this->data['page_title'] = $this->lang->line('THEME_CONFIGURATION');
+
       $this->load->helper('form');
       $this->data['config'] = json_decode(file_get_contents(APPPATH . 'themes/' . $theme->uri . '/config.json'), true);
       if ($this->input->method() == 'post') {

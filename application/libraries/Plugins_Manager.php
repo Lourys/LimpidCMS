@@ -64,7 +64,6 @@ class Plugins_Manager
       foreach ($this->plugins as $plugin) {
         if ($plugin->enabled) {
           $this->limpid->load->add_module($plugin->uri);
-          $this->limpid->lang->load('minecraft');
           if (file_exists(APPPATH . 'plugins/' . $plugin->uri . '/' . $plugin->uri . '_Events.php')) {
             $eventFileName = $plugin->uri . '_Events';
             require_once(APPPATH . 'plugins/' . $plugin->uri . '/' . $eventFileName . '.php');
@@ -169,8 +168,13 @@ class Plugins_Manager
   function getAdminNav()
   {
     foreach ($this->plugins as $plugin) {
-      if ($plugin->enabled && isset($plugin->admin) && $plugin->admin != null) {
-        $this->admin_nav[$plugin->name] = $plugin->admin;
+      if ($plugin->enabled) {
+        if (isset($plugin->admin) && $plugin->admin === true) {
+          $this->admin_nav[$plugin->name]['home'] = strtolower($plugin->uri) . '/admin_index';
+        }
+        if (isset($plugin->admin_settings) && $plugin->admin_settings === true) {
+          $this->admin_nav[$plugin->name]['settings'] = strtolower($plugin->uri) . '/admin_settings';
+        }
       }
     }
 

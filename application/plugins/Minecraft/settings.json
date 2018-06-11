@@ -1,1 +1,1 @@
-{"name":"Minecraft","uri":"Minecraft","author":"Lourys","version":0.1,"admin":"minecraft/admin_index","account_nav":null,"enabled":true}
+{"name":"Minecraft","uri":"Minecraft","author":"Lourys","version":0.1,"admin":true,"admin_settings":true,"account_nav":null,"enabled":true}

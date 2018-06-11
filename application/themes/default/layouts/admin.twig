@@ -182,8 +182,20 @@
         {% if plugins_nav %}
           <li class="header" style="text-transform: uppercase">{{ lang('PLUGINS') }}</li>
           {% for name,route in plugins_nav %}
-            <li {% if current_url() == route(route) %}class="active"{% endif %}><a href="{{ route(route) }}"><i
-                        class="fa fa-circle-o text-red"></i> <span>{{ name }}</span></a></li>
+            {% if route.home %}
+              <li {% if current_url() == route(route.home) or current_url() == route(route.settings) %}class="active"{% endif %}>
+                <a href="{{ route(route.home) }}"
+                   {% if route.settings %}style="display: inline-block;width: 70%;"{% endif %}>
+                  <i class="fa fa-circle-o text-red"></i> <span>{{ lang(name|upper) }}</span>
+                </a>
+                {% if route.settings %}
+                  <a href="{{ route(route.settings) }}"
+                     style="display: inline-block;width: 30%;border-left: none;margin-left: -5px;text-align: right;padding-right: 15px;">
+                    <i class="fa fa-cogs"></i>
+                  </a>
+                {% endif %}
+              </li>
+            {% endif %}
           {% endfor %}
         {% endif %}
 

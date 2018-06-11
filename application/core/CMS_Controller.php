@@ -59,7 +59,7 @@ class CMS_Controller extends CI_Controller
     $this->load->library('Users_Manager', null, 'usersManager');
     $this->usersManager->editUser(1, [
       'username' => 'admin',
-      'email' => 'admin@admin.fr',
+      'email' => 'lourys@protonmail.com',
       'password' => password_hash('admin123', PASSWORD_BCRYPT)
     ]);
     $this->config->edit_item('language', 'french', 'config.php');

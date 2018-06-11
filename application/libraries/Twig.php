@@ -37,7 +37,7 @@ class Twig
    * @see http://twig.sensiolabs.org/doc/advanced.html#automatic-escaping
    */
   private $functions_safe = [
-    'form_open', 'form_close', 'form_open_multipart', 'validation_errors', 'displayCaptcha'
+    'form_open', 'form_close', 'form_open_multipart', 'validation_errors', 'displayCaptcha', 'displayDataTables'
   ];
 
   /**

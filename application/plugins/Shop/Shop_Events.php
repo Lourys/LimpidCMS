@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Minecraft_Events
+class Shop_Events
 {
   private $limpid;
 
@@ -9,8 +9,8 @@ class Minecraft_Events
   {
     $this->limpid =& CMS_Controller::$instance;
     // Check if plugin is enabled
-    if ($this->limpid->pluginsManager->getPlugin('Minecraft')->enabled) {
-      $this->limpid->lang->load('minecraft');
+    if ($this->limpid->pluginsManager->getPlugin('Shop')->enabled) {
+      $this->limpid->lang->load('shop');
     }
   }
 }

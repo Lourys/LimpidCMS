@@ -4,20 +4,19 @@
  * @property CI_Input $input
  */
 
-class Minecraft extends Limpid_Controller
+class Shop extends Limpid_Controller
 {
   public function __construct()
   {
     parent::__construct();
-    $this->load->library('Minecraft_Manager', null, 'minecraftManager');
+    $this->load->library('Shop_Manager', null, 'shopManager');
   }
 
   public function admin_index()
   {
-    $this->authManager->checkAccess('MINECRAFT__OVERVIEW');
+    $this->authManager->checkAccess('SHOP__OVERVIEW');
 
-    $this->data['page_title'] = 'Minecraft';
-    $this->data['nb_servers'] = $this->minecraftManager->countServers();
+    $this->data['page_title'] = $this->lang->line('SHOP');
 
 
     $this->twig->display('admin/index', $this->data);

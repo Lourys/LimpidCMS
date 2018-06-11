@@ -117,7 +117,7 @@ class Auth_Manager
       $user_id = $this->limpid->session->userdata('id');
     }
 
-    if ($row = $this->limpid->auth->with_group('fields:id, permissions')->fields(null)->get($user_id)) {
+    if ($user_id && $row = $this->limpid->auth->with_group('fields:id, permissions')->fields(null)->get($user_id)) {
       // Check if is admin group
       if ($row['group']['id'] == 1)
         return true;

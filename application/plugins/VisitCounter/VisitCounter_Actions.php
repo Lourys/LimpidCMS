@@ -21,7 +21,8 @@ class VisitCounter_Actions
           'constraint' => '15'
         ],
         'first_visit' => [
-          'type' => 'TIMESTAMP'
+          'type' => 'TIMESTAMP',
+          'null' => true
         ],
         'last_visit' => [
           'type' => 'TIMESTAMP',
