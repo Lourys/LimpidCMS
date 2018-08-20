@@ -58,6 +58,7 @@ class Plugins extends Limpid_Controller
   {
     if (!$this->pluginsManager->getPlugin($uri)) {
       $plugin = $this->pluginsManager->getAvailablePlugin($uri);
+
       if ($this->pluginsManager->installPlugin($plugin['uri']))
         $this->session->set_flashdata('success', $this->lang->line('PLUGIN_SUCCESSFULLY_INSTALLED'));
       else
@@ -82,6 +83,20 @@ class Plugins extends Limpid_Controller
         $this->session->set_flashdata('success', $this->lang->line('PLUGIN_SUCCESSFULLY_UNINSTALLED'));
       else
         $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
+    }
+
+    redirect(route('plugins/admin_manage'));
+  }
+
+  public function admin_update($uri)
+  {
+    if ($plugin = $this->pluginsManager->getPlugin($uri)) {
+      if ($this->pluginsManager->updatePlugin($plugin['uri']))
+        $this->session->set_flashdata('success', $this->lang->line('PLUGIN_SUCCESSFULLY_UPDATED'));
+      else
+        $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
+    } else {
+      $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
     }
 
     redirect(route('plugins/admin_manage'));

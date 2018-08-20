@@ -223,7 +223,7 @@ class Menu_Manager
    *
    * @param int $link_id
    *
-   * @return Menu_model|null
+   * @return Menu_model|null|false
    */
   function deleteLink($link_id)
   {
@@ -232,7 +232,12 @@ class Menu_Manager
       return null;
     }
 
-    if ($link = $this->limpid->menu->where(['id' => $link_id, 'parent_id' => $link_id], 'OR'))
+    if ($subLinks = $this->limpid->menu->fields('id')->get_all(['parent_id' => $link_id]))
+      foreach ($subLinks as $subLink)
+        if (!$this->limpid->menu->delete($subLink))
+          return false;
+
+    if ($link = $this->limpid->menu->delete(['id' => $link_id]))
       return $link;
 
     return null;

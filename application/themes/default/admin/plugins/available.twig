@@ -36,7 +36,7 @@
           {% for plugin in plugins %}
             {% if this.pluginsManager.getPlugin(plugin.uri) != true %}
               <tr>
-                <td>{{ plugin.name }}</td>
+                <td>{{ plugin.name[this.config.item('language')|slice(0, 2)|lower] }}</td>
                 <td>{{ plugin.author }}</td>
                 <td>v{{ plugin.version }}</td>
                 <td>

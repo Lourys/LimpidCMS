@@ -9,7 +9,7 @@ class Minecraft_Events
   {
     $this->limpid =& CMS_Controller::$instance;
     // Check if plugin is enabled
-    if ($this->limpid->pluginsManager->getPlugin('Minecraft')->enabled) {
+    if ($this->limpid->pluginsManager->getPlugin('Minecraft')['enabled']) {
       $this->limpid->lang->load('minecraft');
     }
   }

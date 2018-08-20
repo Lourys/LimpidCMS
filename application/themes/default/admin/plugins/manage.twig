@@ -42,7 +42,7 @@
               <td>v{{ plugin.version }}</td>
               <td>
                 {% if plugin.enabled %}
-                  {% if plugin.admin %}
+                  {% if plugin.admin_settings %}
                     <a href="{{ route(plugin.uri ~ '/admin_settings') }}" class="btn btn-primary btn-sm">
                       <i class="fa fa-cogs"></i> {{ lang('SETTINGS') }}
                     </a>&nbsp;
@@ -57,6 +57,11 @@
                   <a href="#uninstallPlugin{{ plugin.uri }}" class="btn btn-danger btn-sm"
                      data-toggle="modal" data-target="#uninstallPlugin{{ plugin.uri }}">
                     <i class="fa fa-times"></i> {{ lang('UNINSTALL') }}
+                  </a>
+                {% endif %}
+                {% if this.pluginsManager.doesNeedToUpdate(plugin.uri) %}
+                  <a href="{{ route('plugins/admin_update/' ~ plugin.uri) }}" class="btn btn-light btn-sm">
+                    <i class="fa fa-cloud-download"></i> {{ lang('UPDATE') }}
                   </a>
                 {% endif %}
               </td>

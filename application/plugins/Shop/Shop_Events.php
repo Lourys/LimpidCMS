@@ -9,7 +9,7 @@ class Shop_Events
   {
     $this->limpid =& CMS_Controller::$instance;
     // Check if plugin is enabled
-    if ($this->limpid->pluginsManager->getPlugin('Shop')->enabled) {
+    if ($this->limpid->pluginsManager->getPlugin('Shop')['enabled']) {
       $this->limpid->lang->load('shop');
     }
   }

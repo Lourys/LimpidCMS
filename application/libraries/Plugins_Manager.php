@@ -6,6 +6,10 @@ class Plugins_Manager
 
   private $plugins;
 
+  private $plugins_uris;
+
+  private $available_plugins_uris;
+
   private $available_plugins;
 
   private $enabled_plugins;
@@ -29,9 +33,6 @@ class Plugins_Manager
       unlink(APPPATH . 'cache/plugins.json');
 
     $this->updatePluginList();
-
-    if (empty($this->available_plugins))
-      $this->available_plugins = [];//json_decode(file_get_contents('http://localhost/codeigniter/public/availablePlugins.json'));
   }
 
   /**
@@ -45,12 +46,12 @@ class Plugins_Manager
     if (!file_exists(APPPATH . 'cache/plugins.json') || ENVIRONMENT == 'development') {
       foreach (array_diff(scandir(APPPATH . 'plugins'), array('..', '.')) as $plugin) {
         if (file_exists(APPPATH . 'plugins/' . $plugin . '/settings.json'))
-          $plugins[strtolower($plugin)] = json_decode(file_get_contents(APPPATH . 'plugins/' . $plugin . '/settings.json'));
+          $plugins[$plugin] = json_decode(file_get_contents(APPPATH . 'plugins/' . $plugin . '/settings.json'), true);
       }
       file_put_contents(APPPATH . 'cache/plugins.json', json_encode($plugins));
     }
 
-    $this->plugins = json_decode(file_get_contents(APPPATH . 'cache/plugins.json'));
+    $this->plugins = json_decode(file_get_contents(APPPATH . 'cache/plugins.json'), true);
   }
 
   /**
@@ -62,11 +63,11 @@ class Plugins_Manager
   {
     if ($this->plugins != null) {
       foreach ($this->plugins as $plugin) {
-        if ($plugin->enabled) {
-          $this->limpid->load->add_module($plugin->uri);
-          if (file_exists(APPPATH . 'plugins/' . $plugin->uri . '/' . $plugin->uri . '_Events.php')) {
-            $eventFileName = $plugin->uri . '_Events';
-            require_once(APPPATH . 'plugins/' . $plugin->uri . '/' . $eventFileName . '.php');
+        if ($plugin['enabled']) {
+          $this->limpid->load->add_module($plugin['uri']);
+          if (file_exists(APPPATH . 'plugins/' . $plugin['uri'] . '/' . $plugin['uri'] . '_Events.php')) {
+            $eventFileName = $plugin['uri'] . '_Events';
+            require_once(APPPATH . 'plugins/' . $plugin['uri'] . '/' . $eventFileName . '.php');
             new $eventFileName();
           }
         }
@@ -81,7 +82,12 @@ class Plugins_Manager
    */
   public function getAvailablePlugins()
   {
-    return (array)$this->available_plugins;
+    if (empty($this->available_plugins)) {
+      $this->limpid->load->library('API_Manager', null, 'APIManager');
+      $this->available_plugins = $this->limpid->APIManager->getAvailablePlugins();
+    }
+
+    return $this->available_plugins;
   }
 
   /**
@@ -93,9 +99,11 @@ class Plugins_Manager
    */
   public function getAvailablePlugin($uri)
   {
-    $uri = strtolower($uri);
+    if ($plugin_uri = preg_grep( "/" . $uri . "/i", $this->getAvailablePluginsUris())) {
+      return $this->available_plugins[implode('', $plugin_uri)];
+    }
 
-    return isset($this->available_plugins->$uri) ? $this->available_plugins->$uri : false;
+    return false;
   }
 
   /**
@@ -105,7 +113,7 @@ class Plugins_Manager
    */
   public function getPlugins()
   {
-    return (array)$this->plugins;
+    return $this->plugins;
   }
 
   /**
@@ -117,9 +125,11 @@ class Plugins_Manager
    */
   public function getPlugin($uri)
   {
-    $uri = strtolower($uri);
+    if ($plugin_uri = preg_grep( "/" . $uri . "/i", $this->getPluginsUris())) {
+      return $this->plugins[implode('', $plugin_uri)];
+    }
 
-    return isset($this->plugins->$uri) ? $this->plugins->$uri : false;
+    return false;
   }
 
   /**
@@ -131,7 +141,7 @@ class Plugins_Manager
   {
     if ($this->enabled_plugins == null) {
       foreach ($this->plugins as $key => $val) {
-        if ($val->enabled)
+        if ($val['enabled'])
           $this->enabled_plugins[$key] = $val;
       }
       if (empty($this->enabled_plugins))
@@ -150,7 +160,7 @@ class Plugins_Manager
   {
     if ($this->disabled_plugins == null) {
       foreach ($this->plugins as $key => $val) {
-        if (!$val->enabled)
+        if (!$val['enabled'])
           $this->disabled_plugins[$key] = $val;
       }
       if (empty($this->disabled_plugins))
@@ -168,12 +178,12 @@ class Plugins_Manager
   function getAdminNav()
   {
     foreach ($this->plugins as $plugin) {
-      if ($plugin->enabled) {
-        if (isset($plugin->admin) && $plugin->admin === true) {
-          $this->admin_nav[$plugin->name]['home'] = strtolower($plugin->uri) . '/admin_index';
+      if ($plugin['enabled']) {
+        if (isset($plugin['admin']) && $plugin['admin'] === true) {
+          $this->admin_nav[$plugin['name']]['home'] = $plugin['uri'] . '/admin_index';
         }
-        if (isset($plugin->admin_settings) && $plugin->admin_settings === true) {
-          $this->admin_nav[$plugin->name]['settings'] = strtolower($plugin->uri) . '/admin_settings';
+        if (isset($plugin['admin_settings']) && $plugin['admin_settings'] === true) {
+          $this->admin_nav[$plugin['name']]['settings'] = $plugin['uri'] . '/admin_settings';
         }
       }
     }
@@ -192,8 +202,8 @@ class Plugins_Manager
   function getAccountNav()
   {
     foreach ($this->plugins as $plugin) {
-      if ($plugin->enabled && isset($plugin->accountNav) && $plugin->accountNav != null) {
-        $this->account_nav[$plugin->name] = $plugin->accountNav;
+      if ($plugin['enabled'] && isset($plugin['accountNav']) && $plugin['accountNav'] != null) {
+        $this->account_nav[$plugin['name']] = $plugin['accountNav'];
       }
     }
 
@@ -220,8 +230,8 @@ class Plugins_Manager
       return null;
 
     $plugin = $this->getPlugin($uri);
-    $plugin->enabled = true;
-    if (unlink(APPPATH . 'cache/plugins.json') && file_put_contents(APPPATH . 'plugins/' . $plugin->uri . '/settings.json', json_encode($plugin))) {
+    $plugin['enabled'] = true;
+    if (unlink(APPPATH . 'cache/plugins.json') && file_put_contents(APPPATH . 'plugins/' . $plugin['uri'] . '/settings.json', json_encode($plugin))) {
       $this->updatePluginList();
       return true;
     }
@@ -246,8 +256,8 @@ class Plugins_Manager
       return null;
 
     $plugin = $this->getPlugin($uri);
-    $plugin->enabled = false;
-    if (unlink(APPPATH . 'cache/plugins.json') && file_put_contents(APPPATH . 'plugins/' . $plugin->uri . '/settings.json', json_encode($plugin))) {
+    $plugin['enabled'] = false;
+    if (unlink(APPPATH . 'cache/plugins.json') && file_put_contents(APPPATH . 'plugins/' . $plugin['uri'] . '/settings.json', json_encode($plugin))) {
       $this->updatePluginList();
       return true;
     }
@@ -265,21 +275,23 @@ class Plugins_Manager
    */
   function installPlugin($uri)
   {
-    if (empty($uri))
-      return null;
+    $plugin = $this->getAvailablePlugin($uri);
+    if (!isset($plugin))
+      return false;
 
-    if (file_put_contents(APPPATH . 'tmp/plugin.zip', fopen('http://localhost/codeigniter/public/' . $uri . '.zip', 'r'))) {
+    $this->limpid->load->library('API_Manager', null, 'APIManager');
+    if ($path = $this->limpid->APIManager->downloadPlugin($plugin['uri'])) {
       $zip = new ZipArchive;
-      if ($zip->open(APPPATH . 'tmp/plugin.zip') === TRUE) {
+      if ($zip->open($path) === true) {
         $zip->extractTo(APPPATH . 'plugins/');
         $zip->close();
 
         $this->limpid->load->helper('file');
         delete_files(APPPATH . 'tmp', true);
 
-        $pluginActions = $this->getPluginActions($uri);
+        $pluginActions = $this->getPluginActions($plugin['uri']);
         if ($pluginActions->onInstall() !== true) {
-          $this->uninstallPlugin($uri);
+          $this->uninstallPlugin($plugin['uri']);
           return null;
         }
         $this->updatePluginList();
@@ -316,6 +328,41 @@ class Plugins_Manager
   }
 
   /**
+   * Updates a plugin by uri
+   *
+   * @param string $uri
+   *
+   * @return bool|null
+   */
+  function updatePlugin($uri)
+  {
+    if (empty($uri))
+      return null;
+
+    $this->limpid->load->library('API_Manager', null, 'APIManager');
+    if ($path = $this->limpid->APIManager->downloadPlugin($uri)) {
+      $zip = new ZipArchive;
+      if ($zip->open($path) === true) {
+        $zip->extractTo(APPPATH . 'plugins/');
+        $zip->close();
+
+        $this->limpid->load->helper('file');
+        delete_files(APPPATH . 'tmp', true);
+
+        $pluginActions = $this->getPluginActions($uri);
+        if ($pluginActions->onUpdate() !== true) {
+          return null;
+        }
+        $this->updatePluginList();
+
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
    * Checks if a plugin is enabled by uri
    *
    * @param string $uri
@@ -324,15 +371,36 @@ class Plugins_Manager
    */
   function isEnabled($uri)
   {
-    $uri = strtolower($uri);
+    $plugin = $this->getPlugin($uri);
 
-    if (!isset($this->plugins->$uri)) {
+    if (!isset($plugin)) {
       return false;
     }
 
-    return (boolean)$this->plugins->$uri->enabled;
+    return (boolean) $plugin['enabled'];
   }
 
+  /**
+   * Checks if a plugin needs to be updated
+   *
+   * @param string $uri
+   *
+   * @return bool
+   */
+  function doesNeedToUpdate($uri)
+  {
+    if (!isset($this->available_plugins)) $this->getAvailablePlugins();
+
+    if (!isset($this->plugins[$uri]) || !isset($this->available_plugins[$uri])) {
+      return false;
+    }
+
+    if (str_replace('.', '', $this->plugins[$uri]['version']) < str_replace('.', '', $this->available_plugins[$uri]['version'])) {
+      return true;
+    }
+
+    return false;
+  }
 
   /**
    * Load plugin's actions file by uri
@@ -343,9 +411,7 @@ class Plugins_Manager
    */
   private function getPluginActions($plugin)
   {
-    if (is_object($plugin)) {
-      $plugin = $plugin->uri;
-    } elseif (!is_string($plugin)) {
+    if (!is_string($plugin)) {
       return false;
     }
 
@@ -356,5 +422,29 @@ class Plugins_Manager
     }
 
     return null;
+  }
+
+  private function getPluginsUris()
+  {
+    if (isset($this->plugins_uris)) return $this->plugins_uris;
+
+    foreach ($this->plugins as $uri => $plugin) {
+      $this->plugins_uris[] = $uri;
+    }
+
+    return $this->plugins_uris;
+  }
+
+  private function getAvailablePluginsUris()
+  {
+    if (isset($this->available_plugins_uris)) return $this->available_plugins_uris;
+
+    if (!isset($this->available_plugins)) $this->getAvailablePlugins();
+
+    foreach ($this->available_plugins as $uri => $plugin) {
+      $this->available_plugins_uris[] = $uri;
+    }
+
+    return $this->available_plugins_uris;
   }
 }

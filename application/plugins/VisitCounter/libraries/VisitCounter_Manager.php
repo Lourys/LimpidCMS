@@ -16,7 +16,7 @@ class VisitCounter_Manager
   {
     $this->limpid =& CMS_Controller::$instance;
     // Check if plugin is enabled
-    if ($this->limpid->pluginsManager->getPlugin('VisitCounter')->enabled) {
+    if ($this->limpid->pluginsManager->getPlugin('VisitCounter')['enabled']) {
       $this->limpid->load->model('VisitCounter_model', 'visitCounter');
     } else {
       return false;

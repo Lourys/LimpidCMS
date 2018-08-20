@@ -56,6 +56,11 @@ class Themes_Manager
    */
   public function getAvailableThemes()
   {
+    if (empty($this->available_themes)) {
+      $this->limpid->load->library('API_Manager', null, 'APIManager');
+      $this->available_themes = $this->limpid->APIManager->getAvailableThemes();
+    }
+
     return (array)$this->available_themes;
   }
 

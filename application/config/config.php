@@ -12,8 +12,6 @@ $config['site_description'] = 'y';
 $config['theme'] = 'default';
 // Timezone
 $config['timezone'] = 'Europe/Paris';
-// License key
-$config['license'] = 'nNwsKN6o-JBsQ5wyN-KVmoEJ4u-LRQzvim7-48onEDLU';
 // LimpidCMS native captcha system
 $config['limpidCaptchaEnabled'] = 1;
 
@@ -261,7 +259,7 @@ $config['allow_get_array'] = TRUE;
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 2;
+$config['log_threshold'] = 1;
 
 /*
 |--------------------------------------------------------------------------

@@ -127,6 +127,7 @@ if ($this->config->item('language') === 'french') {
   $route['panel/plugins/desactiver/(:any)'] = 'plugins/admin_disable/$1';
   $route['panel/plugins/installer/(:any)'] = 'plugins/admin_install/$1';
   $route['panel/plugins/desinstaller/(:any)'] = 'plugins/admin_uninstall/$1';
+  $route['panel/plugins/mettre-a-jour/(:any)'] = 'plugins/admin_update/$1';
 
   $route['panel/plugins/(:any)'] = '$1/admin_index';
   $route['panel/plugins/(:any)/parametres'] = '$1/admin_settings';
@@ -137,6 +138,8 @@ if ($this->config->item('language') === 'french') {
   $route['panel/themes/activer/(:any)'] = 'themes/admin_enable/$1';
   $route['panel/themes/installer/(:any)'] = 'themes/admin_install/$1';
   $route['panel/themes/desinstaller/(:any)'] = 'themes/admin_uninstall/$1';
+  $route['panel/themes/mettre-a-jour/(:any)'] = 'themes/admin_update/$1';
+
   $route['panel/themes/configuration'] = 'themes/admin_config';
 
   // Paramètres généraux

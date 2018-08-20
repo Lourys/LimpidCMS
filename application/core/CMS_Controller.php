@@ -41,6 +41,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @property Minecraft_model minecraft
  * @property Minecraft_Manager minecraftManager
  * @property CI_User_agent agent
+ * @property API_Manager APIManager
  */
 class CMS_Controller extends CI_Controller
 {
@@ -50,6 +51,10 @@ class CMS_Controller extends CI_Controller
   {
     parent::__construct();
     self::$instance || self::$instance =& $this;
+
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
 
     $this->config->load('config');
     date_default_timezone_set($this->config->item('timezone'));
@@ -97,7 +102,7 @@ class CMS_Controller extends CI_Controller
 
     if ($this->router->module) {
       $config['paths'] = [];
-      $plugin_uri = $this->pluginsManager->getPlugin($this->router->module)->uri;
+      $plugin_uri = $this->pluginsManager->getPlugin($this->router->module)['uri'];
       if (is_dir(APPPATH . 'themes/' . $this->config->item('theme') . '/' . $plugin_uri . '/'))
         array_push($config['paths'], APPPATH . 'themes/' . $this->config->item('theme') . '/plugins/' . $plugin_uri . '/');
       array_push($config['paths'], APPPATH . 'plugins/' . $plugin_uri . '/views/');

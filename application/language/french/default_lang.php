@@ -182,6 +182,7 @@ $lang['PLUGIN_SUCCESSFULLY_DISABLED'] = 'Le plugin a été désactivé avec succ
 $lang['PLUGIN_SUCCESSFULLY_ENABLED'] = 'Le plugin a été activé avec succès';
 $lang['PLUGIN_SUCCESSFULLY_INSTALLED'] = 'Le plugin a été installé avec succès';
 $lang['PLUGIN_SUCCESSFULLY_UNINSTALLED'] = 'Le plugin a été désinstallé avec succès';
+$lang['PLUGIN_SUCCESSFULLY_UPDATED'] = 'Le plugin a été mis à jour avec succès';
 $lang['PLUGIN_UNINSTALL'] = 'Désinstallation du plugin';
 $lang['PLUGINS'] = 'Plugins';
 $lang['PLUGINS_INSTALLATION'] = 'Installation de plugins';

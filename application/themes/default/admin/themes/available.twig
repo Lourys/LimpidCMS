@@ -36,7 +36,7 @@
           {% for theme in themes %}
             {% if this.themesManager.getTheme(theme.uri) != true %}
               <tr>
-                <td>{{ theme.name }}</td>
+                <td>{{ theme.name[this.config.item('language')|slice(0, 2)|lower] }}</td>
                 <td>{{ theme.author }}</td>
                 <td>v{{ theme.version }}</td>
                 <td>

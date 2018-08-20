@@ -1,6 +1,10 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+define('API_URL', 'http://localhost/api.limpidcms.fr/public/v1/');
+define('LICENSE_KEY', file_get_contents(APPPATH . 'secure/license.key'));
+
+
 /*
 |--------------------------------------------------------------------------
 | Display Debug backtrace
