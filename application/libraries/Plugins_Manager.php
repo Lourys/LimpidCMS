@@ -42,7 +42,7 @@ class Plugins_Manager
    */
   private function updatePluginList()
   {
-    $plugins = array();
+    $plugins = [];
     if (!file_exists(APPPATH . 'cache/plugins.json') || ENVIRONMENT == 'development') {
       foreach (array_diff(scandir(APPPATH . 'plugins'), array('..', '.')) as $plugin) {
         if (file_exists(APPPATH . 'plugins/' . $plugin . '/settings.json'))
@@ -395,11 +395,7 @@ class Plugins_Manager
       return false;
     }
 
-    if (str_replace('.', '', $this->plugins[$uri]['version']) < str_replace('.', '', $this->available_plugins[$uri]['version'])) {
-      return true;
-    }
-
-    return false;
+    return version_compare($this->plugins[$uri]['version'], $this->available_plugins[$uri]['version'], '<');
   }
 
   /**

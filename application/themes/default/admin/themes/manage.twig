@@ -54,6 +54,11 @@
                     <i class="fa fa-times"></i> {{ lang('UNINSTALL') }}
                   </a>
                 {% endif %}
+                {% if this.themesManager.doesNeedToUpdate(theme.uri) %}
+                  <a href="{{ route('themes/admin_update/' ~ theme.uri) }}" class="btn btn-light btn-sm">
+                    <i class="fa fa-cloud-download"></i> {{ lang('UPDATE') }}
+                  </a>
+                {% endif %}
               </td>
             </tr>
           {% endfor %}

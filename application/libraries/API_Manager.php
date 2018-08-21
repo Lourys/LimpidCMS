@@ -65,6 +65,24 @@ class API_Manager
   }
 
   /**
+   * Download a theme and save it in tmp folder
+   *
+   * @param $uri
+   *
+   * @return bool
+   */
+  public function downloadTheme($uri)
+  {
+    $path = APPPATH . 'tmp/' . $uri . '.zip';
+    $file = fopen($path, "w+");
+    if (fputs($file, $this->curlCall('theme/download/' . $uri, ['key' => LICENSE_KEY])) && fclose($file)) {
+      return $path;
+    }
+
+    return false;
+  }
+
+  /**
    * Make cURL call
    *
    * @param string $endpoint

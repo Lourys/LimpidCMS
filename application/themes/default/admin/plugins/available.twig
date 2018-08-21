@@ -29,6 +29,7 @@
             <th>{{ lang('PLUGIN_NAME') }}</th>
             <th>{{ lang('AUTHOR') }}</th>
             <th>{{ lang('VERSION') }}</th>
+            <th>{{ lang('PRICE') }}</th>
             <th>{{ lang('ACTIONS') }}</th>
           </tr>
           </thead>
@@ -39,6 +40,7 @@
                 <td>{{ plugin.name[this.config.item('language')|slice(0, 2)|lower] }}</td>
                 <td>{{ plugin.author }}</td>
                 <td>v{{ plugin.version }}</td>
+                <td>{% if plugin.price > 0 %}{{ plugin.price ~ '€' }}{% else %}{{ lang('FREE') }}{% endif %}</td>
                 <td>
                   <a href="{{ route('plugins/admin_install/' ~ plugin.uri) }}" class="btn btn-success btn-sm">
                     <i class="fa fa-plus"></i> {{ lang('INSTALL') }}

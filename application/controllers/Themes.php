@@ -50,7 +50,7 @@ class Themes extends Limpid_Controller
   {
     if (!$this->themesManager->getTheme($uri)) {
       $theme = $this->themesManager->getAvailableTheme($uri);
-      if ($this->themesManager->installTheme($theme->uri))
+      if ($this->themesManager->installTheme($theme['uri']))
         $this->session->set_flashdata('success', $this->lang->line('THEME_SUCCESSFULLY_INSTALLED'));
       else
         $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
@@ -75,15 +75,29 @@ class Themes extends Limpid_Controller
     redirect(route('themes/admin_manage'));
   }
 
+  public function admin_update($uri)
+  {
+    if ($theme = $this->themesManager->getTheme($uri)) {
+      if ($this->themesManager->updateTheme($theme['uri']))
+        $this->session->set_flashdata('success', $this->lang->line('THEME_SUCCESSFULLY_UPDATED'));
+      else
+        $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
+    } else {
+      $this->session->set_flashdata('error', $this->lang->line('INTERNAL_ERROR'));
+    }
+
+    redirect(route('themes/admin_manage'));
+  }
+
   public function admin_config()
   {
     if ($theme = $this->themesManager->getEnabledTheme()) {
       $this->data['page_title'] = $this->lang->line('THEME_CONFIGURATION');
 
       $this->load->helper('form');
-      $this->data['config'] = json_decode(file_get_contents(APPPATH . 'themes/' . $theme->uri . '/config.json'), true);
+      $this->data['config'] = json_decode(file_get_contents(APPPATH . 'themes/' . $theme['uri'] . '/config.json'), true);
       if ($this->input->method() == 'post') {
-        if (file_put_contents(APPPATH . 'themes/' . $theme->uri . '/config.json', json_encode($this->input->post()))) {
+        if (file_put_contents(APPPATH . 'themes/' . $theme['uri'] . '/config.json', json_encode($this->input->post()))) {
           $this->session->set_flashdata('success', $this->lang->line('CONFIG_SUCCESSFULLY_EDITED'));
 
           redirect(current_url());

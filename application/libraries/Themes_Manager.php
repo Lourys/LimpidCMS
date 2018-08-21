@@ -26,8 +26,6 @@ class Themes_Manager
       unlink(APPPATH . 'cache/themes.json');
 
     $this->updateThemeList();
-    if (empty($this->available_themes))
-      $this->available_themes = [];//json_decode(file_get_contents('http://localhost/codeigniter/public/availableThemes.json'));
   }
 
   /**
@@ -37,16 +35,16 @@ class Themes_Manager
    */
   protected function updateThemeList()
   {
-    $themes = array();
+    $themes = [];
     if (!file_exists(APPPATH . 'cache/themes.json') || ENVIRONMENT == 'development') {
       foreach (array_diff(scandir(APPPATH . 'themes'), array('..', '.')) as $theme) {
         if (file_exists(APPPATH . 'themes/' . $theme . '/settings.json'))
-          $themes[$theme] = json_decode(file_get_contents(APPPATH . 'themes/' . $theme . '/settings.json'));
+          $themes[$theme] = json_decode(file_get_contents(APPPATH . 'themes/' . $theme . '/settings.json'), true);
       }
       file_put_contents(APPPATH . 'cache/themes.json', json_encode($themes));
     }
 
-    $this->themes = json_decode(file_get_contents(APPPATH . 'cache/themes.json'));
+    $this->themes = json_decode(file_get_contents(APPPATH . 'cache/themes.json'), true);
   }
 
   /**
@@ -61,7 +59,7 @@ class Themes_Manager
       $this->available_themes = $this->limpid->APIManager->getAvailableThemes();
     }
 
-    return (array)$this->available_themes;
+    return $this->available_themes;
   }
 
   /**
@@ -73,7 +71,7 @@ class Themes_Manager
    */
   public function getAvailableTheme($uri)
   {
-    return isset($this->available_themes->$uri) ? $this->available_themes->$uri : false;
+    return isset($this->available_themes[$uri]) ? $this->available_themes[$uri] : false;
   }
 
   /**
@@ -83,7 +81,7 @@ class Themes_Manager
    */
   public function getThemes()
   {
-    return (array)$this->themes;
+    return $this->themes;
   }
 
   /**
@@ -95,7 +93,7 @@ class Themes_Manager
    */
   public function getTheme($uri)
   {
-    return isset($this->themes->$uri) ? $this->themes->$uri : false;
+    return isset($this->themes[$uri]) ? $this->themes[$uri] : false;
   }
 
   /**
@@ -105,8 +103,8 @@ class Themes_Manager
    */
   public function getThemeConfig()
   {
-    if (file_exists(APPPATH . 'themes/' . $this->getEnabledTheme()->uri . '/config.json'))
-      return json_decode(file_get_contents(APPPATH . 'themes/' . $this->getEnabledTheme()->uri . '/config.json'), true);
+    if (file_exists(APPPATH . 'themes/' . $this->getEnabledTheme()['uri'] . '/config.json'))
+      return json_decode(file_get_contents(APPPATH . 'themes/' . $this->getEnabledTheme()['uri'] . '/config.json'), true);
 
     return null;
   }
@@ -122,7 +120,7 @@ class Themes_Manager
       return $this->enabled_theme;
 
     foreach ($this->themes as $theme) {
-      if ($theme->enabled) {
+      if ($theme['enabled']) {
         $this->enabled_theme = $theme;
         break;
       }
@@ -146,20 +144,20 @@ class Themes_Manager
       return null;
 
     foreach ($this->themes as $theme) {
-      if ($theme->uri == $uri) {
+      if ($theme['uri'] == $uri) {
         // Disable active theme
         $themes = $this->getThemes();
         foreach ($themes as $item) {
-          if ($item->enabled) {
-            $item->enabled = false;
-            file_put_contents(APPPATH . 'themes/' . $item->uri . '/settings.json', json_encode($item));
+          if ($item['enabled']) {
+            $item['enabled'] = false;
+            file_put_contents(APPPATH . 'themes/' . $item['uri'] . '/settings.json', json_encode($item));
             break;
           }
         }
 
         // Enable requested theme
-        $theme->enabled = true;
-        if (unlink(APPPATH . 'cache/themes.json') && file_put_contents(APPPATH . 'themes/' . $theme->uri . '/settings.json', json_encode($theme))) {
+        $theme['enabled'] = true;
+        if (unlink(APPPATH . 'cache/themes.json') && file_put_contents(APPPATH . 'themes/' . $theme['uri'] . '/settings.json', json_encode($theme))) {
           $this->limpid->config->edit_item('theme', $uri, 'config');
           $this->updateThemeList();
           return true;
@@ -179,12 +177,14 @@ class Themes_Manager
    */
   function installTheme($uri)
   {
-    if (empty($uri))
-      return null;
+    $theme = $this->getAvailableTheme($uri);
+    if (!isset($theme))
+      return false;
 
-    if (file_put_contents(APPPATH . 'tmp/theme.zip', fopen('http://localhost/codeigniter/public/' . $uri . '.zip', 'r'))) {
+    $this->limpid->load->library('API_Manager', null, 'APIManager');
+    if ($path = $this->limpid->APIManager->downloadTheme($theme['uri'])) {
       $zip = new ZipArchive;
-      if ($zip->open(APPPATH . 'tmp/theme.zip') === TRUE) {
+      if ($zip->open($path) === true) {
         $zip->extractTo(APPPATH . 'themes/');
         $zip->close();
 
@@ -224,6 +224,40 @@ class Themes_Manager
   }
 
   /**
+   * Updates a theme by uri
+   *
+   * @param string $uri
+   *
+   * @return bool|null
+   */
+  function updateTheme($uri)
+  {
+    if (empty($uri))
+      return null;
+
+    $this->limpid->load->library('API_Manager', null, 'APIManager');
+    if ($path = $this->limpid->APIManager->downloadTheme($uri)) {
+      $zip = new ZipArchive;
+      if ($zip->open($path) === true) {
+        $zip->extractTo(APPPATH . 'themes/');
+        $zip->close();
+
+        $this->limpid->load->helper('file');
+        delete_files(APPPATH . 'tmp', true);
+
+        rename(APPPATH . 'themes/' . $uri . '/_assets', './assets/' . $uri);
+        rename(APPPATH . 'themes/' . $uri . '/_langs', APPPATH . 'language/');
+
+        $this->updateThemeList();
+
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
    * Check if a theme is enabled by uri
    *
    * @param $uri
@@ -232,7 +266,25 @@ class Themes_Manager
    */
   function isEnabled($uri)
   {
-    return $this->themes->$uri->enabled;
+    return $this->themes[$uri]['enabled'];
+  }
+
+  /**
+   * Checks if a theme needs to be updated
+   *
+   * @param string $uri
+   *
+   * @return bool
+   */
+  function doesNeedToUpdate($uri)
+  {
+    if (!isset($this->available_themes)) $this->getAvailableThemes();
+
+    if (!isset($this->themes[$uri]) || !isset($this->available_themes[$uri])) {
+      return false;
+    }
+
+    return version_compare($this->themes[$uri]['version'], $this->available_themes[$uri]['version'], '<');
   }
 }
 

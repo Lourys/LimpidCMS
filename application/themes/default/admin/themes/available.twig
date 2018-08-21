@@ -29,6 +29,7 @@
             <th>{{ lang('THEME_NAME') }}</th>
             <th>{{ lang('AUTHOR') }}</th>
             <th>{{ lang('VERSION') }}</th>
+            <th>{{ lang('PRICE') }}</th>
             <th>{{ lang('ACTIONS') }}</th>
           </tr>
           </thead>
@@ -39,6 +40,7 @@
                 <td>{{ theme.name[this.config.item('language')|slice(0, 2)|lower] }}</td>
                 <td>{{ theme.author }}</td>
                 <td>v{{ theme.version }}</td>
+                <td>{% if theme.price > 0 %}{{ theme.price ~ '€' }}{% else %}{{ lang('FREE') }}{% endif %}</td>
                 <td>
                   <a href="{{ route('themes/admin_install/' ~ theme.uri) }}" class="btn btn-success btn-sm">
                     <i class="fa fa-plus"></i> {{ lang('INSTALL') }}
